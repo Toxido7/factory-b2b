@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import { env } from './config/env.js';
 import { notFound, errorHandler } from './middlewares/errorHandler.js';
 import { requestLogger } from './middlewares/requestLogger.js';
-
+import authRoutes from './modules/auth/auth.routes.js';
 const app = express();
 app.use(requestLogger);
 app.use(helmet());
@@ -14,7 +14,7 @@ app.use(express.json());
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() });
 });
-
+app.use('/api/auth', authRoutes);
 app.use(notFound);
 app.use(errorHandler);
 export default app;
