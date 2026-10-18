@@ -6,6 +6,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   CLIENT_URL: z.string().url(),
   DATABASE_URL: z.string().url(),
+  BCRYPT_ROUNDS: z.coerce.number().int().min(4).max(15).default(12),
 });
 
 const parsed = envSchema.safeParse(process.env);
