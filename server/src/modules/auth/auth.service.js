@@ -19,18 +19,24 @@ const toPublicUser = (user) => ({
   createdAt: user.createdAt,
 });
 
-const issueRefreshToken = async (userId, { userAgent, ip }) => {
+const newRefreshToken = (userId, { userAgent, ip } = {}) => {
   const token = generateRefreshToken();
-  const expiresAt = new Date(Date.now() + env.REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000);
 
-  await refreshTokensRepository.create({
-    userId,
-    tokenHash: hashToken(token),
-    expiresAt,
-    userAgent: userAgent?.slice(0, 255),
-    ip,
-  });
+  return {
+    token,
+    record: {
+      userId,
+      tokenHash: hashToken(token),
+      expiresAt: new Date(Date.now() + env.REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000),
+      userAgent: userAgent?.slice(0, 255),
+      ip,
+    },
+  };
+};
 
+const issueRefreshToken = async (userId, meta) => {
+  const { token, record } = newRefreshToken(userId, meta);
+  await refreshTokensRepository.create(record);
   return token;
 };
 
@@ -61,4 +67,44 @@ export const register = async ({ email, password, fullName, companyName, phone }
   const passwordHash = await hashPassword(password);
 
   return usersRepository.create({ email, passwordHash, fullName, companyName, phone });
+};
+export const refresh = async (rawToken, meta = {}) => {
+  if (!rawToken) {
+    throw ApiError.unauthorized('Missing refresh token');
+  }
+
+  const stored = await refreshTokensRepository.findByHash(hashToken(rawToken));
+  if (!stored) {
+    throw ApiError.unauthorized('Invalid refresh token');
+  }
+
+  // Already used or cancelled: someone is replaying an old token (possible theft)
+  if (stored.revokedAt) {
+    await refreshTokensRepository.revokeAllForUser(stored.userId);
+    throw ApiError.unauthorized('Invalid refresh token');
+  }
+
+  if (stored.expiresAt <= new Date()) {
+    throw ApiError.unauthorized('Refresh token expired');
+  }
+
+  if (!stored.user.isActive) {
+    await refreshTokensRepository.revokeAllForUser(stored.userId);
+    throw ApiError.forbidden('Account disabled');
+  }
+
+  const { token, record } = newRefreshToken(stored.userId, meta);
+  const rotated = await refreshTokensRepository.rotate(stored.id, record);
+
+  // Someone else used this exact token a split second before us: treat it as reuse
+  if (!rotated) {
+    await refreshTokensRepository.revokeAllForUser(stored.userId);
+    throw ApiError.unauthorized('Invalid refresh token');
+  }
+
+  return {
+    user: toPublicUser(stored.user),
+    accessToken: signAccessToken(stored.user),
+    refreshToken: token,
+  };
 };
