@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'node:crypto';
 import { env } from '../config/env.js';
 
 export const signAccessToken = (user) =>
@@ -10,3 +11,7 @@ export const signAccessToken = (user) =>
 
 export const verifyAccessToken = (token) =>
   jwt.verify(token, env.JWT_ACCESS_SECRET, { algorithms: ['HS256'] });
+
+export const generateRefreshToken = () => crypto.randomBytes(48).toString('base64url');
+
+export const hashToken = (token) => crypto.createHash('sha256').update(token).digest('hex');

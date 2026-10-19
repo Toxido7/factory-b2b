@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import jwt from 'jsonwebtoken';
-import { signAccessToken, verifyAccessToken } from '../src/utils/tokens.js';
+import {
+  signAccessToken,
+  verifyAccessToken,
+  generateRefreshToken,
+  hashToken,
+} from '../src/utils/tokens.js';
 
 const user = { id: 'user-123', role: 'USER' };
 
@@ -34,5 +39,21 @@ describe('access tokens', () => {
     });
 
     expect(() => verifyAccessToken(expired)).toThrow();
+  });
+});
+describe('refresh tokens', () => {
+  it('generates a different random token every time', () => {
+    expect(generateRefreshToken()).not.toBe(generateRefreshToken());
+  });
+
+  it('hashes deterministically, and the hash is not the token', () => {
+    const token = generateRefreshToken();
+
+    expect(hashToken(token)).toBe(hashToken(token));
+    expect(hashToken(token)).not.toBe(token);
+  });
+
+  it('produces a 64-character hex hash', () => {
+    expect(hashToken('anything')).toMatch(/^[0-9a-f]{64}$/);
   });
 });

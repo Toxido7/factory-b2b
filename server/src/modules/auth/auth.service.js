@@ -1,6 +1,8 @@
 import { ApiError } from '../../utils/ApiError.js';
 import { hashPassword, verifyPassword } from '../../utils/password.js';
-import { signAccessToken } from '../../utils/tokens.js';
+import { env } from '../../config/env.js';
+import { signAccessToken, generateRefreshToken, hashToken } from '../../utils/tokens.js';
+import * as refreshTokensRepository from './refreshTokens.repository.js';
 import * as usersRepository from '../users/users.repository.js';
 
 // Used when the email doesn't exist, so the answer takes the same time either way
@@ -17,7 +19,22 @@ const toPublicUser = (user) => ({
   createdAt: user.createdAt,
 });
 
-export const login = async ({ email, password }) => {
+const issueRefreshToken = async (userId, { userAgent, ip }) => {
+  const token = generateRefreshToken();
+  const expiresAt = new Date(Date.now() + env.REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000);
+
+  await refreshTokensRepository.create({
+    userId,
+    tokenHash: hashToken(token),
+    expiresAt,
+    userAgent: userAgent?.slice(0, 255),
+    ip,
+  });
+
+  return token;
+};
+
+export const login = async ({ email, password }, meta = {}) => {
   const user = await usersRepository.findByEmail(email);
 
   const passwordOk = await verifyPassword(password, user ? user.passwordHash : await dummyHash);
@@ -29,7 +46,11 @@ export const login = async ({ email, password }) => {
     throw ApiError.forbidden('Account disabled');
   }
 
-  return { user: toPublicUser(user), accessToken: signAccessToken(user) };
+  return {
+    user: toPublicUser(user),
+    accessToken: signAccessToken(user),
+    refreshToken: await issueRefreshToken(user.id, meta),
+  };
 };
 export const register = async ({ email, password, fullName, companyName, phone }) => {
   const existing = await usersRepository.findByEmail(email);
