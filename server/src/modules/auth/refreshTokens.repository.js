@@ -23,3 +23,8 @@ export const rotate = (oldId, newRecord) =>
 
     return tx.refreshToken.create({ data: newRecord });
   });
+export const revokeByHash = (tokenHash) =>
+  prisma.refreshToken.updateMany({
+    where: { tokenHash, revokedAt: null },
+    data: { revokedAt: new Date() },
+  });

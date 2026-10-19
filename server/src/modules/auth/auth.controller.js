@@ -32,3 +32,11 @@ export const refresh = async (req, res) => {
     throw err;
   }
 };
+export const logout = async (req, res) => {
+  try {
+    await authService.logout(req.cookies?.refresh_token);
+  } finally {
+    clearRefreshCookie(res);
+  }
+  res.json({ success: true, data: { message: 'Logged out' } });
+};

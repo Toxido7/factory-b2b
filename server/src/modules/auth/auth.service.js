@@ -108,3 +108,7 @@ export const refresh = async (rawToken, meta = {}) => {
     refreshToken: token,
   };
 };
+export const logout = async (rawToken) => {
+  if (!rawToken) return;
+  await refreshTokensRepository.revokeByHash(hashToken(rawToken));
+};
