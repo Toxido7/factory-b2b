@@ -23,3 +23,9 @@ export const registerSchema = z.object({
     phone: optionalText(30),
   }),
 });
+export const loginSchema = z.object({
+  body: z.object({
+    email: z.string().trim().toLowerCase().email(),
+    password: z.string().min(1).max(128),
+  }),
+});
