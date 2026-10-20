@@ -1,0 +1,41 @@
+import rateLimit from 'express-rate-limit';
+import { env } from '../config/env.js';
+
+const MINUTE = 60 * 1000;
+
+export const createLimiter = ({ windowMs, limit, message, ...extra }) =>
+  rateLimit({
+    windowMs,
+    limit,
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    handler: (req, res) => {
+      res.status(429).json({ success: false, error: { message } });
+    },
+    ...extra,
+  });
+
+// In tests we turn the real limiters off so other tests aren't blocked
+const skipInTests = () => env.NODE_ENV === 'test';
+
+export const loginLimiter = createLimiter({
+  windowMs: 15 * MINUTE,
+  limit: 10,
+  skipSuccessfulRequests: true,
+  skip: skipInTests,
+  message: 'Too many login attempts, please try again later',
+});
+
+export const registerLimiter = createLimiter({
+  windowMs: 60 * MINUTE,
+  limit: 10,
+  skip: skipInTests,
+  message: 'Too many accounts created from this network, please try again later',
+});
+
+export const refreshLimiter = createLimiter({
+  windowMs: 15 * MINUTE,
+  limit: 60,
+  skip: skipInTests,
+  message: 'Too many requests, please try again later',
+});
