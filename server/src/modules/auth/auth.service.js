@@ -160,3 +160,37 @@ export const getMe = async (userId) => {
 
   return toPublicUser(user);
 };
+export const verifyEmail = async (rawToken) => {
+  const invalid = () => ApiError.badRequest('Invalid or expired verification link');
+
+  const stored = await verificationTokensRepository.findByHash(hashToken(rawToken));
+
+  if (
+    !stored ||
+    stored.type !== 'EMAIL_VERIFY' ||
+    stored.usedAt ||
+    stored.expiresAt <= new Date()
+  ) {
+    throw invalid();
+  }
+
+  const done = await verificationTokensRepository.consumeEmailVerification(
+    stored.id,
+    stored.userId,
+  );
+  if (!done) throw invalid();
+};
+
+export const resendVerification = async (userId) => {
+  const user = await usersRepository.findById(userId);
+
+  if (!user || !user.isActive) {
+    throw ApiError.unauthorized('Authentication required');
+  }
+  if (user.emailVerified) {
+    throw ApiError.conflict('Email is already verified');
+  }
+
+  await verificationTokensRepository.invalidateAllForUser(user.id, 'EMAIL_VERIFY');
+  await sendVerificationEmail(user);
+};

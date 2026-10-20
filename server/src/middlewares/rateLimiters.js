@@ -39,3 +39,9 @@ export const refreshLimiter = createLimiter({
   skip: skipInTests,
   message: 'Too many requests, please try again later',
 });
+export const resendVerificationLimiter = createLimiter({
+  windowMs: 60 * MINUTE,
+  limit: 5,
+  skip: skipInTests,
+  message: 'Too many emails requested, please try again later',
+});
