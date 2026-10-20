@@ -10,6 +10,15 @@ const envSchema = z.object({
   JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
   REFRESH_TOKEN_DAYS: z.coerce.number().int().min(1).max(90).default(7),
+  MAIL_HOST: z.string().default('localhost'),
+  MAIL_PORT: z.coerce.number().int().default(1025),
+  MAIL_SECURE: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
+  MAIL_USER: z.string().optional(),
+  MAIL_PASS: z.string().optional(),
+  MAIL_FROM: z.string().default('Factory Site <no-reply@factory.local>'),
 });
 
 const parsed = envSchema.safeParse(process.env);

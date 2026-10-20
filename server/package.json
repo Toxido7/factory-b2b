@@ -11,7 +11,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:test:migrate": "dotenv -e .env.test -- prisma migrate deploy"
+    "db:test:migrate": "dotenv -e .env.test -- prisma migrate deploy",
+    "mail:test": "node scripts/send-test-email.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
@@ -23,6 +24,7 @@
     "express-rate-limit": "^8.7.1",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^10.1.7",
     "pino": "^10.4.0",
     "pino-http": "^11.0.0",
     "zod": "^4.6.7"
