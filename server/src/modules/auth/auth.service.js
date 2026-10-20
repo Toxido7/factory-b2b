@@ -112,3 +112,12 @@ export const logout = async (rawToken) => {
   if (!rawToken) return;
   await refreshTokensRepository.revokeByHash(hashToken(rawToken));
 };
+export const getMe = async (userId) => {
+  const user = await usersRepository.findById(userId);
+
+  if (!user || !user.isActive) {
+    throw ApiError.unauthorized('Authentication required');
+  }
+
+  return toPublicUser(user);
+};

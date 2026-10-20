@@ -15,3 +15,4 @@ const publicUserSelect = {
 export const findByEmail = (email) => prisma.user.findUnique({ where: { email } });
 
 export const create = (data) => prisma.user.create({ data, select: publicUserSelect });
+export const findById = (id) => prisma.user.findUnique({ where: { id } });

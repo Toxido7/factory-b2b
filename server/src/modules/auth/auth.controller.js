@@ -1,4 +1,3 @@
-import { setRefreshCookie } from './auth.cookies.js';
 import * as authService from './auth.service.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { REFRESH_COOKIE, setRefreshCookie, clearRefreshCookie } from './auth.cookies.js';
@@ -39,4 +38,8 @@ export const logout = async (req, res) => {
     clearRefreshCookie(res);
   }
   res.json({ success: true, data: { message: 'Logged out' } });
+};
+export const me = async (req, res) => {
+  const user = await authService.getMe(req.auth.userId);
+  res.json({ success: true, data: { user } });
 };
