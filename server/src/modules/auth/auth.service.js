@@ -1,8 +1,17 @@
 import { ApiError } from '../../utils/ApiError.js';
 import { hashPassword, verifyPassword } from '../../utils/password.js';
 import { env } from '../../config/env.js';
-import { signAccessToken, generateRefreshToken, hashToken } from '../../utils/tokens.js';
+import {
+  signAccessToken,
+  generateRefreshToken,
+  generateUrlToken,
+  hashToken,
+} from '../../utils/tokens.js';
+import { logger } from '../../config/logger.js';
+import { sendEmail } from '../../utils/mailer.js';
+import { verificationEmail } from './auth.emails.js';
 import * as refreshTokensRepository from './refreshTokens.repository.js';
+import * as verificationTokensRepository from './verificationTokens.repository.js';
 import * as usersRepository from '../users/users.repository.js';
 
 // Used when the email doesn't exist, so the answer takes the same time either way
@@ -39,6 +48,21 @@ const issueRefreshToken = async (userId, meta) => {
   await refreshTokensRepository.create(record);
   return token;
 };
+const EMAIL_VERIFY_HOURS = 24;
+
+const sendVerificationEmail = async (user) => {
+  const token = generateUrlToken();
+
+  await verificationTokensRepository.create({
+    userId: user.id,
+    type: 'EMAIL_VERIFY',
+    tokenHash: hashToken(token),
+    expiresAt: new Date(Date.now() + EMAIL_VERIFY_HOURS * 60 * 60 * 1000),
+  });
+
+  const url = `${env.CLIENT_URL}/verify-email?token=${token}`;
+  await sendEmail({ to: user.email, ...verificationEmail({ fullName: user.fullName, url }) });
+};
 
 export const login = async ({ email, password }, meta = {}) => {
   const user = await usersRepository.findByEmail(email);
@@ -66,7 +90,22 @@ export const register = async ({ email, password, fullName, companyName, phone }
 
   const passwordHash = await hashPassword(password);
 
-  return usersRepository.create({ email, passwordHash, fullName, companyName, phone });
+  const user = await usersRepository.create({
+    email,
+    passwordHash,
+    fullName,
+    companyName,
+    phone,
+  });
+
+  try {
+    await sendVerificationEmail(user);
+  } catch (err) {
+    // The account exists. A failed email must not block the sign-up.
+    logger.error({ err, userId: user.id }, 'Could not send verification email');
+  }
+
+  return user;
 };
 export const refresh = async (rawToken, meta = {}) => {
   if (!rawToken) {
