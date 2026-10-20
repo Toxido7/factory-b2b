@@ -10,7 +10,9 @@ import { authenticate } from './middlewares/authenticate.js';
 import { authorize } from './middlewares/authorize.js';
 import categoriesRoutes from './modules/categories/categories.routes.js';
 import categoriesAdminRoutes from './modules/categories/categories.admin.routes.js';
+import productsAdminRoutes from './modules/products/products.admin.routes.js';
 const app = express();
+const adminOnly = [authenticate, authorize('ADMIN')];
 app.use(requestLogger);
 app.use(helmet());
 app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
@@ -22,7 +24,9 @@ app.get('/health', (req, res) => {
 });
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoriesRoutes);
-app.use('/api/admin/categories', authenticate, authorize('ADMIN'), categoriesAdminRoutes);
+app.use('/api/admin/categories', adminOnly, categoriesAdminRoutes);
+
+app.use('/api/admin/products', adminOnly, productsAdminRoutes);
 app.use(notFound);
 app.use(errorHandler);
 export default app;
