@@ -45,3 +45,16 @@ export const resendVerificationLimiter = createLimiter({
   skip: skipInTests,
   message: 'Too many emails requested, please try again later',
 });
+export const forgotPasswordLimiter = createLimiter({
+  windowMs: 60 * MINUTE,
+  limit: 5,
+  skip: skipInTests,
+  message: 'Too many reset requests, please try again later',
+});
+
+export const resetPasswordLimiter = createLimiter({
+  windowMs: 15 * MINUTE,
+  limit: 10,
+  skip: skipInTests,
+  message: 'Too many attempts, please try again later',
+});

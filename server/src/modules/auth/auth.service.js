@@ -9,7 +9,7 @@ import {
 } from '../../utils/tokens.js';
 import { logger } from '../../config/logger.js';
 import { sendEmail } from '../../utils/mailer.js';
-import { verificationEmail } from './auth.emails.js';
+import { verificationEmail, passwordResetEmail } from './auth.emails.js';
 import * as refreshTokensRepository from './refreshTokens.repository.js';
 import * as verificationTokensRepository from './verificationTokens.repository.js';
 import * as usersRepository from '../users/users.repository.js';
@@ -193,4 +193,54 @@ export const resendVerification = async (userId) => {
 
   await verificationTokensRepository.invalidateAllForUser(user.id, 'EMAIL_VERIFY');
   await sendVerificationEmail(user);
+};
+const PASSWORD_RESET_MINUTES = 60;
+
+const sendPasswordResetEmail = async (user) => {
+  const token = generateUrlToken();
+
+  await verificationTokensRepository.create({
+    userId: user.id,
+    type: 'PASSWORD_RESET',
+    tokenHash: hashToken(token),
+    expiresAt: new Date(Date.now() + PASSWORD_RESET_MINUTES * 60 * 1000),
+  });
+
+  const url = `${env.CLIENT_URL}/reset-password?token=${token}`;
+  await sendEmail({ to: user.email, ...passwordResetEmail({ fullName: user.fullName, url }) });
+};
+export const forgotPassword = async (email) => {
+  const user = await usersRepository.findByEmail(email);
+  if (!user || !user.isActive) return; // same silent answer as for a real account
+
+  try {
+    await verificationTokensRepository.invalidateAllForUser(user.id, 'PASSWORD_RESET');
+    await sendPasswordResetEmail(user);
+  } catch (err) {
+    // Never tell the caller: success and failure must look identical
+    logger.error({ err, userId: user.id }, 'Could not send password reset email');
+  }
+};
+
+export const resetPassword = async ({ token, password }) => {
+  const invalid = () => ApiError.badRequest('Invalid or expired reset link');
+
+  const stored = await verificationTokensRepository.findByHash(hashToken(token));
+
+  if (
+    !stored ||
+    stored.type !== 'PASSWORD_RESET' ||
+    stored.usedAt ||
+    stored.expiresAt <= new Date()
+  ) {
+    throw invalid();
+  }
+
+  const passwordHash = await hashPassword(password);
+  const done = await verificationTokensRepository.consumePasswordReset(
+    stored.id,
+    stored.userId,
+    passwordHash,
+  );
+  if (!done) throw invalid();
 };

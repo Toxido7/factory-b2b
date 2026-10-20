@@ -24,3 +24,31 @@ export const invalidateAllForUser = (userId, type) =>
     where: { userId, type, usedAt: null },
     data: { usedAt: new Date() },
   });
+// Uses the token, changes the password and logs out every device, together or not at all.
+// Returns false if someone else already used the token a split second before us.
+export const consumePasswordReset = (tokenId, userId, passwordHash) =>
+  prisma.$transaction(async (tx) => {
+    const now = new Date();
+
+    const claimed = await tx.verificationToken.updateMany({
+      where: { id: tokenId, usedAt: null },
+      data: { usedAt: now },
+    });
+    if (claimed.count === 0) return false;
+
+    // Any other reset links still open for this user die too
+    await tx.verificationToken.updateMany({
+      where: { userId, type: 'PASSWORD_RESET', usedAt: null },
+      data: { usedAt: now },
+    });
+
+    await tx.user.update({ where: { id: userId }, data: { passwordHash } });
+
+    // Log out every device: all refresh tokens of this user are revoked
+    await tx.refreshToken.updateMany({
+      where: { userId, revokedAt: null },
+      data: { revokedAt: now },
+    });
+
+    return true;
+  });

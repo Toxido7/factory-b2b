@@ -52,3 +52,15 @@ export const resendVerification = async (req, res) => {
   await authService.resendVerification(req.auth.userId);
   res.json({ success: true, data: { message: 'Verification email sent' } });
 };
+export const forgotPassword = async (req, res) => {
+  await authService.forgotPassword(req.validated.body.email);
+  res.json({
+    success: true,
+    data: { message: 'If an account exists for this email, a reset link has been sent' },
+  });
+};
+
+export const resetPassword = async (req, res) => {
+  await authService.resetPassword(req.validated.body);
+  res.json({ success: true, data: { message: 'Password updated. Please log in.' } });
+};
