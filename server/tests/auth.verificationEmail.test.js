@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import request from 'supertest';
-import { prisma } from '../../src/config/prisma.js';
 
 vi.mock('../src/utils/mailer.js', () => ({
   sendEmail: vi.fn().mockResolvedValue({}),

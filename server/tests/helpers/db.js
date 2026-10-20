@@ -5,4 +5,6 @@ export const resetDb = async () => {
   await prisma.refreshToken.deleteMany();
   await prisma.user.deleteMany();
   await prisma.verificationToken.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.category.deleteMany();
 };
