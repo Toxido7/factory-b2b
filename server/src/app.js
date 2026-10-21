@@ -12,12 +12,20 @@ import categoriesRoutes from './modules/categories/categories.routes.js';
 import categoriesAdminRoutes from './modules/categories/categories.admin.routes.js';
 import productsAdminRoutes from './modules/products/products.admin.routes.js';
 import productsRoutes from './modules/products/products.routes.js';
-
+import { uploadDir } from './utils/imageStorage.js';
 const app = express();
 const adminOnly = [authenticate, authorize('ADMIN')];
 app.use(requestLogger);
 app.use(helmet());
 app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
+app.use(
+  '/uploads',
+  express.static(uploadDir, {
+    maxAge: '30d',
+    immutable: true,
+    setHeaders: (res) => res.set('Cross-Origin-Resource-Policy', 'cross-origin'),
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 

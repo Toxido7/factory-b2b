@@ -28,3 +28,13 @@ export const getPublic = async (req, res) => {
   const product = await productsService.getPublicBySlug(req.validated.params.slug);
   res.json({ success: true, data: { product } });
 };
+export const addImage = async (req, res) => {
+  const product = await productsService.addImage(req.validated.params.id, req.file);
+  res.status(201).json({ success: true, data: { product } });
+};
+
+export const removeImage = async (req, res) => {
+  const { id, filename } = req.validated.params;
+  const product = await productsService.removeImage(id, filename);
+  res.json({ success: true, data: { product } });
+};

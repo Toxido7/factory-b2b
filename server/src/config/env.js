@@ -19,6 +19,7 @@ const envSchema = z.object({
   MAIL_USER: z.string().optional(),
   MAIL_PASS: z.string().optional(),
   MAIL_FROM: z.string().default('Factory Site <no-reply@factory.local>'),
+  UPLOAD_DIR: z.string().min(1).default('uploads'),
 });
 
 const parsed = envSchema.safeParse(process.env);

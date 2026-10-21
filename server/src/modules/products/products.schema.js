@@ -56,3 +56,13 @@ export const listPublicSchema = z.object({
 export const slugParamSchema = z.object({
   params: z.object({ slug: z.string().trim().min(1) }),
 });
+export const imageUploadParamSchema = z.object({
+  params: z.object({ id: z.string().uuid() }),
+});
+
+export const imageDeleteParamSchema = z.object({
+  params: z.object({
+    id: z.string().uuid(),
+    filename: z.string().regex(/^[a-f0-9-]+\.(jpg|png|webp)$/),
+  }),
+});
