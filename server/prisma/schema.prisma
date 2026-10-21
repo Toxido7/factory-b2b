@@ -26,6 +26,8 @@ model User {
   updatedAt     DateTime @updatedAt
   refreshTokens RefreshToken[]
   verificationTokens VerificationToken[]
+  requests        OrderRequest[] @relation("RequestCustomer")
+  handledRequests OrderRequest[] @relation("RequestHandler")
   @@map("users")
 }
 model RefreshToken {
@@ -92,8 +94,56 @@ model Product {
   category        Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-
+  requestItems    RequestItem[]
   @@index([categoryId])
   @@index([isActive])
   @@map("products")
+}
+enum RequestStatus {
+  PENDING
+  CONTACTED
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
+model OrderRequest {
+  id              String        @id @default(uuid())
+  number          Int           @unique @default(autoincrement())
+  status          RequestStatus @default(PENDING)
+  notes           String?
+  customerName    String
+  customerEmail   String
+  customerCompany String?
+  customerPhone   String?
+  estimatedTotal  Decimal       @db.Decimal(12, 2)
+  emailSentAt     DateTime?
+  userId          String
+  user            User          @relation("RequestCustomer", fields: [userId], references: [id], onDelete: Restrict)
+  handledById     String?
+  handledBy       User?         @relation("RequestHandler", fields: [handledById], references: [id], onDelete: SetNull)
+  items           RequestItem[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("order_requests")
+}
+
+model RequestItem {
+  id              String       @id @default(uuid())
+  requestId       String
+  request         OrderRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product      @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productName     String
+  sku             String
+  unitPrice       Decimal      @db.Decimal(10, 2)
+  discountPercent Decimal      @db.Decimal(5, 2)
+  quantity        Int
+  lineTotal       Decimal      @db.Decimal(12, 2)
+
+  @@index([requestId])
+  @@map("request_items")
 }

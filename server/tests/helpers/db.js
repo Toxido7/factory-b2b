@@ -7,4 +7,6 @@ export const resetDb = async () => {
   await prisma.verificationToken.deleteMany();
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
+  await prisma.requestItem.deleteMany();
+  await prisma.orderRequest.deleteMany();
 };
