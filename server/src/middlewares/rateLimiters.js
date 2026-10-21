@@ -58,3 +58,9 @@ export const resetPasswordLimiter = createLimiter({
   skip: skipInTests,
   message: 'Too many attempts, please try again later',
 });
+export const createRequestLimiter = createLimiter({
+  windowMs: 60 * MINUTE, // 1 hour
+  limit: 20,
+  skip: skipInTests,
+  message: 'Too many requests. Please try again later.',
+});

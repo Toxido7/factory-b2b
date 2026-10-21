@@ -1,6 +1,10 @@
 import { ApiError } from '../../utils/ApiError.js';
 import { lineTotal, sum } from '../../utils/pricing.js';
 import { formatReference } from '../../utils/reference.js';
+import { env } from '../../config/env.js';
+import { sendEmail } from '../../utils/mailer.js';
+import { teamRequestEmail, customerRequestEmail } from './requests.emails.js';
+import { logger } from '../../config/logger.js';
 import * as productsRepository from '../products/products.repository.js';
 import * as usersRepository from '../users/users.repository.js';
 import * as requestsRepository from './requests.repository.js';
@@ -26,6 +30,24 @@ export const toRequestResponse = (request) => ({
 });
 
 const isAvailable = (product) => product.isActive && product.category.isActive;
+const notifyTeam = async (request) => {
+  await sendEmail({ to: env.TEAM_EMAIL, ...teamRequestEmail(request) });
+  await requestsRepository.markEmailSent(request.id);
+};
+
+// never throws: the request is already saved
+const sendNotifications = async (request) => {
+  try {
+    await notifyTeam(request);
+  } catch (err) {
+    logger.error({ err, requestId: request.id }, 'Team email failed, will be retried');
+  }
+  try {
+    await sendEmail({ to: request.customerEmail, ...customerRequestEmail(request) });
+  } catch (err) {
+    logger.error({ err, requestId: request.id }, 'Customer email failed');
+  }
+};
 
 export const create = async (userId, { notes, items }) => {
   const user = await usersRepository.findById(userId);
@@ -67,5 +89,21 @@ export const create = async (userId, { notes, items }) => {
     items: { create: lines },
   });
 
+  await sendNotifications(created);
   return toRequestResponse(created);
+};
+export const retryUnsentEmails = async ({ olderThanMinutes = 5, limit = 50 } = {}) => {
+  const olderThan = new Date(Date.now() - olderThanMinutes * 60_000);
+  const requests = await requestsRepository.findUnsent({ olderThan, limit });
+
+  let sent = 0;
+  for (const request of requests) {
+    try {
+      await notifyTeam(request);
+      sent += 1;
+    } catch (err) {
+      logger.error({ err, requestId: request.id }, 'Retry of team email failed');
+    }
+  }
+  return { found: requests.length, sent };
 };
