@@ -41,3 +41,18 @@ export const updateProductSchema = z.object({
     })
     .refine((body) => Object.keys(body).length > 0, 'Nothing to update'),
 });
+export const listPublicSchema = z.object({
+  query: z.object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(50).default(12),
+    q: z.string().trim().min(1).optional(),
+    category: z.string().trim().min(1).optional(),
+    minPrice: z.coerce.number().min(0).optional(),
+    maxPrice: z.coerce.number().min(0).optional(),
+    sort: z.enum(['newest', 'price_asc', 'price_desc', 'name']).default('newest'),
+  }),
+});
+
+export const slugParamSchema = z.object({
+  params: z.object({ slug: z.string().trim().min(1) }),
+});

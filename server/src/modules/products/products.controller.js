@@ -19,3 +19,12 @@ export const update = async (req, res) => {
   const product = await productsService.update(req.validated.params.id, req.validated.body);
   res.json({ success: true, data: { product } });
 };
+export const listPublic = async (req, res) => {
+  const data = await productsService.listPublic(req.validated.query);
+  res.json({ success: true, data });
+};
+
+export const getPublic = async (req, res) => {
+  const product = await productsService.getPublicBySlug(req.validated.params.slug);
+  res.json({ success: true, data: { product } });
+};

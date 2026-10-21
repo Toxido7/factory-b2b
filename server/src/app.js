@@ -11,6 +11,8 @@ import { authorize } from './middlewares/authorize.js';
 import categoriesRoutes from './modules/categories/categories.routes.js';
 import categoriesAdminRoutes from './modules/categories/categories.admin.routes.js';
 import productsAdminRoutes from './modules/products/products.admin.routes.js';
+import productsRoutes from './modules/products/products.routes.js';
+
 const app = express();
 const adminOnly = [authenticate, authorize('ADMIN')];
 app.use(requestLogger);
@@ -26,6 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/admin/categories', adminOnly, categoriesAdminRoutes);
 
+app.use('/api/products', productsRoutes);
 app.use('/api/admin/products', adminOnly, productsAdminRoutes);
 app.use(notFound);
 app.use(errorHandler);
