@@ -1,8 +1,8 @@
 import { ApiError } from '../../utils/ApiError.js';
 import { slugify } from '../../utils/slugify.js';
-import { Prisma } from '@prisma/client';
 import { detectImageType } from '../../utils/imageType.js';
 import { saveImage, deleteImage } from '../../utils/imageStorage.js';
+import { finalUnitPrice } from '../../utils/pricing.js';
 import * as categoriesRepository from '../categories/categories.repository.js';
 import * as productsRepository from './products.repository.js';
 
@@ -37,11 +37,10 @@ export const update = async (id, changes) => {
   return productsRepository.update(id, changes);
 };
 // price * (100 - discount) / 100, exact, 2 decimals, returned as a string
-const toPublicProduct = (product) => {
-  const factor = new Prisma.Decimal(100).minus(product.discountPercent);
-  const finalPrice = product.price.mul(factor).div(100).toDecimalPlaces(2);
-  return { ...product, finalPrice: finalPrice.toFixed(2) };
-};
+const toPublicProduct = (product) => ({
+  ...product,
+  finalPrice: finalUnitPrice(product.price, product.discountPercent).toFixed(2),
+});
 
 export const listPublic = async (query) => {
   const { products, total } = await productsRepository.listPublic(query);

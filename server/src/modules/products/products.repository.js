@@ -74,3 +74,8 @@ export const findPublicBySlug = (slug) =>
     where: { slug, isActive: true, category: { isActive: true } },
     select: publicSelect,
   });
+export const findManyForRequest = (ids) =>
+  prisma.product.findMany({
+    where: { id: { in: ids } },
+    include: { category: { select: { isActive: true } } },
+  });

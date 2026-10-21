@@ -13,6 +13,7 @@ import categoriesAdminRoutes from './modules/categories/categories.admin.routes.
 import productsAdminRoutes from './modules/products/products.admin.routes.js';
 import productsRoutes from './modules/products/products.routes.js';
 import { uploadDir } from './utils/imageStorage.js';
+import requestsRoutes from './modules/requests/requests.routes.js';
 const app = express();
 const adminOnly = [authenticate, authorize('ADMIN')];
 app.use(requestLogger);
@@ -38,6 +39,9 @@ app.use('/api/admin/categories', adminOnly, categoriesAdminRoutes);
 
 app.use('/api/products', productsRoutes);
 app.use('/api/admin/products', adminOnly, productsAdminRoutes);
+
+// ...after the products route:
+app.use('/api/requests', authenticate, authorize('USER'), requestsRoutes);
 app.use(notFound);
 app.use(errorHandler);
 export default app;
