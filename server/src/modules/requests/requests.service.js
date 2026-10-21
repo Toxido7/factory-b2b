@@ -107,3 +107,30 @@ export const retryUnsentEmails = async ({ olderThanMinutes = 5, limit = 50 } = {
   }
   return { found: requests.length, sent };
 };
+const toSummary = (request) => ({
+  id: request.id,
+  reference: formatReference(request.number, request.createdAt),
+  status: request.status,
+  estimatedTotal: money(request.estimatedTotal),
+  itemCount: request._count.items,
+  createdAt: request.createdAt,
+});
+
+export const listMine = async (userId, query) => {
+  const { requests, total } = await requestsRepository.listByUser(userId, query);
+  return {
+    requests: requests.map(toSummary),
+    pagination: {
+      page: query.page,
+      limit: query.limit,
+      total,
+      totalPages: Math.ceil(total / query.limit),
+    },
+  };
+};
+
+export const getMine = async (userId, id) => {
+  const request = await requestsRepository.findOneByUser(id, userId);
+  if (!request) throw ApiError.notFound('Request not found');
+  return toRequestResponse(request);
+};
