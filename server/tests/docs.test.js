@@ -1,23 +1,29 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
 import app from '../src/app.js';
 import { openapi } from '../src/docs/openapi.js';
+import { resetDb } from './helpers/db.js';
+import { adminToken } from './helpers/auth.js';
 
 const ID = '00000000-0000-4000-8000-000000000000';
 
-// An unknown slug is a legitimate 404, so these cannot be checked as "route exists"
-const SKIP = new Set(['GET /api/products/{slug}']);
-
 // [METHOD, documented path, real path to call]
-const operations = Object.entries(openapi.paths)
-  .flatMap(([path, methods]) =>
-    Object.keys(methods).map((method) => [
-      method.toUpperCase(),
-      path,
-      path.replaceAll('{id}', ID).replaceAll('{filename}', 'photo.png'),
-    ]),
-  )
-  .filter(([method, path]) => !SKIP.has(`${method} ${path}`));
+const operations = Object.entries(openapi.paths).flatMap(([path, methods]) =>
+  Object.keys(methods).map((method) => [
+    method.toUpperCase(),
+    path,
+    path
+      .replaceAll('{id}', ID)
+      .replaceAll('{filename}', 'photo.png')
+      .replaceAll('{slug}', 'some-slug'),
+  ]),
+);
+
+let token;
+beforeAll(async () => {
+  await resetDb();
+  token = await adminToken();
+});
 
 describe('API docs', () => {
   it('serves the spec as JSON', async () => {
@@ -57,9 +63,13 @@ describe('API docs', () => {
     }
   });
 
-  // Drift test: a documented route that does not exist in the app answers 404
+  // Drift test. The admin token gets past the token checks, so a wrong path reaches
+  // the "Route not found" handler. A real "Product not found" is a different message.
   it.each(operations)('%s %s is a real route', async (method, _path, realPath) => {
-    const res = await request(app)[method.toLowerCase()](realPath);
-    expect(res.status).not.toBe(404);
+    const res = await request(app)
+      [method.toLowerCase()](realPath)
+      .set({ Authorization: `Bearer ${token}` });
+
+    expect(res.body?.error?.message ?? '').not.toMatch(/^Route not found/);
   });
 });

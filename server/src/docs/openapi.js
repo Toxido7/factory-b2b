@@ -45,6 +45,24 @@ const customerFields = {
   customerCompany: str({ nullable: true }),
 };
 
+// Same date range for the 4 stats routes
+const rangeParams = [
+  query(
+    'from',
+    str({ format: 'date', example: '2026-03-01' }),
+    'First day, YYYY-MM-DD. Default: 29 days before `to`',
+  ),
+  query(
+    'to',
+    str({ format: 'date', example: '2026-03-31' }),
+    'Last day (included), YYYY-MM-DD. Default: today. Max range 366 days. Days are in UTC',
+  ),
+];
+const rangeObject = {
+  type: 'object',
+  properties: { from: str({ format: 'date' }), to: str({ format: 'date' }) },
+};
+
 const passwordField = str({
   minLength: 8,
   maxLength: 72,
@@ -74,6 +92,12 @@ const userWithToken = success('Success', {
   },
 });
 
+const oneAdminUser = (description) =>
+  success(description, {
+    type: 'object',
+    properties: { user: { $ref: '#/components/schemas/AdminUser' } },
+  });
+
 // ---------- the document ----------
 export const openapi = {
   openapi: '3.0.3',
@@ -92,6 +116,8 @@ export const openapi = {
     { name: 'Order requests', description: 'Customer: send a request, see your history' },
     { name: 'Admin catalog', description: 'Admin only: manage categories, products, images' },
     { name: 'Admin requests', description: 'Admin only: see all requests, change status' },
+    { name: 'Admin users', description: 'Admin only: customers and admin roles' },
+    { name: 'Admin stats', description: 'Admin only: dashboard numbers' },
   ],
   paths: {
     // ---------- Auth ----------
@@ -664,6 +690,234 @@ export const openapi = {
         },
       },
     },
+
+    // ---------- Admin users ----------
+    '/api/admin/users': {
+      get: {
+        tags: ['Admin users'],
+        summary: 'List users',
+        security: bearer,
+        parameters: [
+          query('page', { type: 'integer', minimum: 1, default: 1 }),
+          query('limit', { type: 'integer', minimum: 1, maximum: 100, default: 20 }),
+          query('q', { type: 'string' }, 'Searches name, email and company'),
+          query('isActive', { type: 'string', enum: ['true', 'false'] }),
+          query('role', { type: 'string', enum: ['USER', 'ADMIN'] }),
+        ],
+        responses: {
+          200: success('A page of users', {
+            type: 'object',
+            properties: {
+              users: { type: 'array', items: { $ref: '#/components/schemas/AdminUser' } },
+              pagination: { $ref: '#/components/schemas/Pagination' },
+            },
+          }),
+          400: ref('BadRequest'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/users/{id}': {
+      get: {
+        tags: ['Admin users'],
+        summary: 'One user with the number of requests',
+        security: bearer,
+        parameters: [idParam],
+        responses: {
+          200: oneAdminUser('The user'),
+          400: ref('BadRequest'),
+          404: ref('NotFound'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/users/{id}/status': {
+      patch: {
+        tags: ['Admin users'],
+        summary: 'Disable or enable an account',
+        description:
+          'Disabling also revokes all refresh tokens. The access token still works for up to ' +
+          '15 minutes. An admin cannot disable their own account (400). Same value twice is fine (200).',
+        security: bearer,
+        parameters: [idParam],
+        requestBody: jsonBody({
+          type: 'object',
+          required: ['isActive'],
+          properties: { isActive: { type: 'boolean' } },
+        }),
+        responses: {
+          200: oneAdminUser('Updated'),
+          400: ref('BadRequest'),
+          404: ref('NotFound'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/users/{id}/role': {
+      patch: {
+        tags: ['Admin users'],
+        summary: 'Promote to admin or demote to customer',
+        description:
+          'Revokes the refresh tokens of that user. Rules: not your own role (400), ' +
+          'not a disabled account when promoting (409), never the last active admin (409).',
+        security: bearer,
+        parameters: [idParam],
+        requestBody: jsonBody({
+          type: 'object',
+          required: ['role'],
+          properties: { role: { type: 'string', enum: ['USER', 'ADMIN'] } },
+        }),
+        responses: {
+          200: oneAdminUser('Updated'),
+          400: ref('BadRequest'),
+          404: ref('NotFound'),
+          409: ref('Conflict'),
+          ...adminErrors,
+        },
+      },
+    },
+
+    // ---------- Admin stats ----------
+    '/api/admin/stats/overview': {
+      get: {
+        tags: ['Admin stats'],
+        summary: 'Totals, status breakdown, conversion rate, new customers',
+        description:
+          'Conversion rate = CONFIRMED divided by all requests in the period, in percent with 1 decimal ' +
+          '(0 when there are no requests). Recent periods look low because PENDING requests count.',
+        security: bearer,
+        parameters: rangeParams,
+        responses: {
+          200: success('The numbers', {
+            type: 'object',
+            properties: {
+              range: rangeObject,
+              totalRequests: { type: 'integer' },
+              byStatus: {
+                type: 'object',
+                description: 'One key per status, 0 when empty',
+                properties: Object.fromEntries(STATUSES.map((s) => [s, { type: 'integer' }])),
+              },
+              conversionRate: { type: 'number', example: 33.3 },
+              newCustomers: {
+                type: 'integer',
+                description: 'Accounts with role USER created in the range',
+              },
+            },
+          }),
+          400: ref('BadRequest'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/stats/requests-over-time': {
+      get: {
+        tags: ['Admin stats'],
+        summary: 'Number of requests per day or month',
+        description: 'Empty periods are included with `count: 0`, so a chart has no gaps.',
+        security: bearer,
+        parameters: [
+          ...rangeParams,
+          query('interval', { type: 'string', enum: ['day', 'month'], default: 'day' }),
+        ],
+        responses: {
+          200: success('One row per period', {
+            type: 'object',
+            properties: {
+              range: rangeObject,
+              interval: { type: 'string', enum: ['day', 'month'] },
+              series: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    period: str({ example: '2026-03-01', description: 'YYYY-MM-DD or YYYY-MM' }),
+                    count: { type: 'integer' },
+                  },
+                },
+              },
+            },
+          }),
+          400: ref('BadRequest'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/stats/top-products': {
+      get: {
+        tags: ['Admin stats'],
+        summary: 'Most requested products',
+        description: 'Sorted by total quantity. REJECTED and CANCELLED requests are ignored.',
+        security: bearer,
+        parameters: [
+          ...rangeParams,
+          query('limit', { type: 'integer', minimum: 1, maximum: 50, default: 5 }),
+        ],
+        responses: {
+          200: success('The ranking', {
+            type: 'object',
+            properties: {
+              range: rangeObject,
+              products: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    productId: str({ format: 'uuid' }),
+                    name: str(),
+                    sku: str(),
+                    quantity: { type: 'integer' },
+                    estimatedValue: str({
+                      example: '300.00',
+                      description: 'Value of the requests, not sales (there is no payment)',
+                    }),
+                    requestCount: { type: 'integer' },
+                  },
+                },
+              },
+            },
+          }),
+          400: ref('BadRequest'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/stats/top-customers': {
+      get: {
+        tags: ['Admin stats'],
+        summary: 'Customers with the most requests',
+        description: 'Sorted by number of requests. REJECTED and CANCELLED requests are ignored.',
+        security: bearer,
+        parameters: [
+          ...rangeParams,
+          query('limit', { type: 'integer', minimum: 1, maximum: 50, default: 5 }),
+        ],
+        responses: {
+          200: success('The ranking', {
+            type: 'object',
+            properties: {
+              range: rangeObject,
+              customers: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    userId: str({ format: 'uuid' }),
+                    fullName: str(),
+                    email: str({ format: 'email' }),
+                    companyName: str({ nullable: true }),
+                    requestCount: { type: 'integer' },
+                    estimatedTotal: str({ example: '150.00' }),
+                  },
+                },
+              },
+            },
+          }),
+          400: ref('BadRequest'),
+          ...adminErrors,
+        },
+      },
+    },
   },
   components: {
     securitySchemes: {
@@ -682,6 +936,22 @@ export const openapi = {
           role: { type: 'string', enum: ['USER', 'ADMIN'] },
           emailVerified: { type: 'boolean' },
           createdAt: str({ format: 'date-time' }),
+        },
+      },
+      AdminUser: {
+        type: 'object',
+        properties: {
+          id: str({ format: 'uuid' }),
+          email: str({ format: 'email' }),
+          fullName: str(),
+          companyName: str({ nullable: true }),
+          phone: str({ nullable: true }),
+          role: { type: 'string', enum: ['USER', 'ADMIN'] },
+          isActive: { type: 'boolean' },
+          emailVerified: { type: 'boolean' },
+          requestCount: { type: 'integer' },
+          createdAt: str({ format: 'date-time' }),
+          updatedAt: str({ format: 'date-time' }),
         },
       },
       Pagination: {
