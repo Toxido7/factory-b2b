@@ -20,3 +20,47 @@ export const createAdmin = ({ email, passwordHash, fullName }) =>
   prisma.user.create({
     data: { email, passwordHash, fullName, role: 'ADMIN', emailVerified: true },
   });
+const adminUserSelect = {
+  id: true,
+  email: true,
+  fullName: true,
+  companyName: true,
+  phone: true,
+  role: true,
+  isActive: true,
+  emailVerified: true,
+  createdAt: true,
+  updatedAt: true,
+  _count: { select: { requests: true } },
+};
+
+export const findManyForAdmin = ({ where, skip, take }) =>
+  prisma.$transaction([
+    prisma.user.findMany({
+      where,
+      select: adminUserSelect,
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+      skip,
+      take,
+    }),
+    prisma.user.count({ where }),
+  ]);
+
+export const findByIdForAdmin = (id) =>
+  prisma.user.findUnique({ where: { id }, select: adminUserSelect });
+
+export const setActive = (id, isActive) =>
+  prisma.$transaction(async (tx) => {
+    const user = await tx.user.update({
+      where: { id },
+      data: { isActive },
+      select: adminUserSelect,
+    });
+    if (!isActive) {
+      await tx.refreshToken.updateMany({
+        where: { userId: id, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+    }
+    return user;
+  });

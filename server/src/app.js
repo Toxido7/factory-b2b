@@ -15,6 +15,7 @@ import productsRoutes from './modules/products/products.routes.js';
 import { uploadDir } from './utils/imageStorage.js';
 import requestsRoutes from './modules/requests/requests.routes.js';
 import requestsAdminRoutes from './modules/requests/requests.admin.routes.js';
+import usersAdminRoutes from './modules/users/users.admin.routes.js';
 const app = express();
 const adminOnly = [authenticate, authorize('ADMIN')];
 app.use(requestLogger);
@@ -46,6 +47,7 @@ app.use('/api/requests', authenticate, authorize('USER'), requestsRoutes);
 
 // ...with the other admin mounts:
 app.use('/api/admin/requests', adminOnly, requestsAdminRoutes);
+app.use('/api/admin/users', adminOnly, usersAdminRoutes);
 app.use(notFound);
 app.use(errorHandler);
 export default app;
