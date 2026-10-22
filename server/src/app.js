@@ -17,6 +17,8 @@ import requestsRoutes from './modules/requests/requests.routes.js';
 import requestsAdminRoutes from './modules/requests/requests.admin.routes.js';
 import usersAdminRoutes from './modules/users/users.admin.routes.js';
 import statsAdminRoutes from './modules/stats/stats.admin.routes.js';
+import swaggerUi from 'swagger-ui-express';
+import { openapi } from './docs/openapi.js';
 const app = express();
 const adminOnly = [authenticate, authorize('ADMIN')];
 app.use(requestLogger);
@@ -36,6 +38,10 @@ app.use(cookieParser());
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() });
 });
+if (env.NODE_ENV !== 'production') {
+  app.get('/api-docs.json', (req, res) => res.json(openapi));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapi));
+}
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/admin/categories', adminOnly, categoriesAdminRoutes);
