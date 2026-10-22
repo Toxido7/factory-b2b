@@ -5,6 +5,7 @@ import { env } from '../../config/env.js';
 import { sendEmail } from '../../utils/mailer.js';
 import { teamRequestEmail, customerRequestEmail } from './requests.emails.js';
 import { logger } from '../../config/logger.js';
+import { canTransition } from './requests.status.js';
 import * as productsRepository from '../products/products.repository.js';
 import * as usersRepository from '../users/users.repository.js';
 import * as requestsRepository from './requests.repository.js';
@@ -133,4 +134,51 @@ export const getMine = async (userId, id) => {
   const request = await requestsRepository.findOneByUser(id, userId);
   if (!request) throw ApiError.notFound('Request not found');
   return toRequestResponse(request);
+};
+const customerFields = (request) => ({
+  customerName: request.customerName,
+  customerEmail: request.customerEmail,
+  customerCompany: request.customerCompany,
+});
+
+export const listAdmin = async (query) => {
+  const { requests, total } = await requestsRepository.listAll(query);
+  return {
+    requests: requests.map((request) => ({ ...toSummary(request), ...customerFields(request) })),
+    pagination: {
+      page: query.page,
+      limit: query.limit,
+      total,
+      totalPages: Math.ceil(total / query.limit),
+    },
+  };
+};
+
+export const getAdmin = async (id) => {
+  const request = await requestsRepository.findDetail(id);
+  if (!request) throw ApiError.notFound('Request not found');
+  return {
+    ...toRequestResponse(request),
+    ...customerFields(request),
+    customerPhone: request.customerPhone,
+    emailSentAt: request.emailSentAt,
+    handledBy: request.handledBy,
+    updatedAt: request.updatedAt,
+  };
+};
+
+export const changeStatus = async (id, adminId, newStatus) => {
+  const request = await requestsRepository.findDetail(id);
+  if (!request) throw ApiError.notFound('Request not found');
+
+  if (!canTransition(request.status, newStatus)) {
+    throw ApiError.conflict(`Cannot change status from ${request.status} to ${newStatus}`);
+  }
+
+  const count = await requestsRepository.changeStatus(id, request.status, newStatus, adminId);
+  if (count === 0) {
+    throw ApiError.conflict('The request was changed by someone else, please reload');
+  }
+
+  return getAdmin(id);
 };
