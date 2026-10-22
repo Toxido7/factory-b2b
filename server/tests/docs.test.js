@@ -3,11 +3,21 @@ import request from 'supertest';
 import app from '../src/app.js';
 import { openapi } from '../src/docs/openapi.js';
 
-// Every documented operation: [METHOD, path with {id} replaced by a valid UUID]
 const ID = '00000000-0000-4000-8000-000000000000';
-const operations = Object.entries(openapi.paths).flatMap(([path, methods]) =>
-  Object.keys(methods).map((method) => [method.toUpperCase(), path.replaceAll('{id}', ID)]),
-);
+
+// An unknown slug is a legitimate 404, so these cannot be checked as "route exists"
+const SKIP = new Set(['GET /api/products/{slug}']);
+
+// [METHOD, documented path, real path to call]
+const operations = Object.entries(openapi.paths)
+  .flatMap(([path, methods]) =>
+    Object.keys(methods).map((method) => [
+      method.toUpperCase(),
+      path,
+      path.replaceAll('{id}', ID).replaceAll('{filename}', 'photo.png'),
+    ]),
+  )
+  .filter(([method, path]) => !SKIP.has(`${method} ${path}`));
 
 describe('API docs', () => {
   it('serves the spec as JSON', async () => {
@@ -37,9 +47,19 @@ describe('API docs', () => {
     }
   });
 
+  it('has no broken $ref', () => {
+    const refs = [...JSON.stringify(openapi).matchAll(/"\$ref":"#\/([^"]+)"/g)].map((m) => m[1]);
+
+    expect(refs.length).toBeGreaterThan(0);
+    for (const r of refs) {
+      const target = r.split('/').reduce((node, key) => node?.[key], openapi);
+      expect(target, `broken $ref #/${r}`).toBeDefined();
+    }
+  });
+
   // Drift test: a documented route that does not exist in the app answers 404
-  it.each(operations)('%s %s is a real route', async (method, path) => {
-    const res = await request(app)[method.toLowerCase()](path);
+  it.each(operations)('%s %s is a real route', async (method, _path, realPath) => {
+    const res = await request(app)[method.toLowerCase()](realPath);
     expect(res.status).not.toBe(404);
   });
 });

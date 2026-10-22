@@ -18,12 +18,36 @@ const messageOnly = (description) =>
 
 const ref = (name) => ({ $ref: `#/components/responses/${name}` });
 const bearer = [{ bearerAuth: [] }];
+const adminErrors = { 401: ref('Unauthorized'), 403: ref('Forbidden') };
 
 const str = (extra = {}) => ({ type: 'string', ...extra });
+const idParam = {
+  name: 'id',
+  in: 'path',
+  required: true,
+  schema: { type: 'string', format: 'uuid' },
+};
+const query = (name, schema, description) => ({ name, in: 'query', schema, description });
+
 const passwordField = str({
   minLength: 8,
   maxLength: 72,
   description: '8 to 72 characters, at least one letter and one number',
+});
+
+const productBody = (required) => ({
+  type: 'object',
+  required,
+  properties: {
+    sku: str({ description: 'Saved in UPPERCASE' }),
+    name: str(),
+    description: str(),
+    price: { type: 'number', description: 'Positive, max 2 decimals' },
+    minQuantity: { type: 'integer', minimum: 1 },
+    discountPercent: { type: 'number', minimum: 0, maximum: 100 },
+    categoryId: str({ format: 'uuid' }),
+    isActive: { type: 'boolean' },
+  },
 });
 
 const userWithToken = success('Success', {
@@ -46,8 +70,13 @@ export const openapi = {
       'To try protected routes: log in, copy `accessToken`, click **Authorize**.',
   },
   servers: [{ url: '/' }],
-  tags: [{ name: 'Auth', description: 'Accounts, sessions and passwords' }],
+  tags: [
+    { name: 'Auth', description: 'Accounts, sessions and passwords' },
+    { name: 'Catalog', description: 'Public: browse categories and products' },
+    { name: 'Admin catalog', description: 'Admin only: manage categories, products, images' },
+  ],
   paths: {
+    // ---------- Auth ----------
     '/api/auth/register': {
       post: {
         tags: ['Auth'],
@@ -210,6 +239,249 @@ export const openapi = {
         },
       },
     },
+
+    // ---------- Catalog (public) ----------
+    '/api/categories': {
+      get: {
+        tags: ['Catalog'],
+        summary: 'List active categories',
+        responses: {
+          200: success('Active categories', {
+            type: 'object',
+            properties: {
+              categories: { type: 'array', items: { $ref: '#/components/schemas/Category' } },
+            },
+          }),
+        },
+      },
+    },
+    '/api/products': {
+      get: {
+        tags: ['Catalog'],
+        summary: 'Search and list products',
+        description: 'Only active products in active categories. Sorted by `sort`.',
+        parameters: [
+          query('page', { type: 'integer', minimum: 1, default: 1 }),
+          query('limit', { type: 'integer', minimum: 1, maximum: 50, default: 12 }),
+          query('q', { type: 'string' }, 'Searches name, sku and description'),
+          query('category', { type: 'string' }, 'Category slug (includes its subcategories)'),
+          query('minPrice', { type: 'number' }, 'On the base price'),
+          query('maxPrice', { type: 'number' }, 'On the base price'),
+          query('sort', {
+            type: 'string',
+            enum: ['newest', 'price_asc', 'price_desc', 'name'],
+            default: 'newest',
+          }),
+        ],
+        responses: {
+          200: success('A page of products', {
+            type: 'object',
+            properties: {
+              products: { type: 'array', items: { $ref: '#/components/schemas/PublicProduct' } },
+              pagination: { $ref: '#/components/schemas/Pagination' },
+            },
+          }),
+          400: ref('BadRequest'),
+        },
+      },
+    },
+    '/api/products/{slug}': {
+      get: {
+        tags: ['Catalog'],
+        summary: 'One product by slug',
+        parameters: [{ name: 'slug', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: {
+          200: success('The product', {
+            type: 'object',
+            properties: { product: { $ref: '#/components/schemas/PublicProduct' } },
+          }),
+          404: ref('NotFound'),
+        },
+      },
+    },
+
+    // ---------- Admin catalog ----------
+    '/api/admin/categories': {
+      get: {
+        tags: ['Admin catalog'],
+        summary: 'List all categories (including hidden)',
+        security: bearer,
+        responses: {
+          200: success('All categories', {
+            type: 'object',
+            properties: {
+              categories: { type: 'array', items: { $ref: '#/components/schemas/Category' } },
+            },
+          }),
+          ...adminErrors,
+        },
+      },
+      post: {
+        tags: ['Admin catalog'],
+        summary: 'Create a category',
+        description:
+          'The slug is made from the name once and never changes. One level of subcategories only.',
+        security: bearer,
+        requestBody: jsonBody({
+          type: 'object',
+          required: ['name'],
+          properties: { name: str(), description: str(), parentId: str({ format: 'uuid' }) },
+        }),
+        responses: {
+          201: success('Created', {
+            type: 'object',
+            properties: { category: { $ref: '#/components/schemas/Category' } },
+          }),
+          400: ref('BadRequest'),
+          409: ref('Conflict'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/categories/{id}': {
+      patch: {
+        tags: ['Admin catalog'],
+        summary: 'Edit or hide a category',
+        description: 'There is no delete: hide it with `isActive: false`.',
+        security: bearer,
+        parameters: [idParam],
+        requestBody: jsonBody({
+          type: 'object',
+          properties: {
+            name: str(),
+            description: str(),
+            parentId: str({ format: 'uuid', nullable: true }),
+            isActive: { type: 'boolean' },
+          },
+        }),
+        responses: {
+          200: success('Updated', {
+            type: 'object',
+            properties: { category: { $ref: '#/components/schemas/Category' } },
+          }),
+          400: ref('BadRequest'),
+          404: ref('NotFound'),
+          409: ref('Conflict'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/products': {
+      get: {
+        tags: ['Admin catalog'],
+        summary: 'List all products (including hidden)',
+        security: bearer,
+        responses: {
+          200: success('Products', {
+            type: 'object',
+            properties: {
+              products: { type: 'array', items: { $ref: '#/components/schemas/Product' } },
+            },
+          }),
+          ...adminErrors,
+        },
+      },
+      post: {
+        tags: ['Admin catalog'],
+        summary: 'Create a product',
+        security: bearer,
+        requestBody: jsonBody(productBody(['sku', 'name', 'price', 'categoryId'])),
+        responses: {
+          201: success('Created', {
+            type: 'object',
+            properties: { product: { $ref: '#/components/schemas/Product' } },
+          }),
+          400: ref('BadRequest'),
+          409: ref('Conflict'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/products/{id}': {
+      get: {
+        tags: ['Admin catalog'],
+        summary: 'One product (admin view)',
+        security: bearer,
+        parameters: [idParam],
+        responses: {
+          200: success('The product', {
+            type: 'object',
+            properties: { product: { $ref: '#/components/schemas/Product' } },
+          }),
+          404: ref('NotFound'),
+          ...adminErrors,
+        },
+      },
+      patch: {
+        tags: ['Admin catalog'],
+        summary: 'Edit or hide a product',
+        description: 'The slug does not change when the name changes. Hide with `isActive: false`.',
+        security: bearer,
+        parameters: [idParam],
+        requestBody: jsonBody(productBody([])),
+        responses: {
+          200: success('Updated', {
+            type: 'object',
+            properties: { product: { $ref: '#/components/schemas/Product' } },
+          }),
+          400: ref('BadRequest'),
+          404: ref('NotFound'),
+          409: ref('Conflict'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/products/{id}/images': {
+      post: {
+        tags: ['Admin catalog'],
+        summary: 'Upload a product image',
+        description:
+          'jpeg, png or webp (checked by file content), max 5 MB, max 5 images per product.',
+        security: bearer,
+        parameters: [idParam],
+        requestBody: {
+          required: true,
+          content: {
+            'multipart/form-data': {
+              schema: {
+                type: 'object',
+                required: ['image'],
+                properties: { image: { type: 'string', format: 'binary' } },
+              },
+            },
+          },
+        },
+        responses: {
+          201: success('Image added', {
+            type: 'object',
+            properties: { product: { $ref: '#/components/schemas/Product' } },
+          }),
+          400: ref('BadRequest'),
+          404: ref('NotFound'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/products/{id}/images/{filename}': {
+      delete: {
+        tags: ['Admin catalog'],
+        summary: 'Remove a product image',
+        security: bearer,
+        parameters: [
+          idParam,
+          { name: 'filename', in: 'path', required: true, schema: { type: 'string' } },
+        ],
+        responses: {
+          200: success('Image removed', {
+            type: 'object',
+            properties: { product: { $ref: '#/components/schemas/Product' } },
+          }),
+          400: ref('BadRequest'),
+          404: ref('NotFound'),
+          ...adminErrors,
+        },
+      },
+    },
   },
   components: {
     securitySchemes: {
@@ -228,6 +500,69 @@ export const openapi = {
           role: { type: 'string', enum: ['USER', 'ADMIN'] },
           emailVerified: { type: 'boolean' },
           createdAt: str({ format: 'date-time' }),
+        },
+      },
+      Pagination: {
+        type: 'object',
+        properties: {
+          page: { type: 'integer' },
+          limit: { type: 'integer' },
+          total: { type: 'integer' },
+          totalPages: { type: 'integer' },
+        },
+      },
+      Category: {
+        type: 'object',
+        properties: {
+          id: str({ format: 'uuid' }),
+          name: str(),
+          slug: str(),
+          description: str({ nullable: true }),
+          parentId: str({ format: 'uuid', nullable: true }),
+          isActive: { type: 'boolean' },
+        },
+      },
+      PublicProduct: {
+        type: 'object',
+        properties: {
+          id: str({ format: 'uuid' }),
+          sku: str(),
+          name: str(),
+          slug: str(),
+          description: str({ nullable: true }),
+          images: {
+            type: 'array',
+            items: str({ description: 'URL path like /uploads/<uuid>.png' }),
+          },
+          price: str({
+            example: '100.00',
+            description: 'Base unit price (a string, money is never a float)',
+          }),
+          minQuantity: { type: 'integer' },
+          discountPercent: str({ example: '10' }),
+          finalPrice: str({ example: '90.00', description: 'Price after discount, per unit' }),
+          category: {
+            type: 'object',
+            properties: { name: str(), slug: str() },
+          },
+        },
+      },
+      Product: {
+        type: 'object',
+        properties: {
+          id: str({ format: 'uuid' }),
+          sku: str(),
+          name: str(),
+          slug: str(),
+          description: str({ nullable: true }),
+          images: { type: 'array', items: str() },
+          price: str({ example: '100.00' }),
+          minQuantity: { type: 'integer' },
+          discountPercent: str({ example: '10' }),
+          isActive: { type: 'boolean' },
+          categoryId: str({ format: 'uuid' }),
+          createdAt: str({ format: 'date-time' }),
+          updatedAt: str({ format: 'date-time' }),
         },
       },
       Error: {
@@ -262,6 +597,10 @@ export const openapi = {
       },
       Conflict: {
         description: 'Already exists, or not allowed in the current state',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
+      },
+      NotFound: {
+        description: 'Not found (or hidden)',
         content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
       },
       TooManyRequests: {
