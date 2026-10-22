@@ -52,3 +52,18 @@ export const setUserStatus = async ({ id, isActive, adminId }) => {
   await getUser(id); // 404 if unknown
   return toAdminUser(await usersRepository.setActive(id, isActive));
 };
+export const setUserRole = async ({ id, role, adminId }) => {
+  if (id === adminId) throw ApiError.badRequest('You cannot change your own role');
+
+  const user = await getUser(id); // 404 if unknown
+  if (user.role === role) return user;
+
+  if (role === 'ADMIN' && !user.isActive) {
+    throw ApiError.conflict('Enable this account before promoting it');
+  }
+  if (role === 'USER') {
+    const otherAdmins = await usersRepository.countActiveAdminsExcept(id);
+    if (otherAdmins === 0) throw ApiError.conflict('Cannot remove the last active admin');
+  }
+  return toAdminUser(await usersRepository.setRole(id, role));
+};

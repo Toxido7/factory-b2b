@@ -18,3 +18,11 @@ export const setStatus = async (req, res) => {
   });
   res.json({ success: true, data: { user } });
 };
+export const setRole = async (req, res) => {
+  const user = await usersService.setUserRole({
+    id: req.validated.params.id,
+    role: req.validated.body.role,
+    adminId: req.auth.userId,
+  });
+  res.json({ success: true, data: { user } });
+};

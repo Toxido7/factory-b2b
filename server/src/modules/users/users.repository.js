@@ -64,3 +64,19 @@ export const setActive = (id, isActive) =>
     }
     return user;
   });
+export const countActiveAdminsExcept = (id) =>
+  prisma.user.count({ where: { role: 'ADMIN', isActive: true, id: { not: id } } });
+
+export const setRole = (id, role) =>
+  prisma.$transaction(async (tx) => {
+    const user = await tx.user.update({
+      where: { id },
+      data: { role },
+      select: adminUserSelect,
+    });
+    await tx.refreshToken.updateMany({
+      where: { userId: id, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+    return user;
+  });

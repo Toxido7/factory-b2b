@@ -21,3 +21,7 @@ export const setStatusSchema = z.object({
   params: idParams,
   body: z.object({ isActive: z.boolean() }),
 });
+export const setRoleSchema = z.object({
+  params: idParams,
+  body: z.object({ role: z.enum(['USER', 'ADMIN']) }),
+});
