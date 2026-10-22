@@ -6,6 +6,7 @@ import {
   verifyEmailSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  changePasswordSchema,
 } from './auth.schema.js';
 import { authenticate } from '../../middlewares/authenticate.js';
 import {
@@ -15,6 +16,7 @@ import {
   resendVerificationLimiter,
   forgotPasswordLimiter,
   resetPasswordLimiter,
+  changePasswordLimiter,
 } from '../../middlewares/rateLimiters.js';
 import * as authController from './auth.controller.js';
 
@@ -43,5 +45,14 @@ router.post(
   validate(resetPasswordSchema),
   authController.resetPassword,
 );
+
 router.get('/me', authenticate, authController.me);
+router.post(
+  '/change-password',
+  authenticate,
+  changePasswordLimiter,
+  validate(changePasswordSchema),
+  authController.changePassword,
+);
+router.post('/logout-all', authenticate, authController.logoutAll);
 export default router;

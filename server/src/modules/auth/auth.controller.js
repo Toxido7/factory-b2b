@@ -64,3 +64,14 @@ export const resetPassword = async (req, res) => {
   await authService.resetPassword(req.validated.body);
   res.json({ success: true, data: { message: 'Password updated. Please log in.' } });
 };
+export const changePassword = async (req, res) => {
+  await authService.changePassword({ userId: req.auth.userId, ...req.validated.body });
+  clearRefreshCookie(res);
+  res.json({ success: true, data: { message: 'Password changed. Please log in again.' } });
+};
+
+export const logoutAll = async (req, res) => {
+  await authService.logoutAll(req.auth.userId);
+  clearRefreshCookie(res);
+  res.json({ success: true, data: { message: 'Logged out of all devices.' } });
+};

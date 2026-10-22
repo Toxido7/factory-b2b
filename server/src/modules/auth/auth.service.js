@@ -244,3 +244,20 @@ export const resetPassword = async ({ token, password }) => {
   );
   if (!done) throw invalid();
 };
+export const changePassword = async ({ userId, currentPassword, newPassword }) => {
+  const user = await usersRepository.findById(userId);
+  if (!user || !user.isActive) throw ApiError.unauthorized('Invalid or expired token');
+
+  const ok = await verifyPassword(currentPassword, user.passwordHash);
+  if (!ok) throw ApiError.badRequest('Current password is incorrect');
+  if (currentPassword === newPassword) {
+    throw ApiError.badRequest('New password must be different from the current one');
+  }
+
+  const passwordHash = await hashPassword(newPassword);
+  await usersRepository.updatePasswordAndRevokeSessions(userId, passwordHash);
+};
+
+export const logoutAll = async (userId) => {
+  await usersRepository.revokeAllSessions(userId);
+};

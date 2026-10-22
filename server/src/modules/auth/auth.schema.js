@@ -47,3 +47,9 @@ export const resetPasswordSchema = z.object({
     password: passwordRule,
   }),
 });
+export const changePasswordSchema = z.object({
+  body: z.object({
+    currentPassword: z.string().min(1).max(72),
+    newPassword: passwordRule,
+  }),
+});

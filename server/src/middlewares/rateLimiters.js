@@ -64,3 +64,8 @@ export const createRequestLimiter = createLimiter({
   skip: skipInTests,
   message: 'Too many requests. Please try again later.',
 });
+export const changePasswordLimiter = createLimiter({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  message: 'Too many attempts, please try again later',
+});

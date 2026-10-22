@@ -80,3 +80,18 @@ export const setRole = (id, role) =>
     });
     return user;
   });
+
+export const revokeAllSessions = (userId) =>
+  prisma.refreshToken.updateMany({
+    where: { userId, revokedAt: null },
+    data: { revokedAt: new Date() },
+  });
+
+export const updatePasswordAndRevokeSessions = (userId, passwordHash) =>
+  prisma.$transaction([
+    prisma.user.update({ where: { id: userId }, data: { passwordHash } }),
+    prisma.refreshToken.updateMany({
+      where: { userId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    }),
+  ]);
