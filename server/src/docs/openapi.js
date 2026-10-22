@@ -29,6 +29,22 @@ const idParam = {
 };
 const query = (name, schema, description) => ({ name, in: 'query', schema, description });
 
+const STATUSES = ['PENDING', 'CONTACTED', 'CONFIRMED', 'REJECTED', 'CANCELLED'];
+
+// Fields shared by the order request schemas
+const requestCore = {
+  id: str({ format: 'uuid' }),
+  reference: str({ example: 'REQ-2026-00042' }),
+  status: { type: 'string', enum: STATUSES },
+  estimatedTotal: str({ example: '1800.00', description: 'Money is a string with 2 decimals' }),
+  createdAt: str({ format: 'date-time' }),
+};
+const customerFields = {
+  customerName: str(),
+  customerEmail: str({ format: 'email' }),
+  customerCompany: str({ nullable: true }),
+};
+
 const passwordField = str({
   minLength: 8,
   maxLength: 72,
@@ -73,7 +89,9 @@ export const openapi = {
   tags: [
     { name: 'Auth', description: 'Accounts, sessions and passwords' },
     { name: 'Catalog', description: 'Public: browse categories and products' },
+    { name: 'Order requests', description: 'Customer: send a request, see your history' },
     { name: 'Admin catalog', description: 'Admin only: manage categories, products, images' },
+    { name: 'Admin requests', description: 'Admin only: see all requests, change status' },
   ],
   paths: {
     // ---------- Auth ----------
@@ -300,6 +318,92 @@ export const openapi = {
       },
     },
 
+    // ---------- Order requests (customer) ----------
+    '/api/requests': {
+      post: {
+        tags: ['Order requests'],
+        summary: 'Send an order request',
+        description:
+          'Customers only (role USER) with a verified email. The server recalculates all prices ' +
+          'from the database and ignores any price sent. Each quantity must reach the ' +
+          "product's minimum.",
+        security: bearer,
+        requestBody: jsonBody({
+          type: 'object',
+          required: ['items'],
+          properties: {
+            notes: str(),
+            items: {
+              type: 'array',
+              minItems: 1,
+              maxItems: 50,
+              items: {
+                type: 'object',
+                required: ['productId', 'quantity'],
+                properties: {
+                  productId: str({ format: 'uuid' }),
+                  quantity: { type: 'integer', minimum: 1, maximum: 100000 },
+                },
+              },
+            },
+          },
+        }),
+        responses: {
+          201: success('Request saved, the team is emailed', {
+            type: 'object',
+            properties: { request: { $ref: '#/components/schemas/OrderRequest' } },
+          }),
+          400: ref('BadRequest'),
+          401: ref('Unauthorized'),
+          403: ref('Forbidden'),
+          429: ref('TooManyRequests'),
+        },
+      },
+    },
+    '/api/requests/mine': {
+      get: {
+        tags: ['Order requests'],
+        summary: 'My request history',
+        security: bearer,
+        parameters: [
+          query('page', { type: 'integer', minimum: 1, default: 1 }),
+          query('limit', { type: 'integer', minimum: 1, maximum: 50, default: 10 }),
+          query('status', { type: 'string', enum: STATUSES }),
+        ],
+        responses: {
+          200: success('A page of my requests (no items, see the detail route)', {
+            type: 'object',
+            properties: {
+              requests: { type: 'array', items: { $ref: '#/components/schemas/RequestSummary' } },
+              pagination: { $ref: '#/components/schemas/Pagination' },
+            },
+          }),
+          400: ref('BadRequest'),
+          401: ref('Unauthorized'),
+          403: ref('Forbidden'),
+        },
+      },
+    },
+    '/api/requests/mine/{id}': {
+      get: {
+        tags: ['Order requests'],
+        summary: 'One of my requests',
+        description: "Someone else's request answers 404, not 403, so nothing is revealed.",
+        security: bearer,
+        parameters: [idParam],
+        responses: {
+          200: success('The request with its items', {
+            type: 'object',
+            properties: { request: { $ref: '#/components/schemas/OrderRequest' } },
+          }),
+          400: ref('BadRequest'),
+          401: ref('Unauthorized'),
+          403: ref('Forbidden'),
+          404: ref('NotFound'),
+        },
+      },
+    },
+
     // ---------- Admin catalog ----------
     '/api/admin/categories': {
       get: {
@@ -482,6 +586,84 @@ export const openapi = {
         },
       },
     },
+
+    // ---------- Admin requests ----------
+    '/api/admin/requests': {
+      get: {
+        tags: ['Admin requests'],
+        summary: 'List all order requests',
+        security: bearer,
+        parameters: [
+          query('page', { type: 'integer', minimum: 1, default: 1 }),
+          query('limit', { type: 'integer', minimum: 1, maximum: 100, default: 20 }),
+          query('status', { type: 'string', enum: STATUSES }),
+          query(
+            'q',
+            { type: 'string' },
+            'A reference like REQ-2026-00042, or part of a customer name, email or company',
+          ),
+        ],
+        responses: {
+          200: success('A page of requests', {
+            type: 'object',
+            properties: {
+              requests: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/AdminRequestSummary' },
+              },
+              pagination: { $ref: '#/components/schemas/Pagination' },
+            },
+          }),
+          400: ref('BadRequest'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/requests/{id}': {
+      get: {
+        tags: ['Admin requests'],
+        summary: 'One request with customer data and items',
+        security: bearer,
+        parameters: [idParam],
+        responses: {
+          200: success('The request', {
+            type: 'object',
+            properties: { request: { $ref: '#/components/schemas/AdminRequest' } },
+          }),
+          400: ref('BadRequest'),
+          404: ref('NotFound'),
+          ...adminErrors,
+        },
+      },
+    },
+    '/api/admin/requests/{id}/status': {
+      patch: {
+        tags: ['Admin requests'],
+        summary: 'Change the status of a request',
+        description:
+          'Allowed moves: PENDING to CONTACTED, CONFIRMED, REJECTED or CANCELLED. ' +
+          'CONTACTED to CONFIRMED, REJECTED or CANCELLED. CONFIRMED to CANCELLED. ' +
+          'REJECTED and CANCELLED are final. A forbidden move, or a request that another admin ' +
+          'just changed, answers 409.',
+        security: bearer,
+        parameters: [idParam],
+        requestBody: jsonBody({
+          type: 'object',
+          required: ['status'],
+          properties: { status: { type: 'string', enum: STATUSES } },
+        }),
+        responses: {
+          200: success('Updated', {
+            type: 'object',
+            properties: { request: { $ref: '#/components/schemas/AdminRequest' } },
+          }),
+          400: ref('BadRequest'),
+          404: ref('NotFound'),
+          409: ref('Conflict'),
+          ...adminErrors,
+        },
+      },
+    },
   },
   components: {
     securitySchemes: {
@@ -565,6 +747,57 @@ export const openapi = {
           updatedAt: str({ format: 'date-time' }),
         },
       },
+      RequestItem: {
+        type: 'object',
+        description: 'A copy (snapshot) of the product as it was when the request was sent',
+        properties: {
+          productId: str({ format: 'uuid' }),
+          productName: str(),
+          sku: str(),
+          unitPrice: str({ example: '100.00', description: 'Base price at that time' }),
+          discountPercent: str({ example: '10' }),
+          quantity: { type: 'integer' },
+          lineTotal: str({ example: '180.00' }),
+        },
+      },
+      OrderRequest: {
+        type: 'object',
+        properties: {
+          ...requestCore,
+          notes: str({ nullable: true }),
+          items: { type: 'array', items: { $ref: '#/components/schemas/RequestItem' } },
+        },
+      },
+      RequestSummary: {
+        type: 'object',
+        properties: { ...requestCore, itemCount: { type: 'integer' } },
+      },
+      AdminRequestSummary: {
+        type: 'object',
+        properties: { ...requestCore, ...customerFields, itemCount: { type: 'integer' } },
+      },
+      AdminRequest: {
+        type: 'object',
+        properties: {
+          ...requestCore,
+          ...customerFields,
+          customerPhone: str({ nullable: true }),
+          notes: str({ nullable: true }),
+          emailSentAt: str({
+            format: 'date-time',
+            nullable: true,
+            description: 'Empty when the team email failed (the retry script sends it again)',
+          }),
+          handledBy: {
+            type: 'object',
+            nullable: true,
+            description: 'The admin who last changed the status',
+            properties: { id: str({ format: 'uuid' }), fullName: str() },
+          },
+          updatedAt: str({ format: 'date-time' }),
+          items: { type: 'array', items: { $ref: '#/components/schemas/RequestItem' } },
+        },
+      },
       Error: {
         type: 'object',
         properties: {
@@ -592,7 +825,7 @@ export const openapi = {
         content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
       },
       Forbidden: {
-        description: 'Not allowed (wrong role or disabled account)',
+        description: 'Not allowed (wrong role, disabled account or unverified email)',
         content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
       },
       Conflict: {
