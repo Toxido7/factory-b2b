@@ -17,6 +17,7 @@ import {
   forgotPasswordLimiter,
   resetPasswordLimiter,
   changePasswordLimiter,
+  loginAccountLimiter,
 } from '../../middlewares/rateLimiters.js';
 import * as authController from './auth.controller.js';
 
@@ -55,4 +56,11 @@ router.post(
   authController.changePassword,
 );
 router.post('/logout-all', authenticate, authController.logoutAll);
+router.post(
+  '/login',
+  loginLimiter,
+  loginAccountLimiter,
+  validate(loginSchema),
+  authController.login,
+);
 export default router;

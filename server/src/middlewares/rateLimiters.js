@@ -69,3 +69,16 @@ export const changePasswordLimiter = createLimiter({
   limit: 10,
   message: 'Too many attempts, please try again later',
 });
+// Counts failed logins per ACCOUNT. The IP limiter cannot stop many IPs hitting one account.
+export const emailKey = (req) => {
+  const email = req.body?.email;
+  return typeof email === 'string' && email.trim() ? email.trim().toLowerCase() : 'no-email';
+};
+
+export const loginAccountLimiter = createLimiter({
+  windowMs: 60 * 60 * 1000,
+  limit: 20,
+  message: 'Too many failed attempts for this account, please try again later',
+  skipSuccessfulRequests: true,
+  keyGenerator: emailKey,
+});

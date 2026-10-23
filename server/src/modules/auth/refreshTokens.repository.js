@@ -28,3 +28,5 @@ export const revokeByHash = (tokenHash) =>
     where: { tokenHash, revokedAt: null },
     data: { revokedAt: new Date() },
   });
+export const deleteExpiredBefore = (cutoff) =>
+  prisma.refreshToken.deleteMany({ where: { expiresAt: { lt: cutoff } } });

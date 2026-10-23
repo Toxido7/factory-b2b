@@ -52,3 +52,5 @@ export const consumePasswordReset = (tokenId, userId, passwordHash) =>
 
     return true;
   });
+export const deleteExpiredBefore = (cutoff) =>
+  prisma.verificationToken.deleteMany({ where: { expiresAt: { lt: cutoff } } });

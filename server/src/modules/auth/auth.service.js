@@ -261,3 +261,13 @@ export const changePassword = async ({ userId, currentPassword, newPassword }) =
 export const logoutAll = async (userId) => {
   await usersRepository.revokeAllSessions(userId);
 };
+// Old expired tokens are useless. Revoked-but-not-expired ones stay on purpose:
+// replaying one must still raise the theft alarm.
+export const cleanupExpiredTokens = async ({ olderThanDays = 7 } = {}) => {
+  const cutoff = new Date(Date.now() - olderThanDays * 24 * 60 * 60 * 1000);
+  const [refresh, verification] = await Promise.all([
+    refreshTokensRepository.deleteExpiredBefore(cutoff),
+    verificationTokensRepository.deleteExpiredBefore(cutoff),
+  ]);
+  return { refreshTokens: refresh.count, verificationTokens: verification.count };
+};
