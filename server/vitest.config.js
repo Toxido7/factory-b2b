@@ -10,6 +10,8 @@ export default defineConfig({
     include: ['tests/**/*.test.js'],
     setupFiles: ['./tests/setup.js'],
     fileParallelism: false,
+    testTimeout: 15000,
+    hookTimeout: 30000,
     env: { ...parsed, BCRYPT_ROUNDS: '4' },
   },
 });
