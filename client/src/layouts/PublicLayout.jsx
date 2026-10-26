@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from "react-router";
 import Button from "../components/Button.jsx";
+import { useAuth } from "../features/auth/AuthContext.jsx";
 
 const links = [
   { to: "/products", label: "Products" },
@@ -9,6 +10,8 @@ const links = [
 ];
 
 export default function PublicLayout() {
+  const { user, status, logout } = useAuth();
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-line">
@@ -23,9 +26,25 @@ export default function PublicLayout() {
               </NavLink>
             ))}
           </nav>
-          <Button as={Link} to="/login">
-            Log in
-          </Button>
+          {status === "loading" ? (
+            <div className="h-12 w-24" />
+          ) : user ? (
+            <div className="flex items-center gap-4">
+              {user.role === "ADMIN" && (
+                <Link to="/admin" className="font-medium hover:underline">
+                  Admin
+                </Link>
+              )}
+              <span className="text-sm text-muted">{user.fullName}</span>
+              <Button variant="ghost" onClick={logout}>
+                Log out
+              </Button>
+            </div>
+          ) : (
+            <Button as={Link} to="/login">
+              Log in
+            </Button>
+          )}
         </div>
       </header>
       <main className="flex-1">

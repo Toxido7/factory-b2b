@@ -6,6 +6,8 @@ import Home from "../features/static/Home.jsx";
 import StyleGuide from "../features/static/StyleGuide.jsx";
 import NotFound from "../features/static/NotFound.jsx";
 import ComingSoon from "../features/static/ComingSoon.jsx";
+import LoginPage from "../features/auth/LoginPage.jsx";
+import { GuestOnly, RequireAuth } from "./guards.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -21,12 +23,29 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <AuthLayout />,
-    children: [{ path: "login", element: <ComingSoon title="Login" /> }],
+    element: <GuestOnly />,
+    children: [
+      {
+        element: <AuthLayout />,
+        children: [
+          { path: "login", element: <LoginPage /> },
+          { path: "register", element: <ComingSoon title="Register" /> },
+          {
+            path: "forgot-password",
+            element: <ComingSoon title="Forgot password" />,
+          },
+        ],
+      },
+    ],
   },
   {
-    path: "admin",
-    element: <AdminLayout />,
-    children: [{ index: true, element: <ComingSoon title="Dashboard" /> }],
+    element: <RequireAuth role="ADMIN" />,
+    children: [
+      {
+        path: "admin",
+        element: <AdminLayout />,
+        children: [{ index: true, element: <ComingSoon title="Dashboard" /> }],
+      },
+    ],
   },
 ]);
