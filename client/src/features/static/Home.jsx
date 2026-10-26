@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { api } from "../../api/client.js";
 import Button from "../../components/Button.jsx";
+import { useAuth } from "../auth/AuthContext.jsx";
 
 export default function Home() {
+  const { user } = useAuth();
   const [result, setResult] = useState("");
 
   async function testApi() {
@@ -16,6 +19,7 @@ export default function Home() {
       setResult(`Failed: ${err.message}`);
     }
   }
+
   async function fireThree() {
     try {
       await Promise.all([
@@ -34,12 +38,27 @@ export default function Home() {
       <h1 className="text-5xl font-bold">
         Industrial supply, straight from the factory.
       </h1>
-      <div className="mt-8 flex items-center gap-4">
-        <Button onClick={testApi}>Test the API</Button>
-        <span className="text-muted">{result}</span>
+
+      <div className="mt-8 flex gap-4">
+        <Button as={Link} to="/products">
+          Browse products
+        </Button>
+        {!user && (
+          <Button as={Link} to="/register" variant="ghost">
+            Create a business account
+          </Button>
+        )}
+      </div>
+
+      {/* Temporary test buttons, removed at the end of F2 */}
+      <div className="mt-12 flex items-center gap-4">
+        <Button variant="ghost" onClick={testApi}>
+          Test the API
+        </Button>
         <Button variant="ghost" onClick={fireThree}>
           Fire 3 requests
         </Button>
+        <span className="text-muted">{result}</span>
       </div>
     </div>
   );

@@ -7,6 +7,10 @@ import StyleGuide from "../features/static/StyleGuide.jsx";
 import NotFound from "../features/static/NotFound.jsx";
 import ComingSoon from "../features/static/ComingSoon.jsx";
 import LoginPage from "../features/auth/LoginPage.jsx";
+import RegisterPage from "../features/auth/RegisterPage.jsx";
+import ForgotPasswordPage from "../features/auth/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "../features/auth/ResetPasswordPage.jsx";
+import VerifyEmailPage from "../features/auth/VerifyEmailPage.jsx";
 import { GuestOnly, RequireAuth } from "./guards.jsx";
 
 export const router = createBrowserRouter([
@@ -23,17 +27,18 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <GuestOnly />,
+    element: <AuthLayout />,
     children: [
+      // Open to everyone (a logged-in user may click these email links)
+      { path: "verify-email", element: <VerifyEmailPage /> },
+      { path: "reset-password", element: <ResetPasswordPage /> },
+      // Guests only
       {
-        element: <AuthLayout />,
+        element: <GuestOnly />,
         children: [
           { path: "login", element: <LoginPage /> },
-          { path: "register", element: <ComingSoon title="Register" /> },
-          {
-            path: "forgot-password",
-            element: <ComingSoon title="Forgot password" />,
-          },
+          { path: "register", element: <RegisterPage /> },
+          { path: "forgot-password", element: <ForgotPasswordPage /> },
         ],
       },
     ],
