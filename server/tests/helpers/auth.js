@@ -22,7 +22,7 @@ export const userToken = async () => {
   const creds = { email: 'customer@test.com', password: 'Password123' };
   await request(app)
     .post('/api/auth/register')
-    .send({ ...creds, fullName: 'Customer' });
+    .send({ ...creds, phone: '20123456', fullName: 'Customer' });
   const res = await request(app).post('/api/auth/login').send(creds);
   return res.body.data.accessToken;
 };

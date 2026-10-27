@@ -21,7 +21,7 @@ describe('Sprint 4 journey', () => {
     // 1. A verified customer and one product
     await request(app)
       .post('/api/auth/register')
-      .send({ ...creds, fullName: 'Journey Customer' });
+      .send({ ...creds, phone: '20123456', fullName: 'Journey Customer' });
     await prisma.user.updateMany({ where: { role: 'USER' }, data: { emailVerified: true } });
     const customer = await prisma.user.findUnique({ where: { email: creds.email } });
     const category = await prisma.category.create({ data: { name: 'Gloves', slug: 'gloves' } });

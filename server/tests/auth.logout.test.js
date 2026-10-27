@@ -16,7 +16,7 @@ describe('POST /api/auth/logout', () => {
     await resetDb();
     await request(app)
       .post('/api/auth/register')
-      .send({ ...creds, fullName: 'Logout Tester' });
+      .send({ ...creds, phone: '20123456', fullName: 'Logout Tester' });
   });
 
   it('returns 200 and clears the cookie', async () => {

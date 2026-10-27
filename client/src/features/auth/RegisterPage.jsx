@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import Button from "../../components/Button.jsx";
 import Input from "../../components/Input.jsx";
@@ -9,6 +10,7 @@ import { registerAccount } from "./authApi.js";
 import { registerSchema } from "./schemas.js";
 
 export default function RegisterPage() {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const {
     register,
@@ -28,22 +30,22 @@ export default function RegisterPage() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <h1 className="text-2xl font-bold">Create a business account</h1>
+      <h1 className="text-2xl font-bold">{t("auth.register.title")}</h1>
       <Input
         id="fullName"
-        label="Full name"
+        label={t("auth.register.fullName")}
         error={errors.fullName?.message}
         {...register("fullName")}
       />
       <Input
         id="companyName"
-        label="Company (optional)"
+        label={t("auth.register.company")}
         error={errors.companyName?.message}
         {...register("companyName")}
       />
       <Input
         id="phone"
-        label="Phone"
+        label={t("auth.register.phone")}
         type="tel"
         autoComplete="tel"
         error={errors.phone?.message}
@@ -51,14 +53,14 @@ export default function RegisterPage() {
       />
       <Input
         id="email"
-        label="Email"
+        label={t("auth.email")}
         type="email"
         error={errors.email?.message}
         {...register("email")}
       />
       <Input
         id="password"
-        label="Password"
+        label={t("auth.password")}
         type="password"
         error={errors.password?.message}
         {...register("password")}
@@ -69,12 +71,12 @@ export default function RegisterPage() {
         </p>
       )}
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Creating..." : "Create account"}
+        {isSubmitting ? t("auth.register.submitting") : t("auth.register.submit")}
       </Button>
       <p className="text-center text-sm text-muted">
-        Already have an account?{" "}
+        {t("auth.register.haveAccount")}{" "}
         <Link to="/login" className="underline">
-          Log in
+          {t("auth.register.login")}
         </Link>
       </p>
     </form>

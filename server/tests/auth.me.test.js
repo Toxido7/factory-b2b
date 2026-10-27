@@ -17,7 +17,7 @@ describe('GET /api/auth/me', () => {
     await resetDb();
     await request(app)
       .post('/api/auth/register')
-      .send({ ...creds, fullName: 'Me Tester' });
+      .send({ ...creds, phone: '20123456', fullName: 'Me Tester' });
   });
 
   it('returns the current user with a valid token', async () => {

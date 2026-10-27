@@ -11,7 +11,12 @@ import { sendEmail } from '../src/utils/mailer.js';
 import { hashToken } from '../src/utils/tokens.js';
 import { resetDb } from './helpers/db.js';
 
-const user = { email: 'verify2@test.com', password: 'Password123', fullName: 'Verify Two' };
+const user = {
+  email: 'verify2@test.com',
+  password: 'Password123',
+  fullName: 'Verify Two',
+  phone: '20123456',
+};
 
 // Reads the token out of the Nth email that "was sent"
 const tokenFromEmail = (n) => sendEmail.mock.calls[n][0].text.match(/token=([\w-]+)/)[1];

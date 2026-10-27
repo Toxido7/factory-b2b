@@ -9,7 +9,12 @@ import app from '../src/app.js';
 import { sendEmail } from '../src/utils/mailer.js';
 import { resetDb } from './helpers/db.js';
 
-const user = { email: 'journey@test.com', password: 'Password123', fullName: 'Journey Tester' };
+const user = {
+  email: 'journey@test.com',
+  password: 'Password123',
+  fullName: 'Journey Tester',
+  phone: '20123456',
+};
 const newPassword = 'NewPassword456';
 
 const tokenFromEmail = (n) => sendEmail.mock.calls[n][0].text.match(/token=([\w-]+)/)[1];

@@ -1,4 +1,8 @@
+import { useTranslation } from "react-i18next";
+
 export default function Input({ label, error, id, ...props }) {
+  const { t } = useTranslation();
+
   return (
     <div>
       <label htmlFor={id} className="mb-1 block text-sm font-medium">
@@ -11,7 +15,11 @@ export default function Input({ label, error, id, ...props }) {
         }`}
         {...props}
       />
-      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="mt-1 text-sm text-red-600">
+          {t(error, { defaultValue: error })}
+        </p>
+      )}
     </div>
   );
 }

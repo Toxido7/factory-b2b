@@ -56,7 +56,7 @@ describe('usersService.createAdmin', () => {
   it('does not promote an existing customer to admin', async () => {
     await request(app)
       .post('/api/auth/register')
-      .send({ email: admin.email, password: 'Password123', fullName: 'A Customer' });
+      .send({ email: admin.email, password: 'Password123', fullName: 'A Customer', phone: '20123456' });
 
     const { created } = await usersService.createAdmin(admin);
 

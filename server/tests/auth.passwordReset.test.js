@@ -11,7 +11,12 @@ import { sendEmail } from '../src/utils/mailer.js';
 import { hashToken } from '../src/utils/tokens.js';
 import { resetDb } from './helpers/db.js';
 
-const user = { email: 'reset@test.com', password: 'Password123', fullName: 'Reset Tester' };
+const user = {
+  email: 'reset@test.com',
+  password: 'Password123',
+  fullName: 'Reset Tester',
+  phone: '20123456',
+};
 const newPassword = 'NewPassword456';
 
 const lastEmailToken = () => sendEmail.mock.calls.at(-1)[0].text.match(/token=([\w-]+)/)[1];

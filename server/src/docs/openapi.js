@@ -127,7 +127,7 @@ export const openapi = {
         summary: 'Create a customer account',
         requestBody: jsonBody({
           type: 'object',
-          required: ['email', 'password', 'fullName'],
+          required: ['email', 'password', 'fullName', 'phone'],
           properties: {
             email: str({ format: 'email' }),
             password: passwordField,

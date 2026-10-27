@@ -8,6 +8,7 @@ const validBody = {
   email: 'ahmed@test.com',
   password: 'Passw0rd123',
   fullName: 'Ahmed Test',
+  phone: '20123456',
 };
 
 const register = (body) => request(app).post('/api/auth/register').send(body);
@@ -83,5 +84,46 @@ describe('POST /api/auth/register: database', () => {
     const res = await register({ ...validBody, email: 'AHMED@TEST.COM' });
 
     expect(res.status).toBe(409);
+  });
+});
+
+describe('POST /api/auth/register: phone', () => {
+  beforeEach(resetDb);
+
+  it('rejects a missing phone', async () => {
+    const withoutPhone = { ...validBody };
+    delete withoutPhone.phone;
+    const res = await register(withoutPhone);
+
+    expect(res.status).toBe(400);
+    expect(Object.keys(res.body.error.details)).toContain('body.phone');
+  });
+
+  it('rejects an empty phone', async () => {
+    const res = await register({ ...validBody, phone: '   ' });
+
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects an invalid phone', async () => {
+    const res = await register({ ...validBody, phone: 'abc' });
+
+    expect(res.status).toBe(400);
+  });
+
+  it.each(['20123456', '20 123 456', '+216 20123456'])(
+    'accepts the phone %s',
+    async (phone) => {
+      const res = await register({ ...validBody, phone });
+
+      expect(res.status).toBe(201);
+    },
+  );
+
+  it('saves the phone trimmed', async () => {
+    await register({ ...validBody, phone: '  20123456  ' });
+
+    const saved = await prisma.user.findUnique({ where: { email: validBody.email } });
+    expect(saved.phone).toBe('20123456');
   });
 });

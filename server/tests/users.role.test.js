@@ -52,7 +52,7 @@ describe('PATCH /api/admin/users/:id/role', () => {
     const creds = { email: 'victim@example.com', password: 'Password123' };
     await request(app)
       .post('/api/auth/register')
-      .send({ ...creds, fullName: 'Victim User' });
+      .send({ ...creds, phone: '20123456', fullName: 'Victim User' });
     const victim = await prisma.user.findUnique({ where: { email: creds.email } });
     await request(app).post('/api/auth/login').send(creds);
     const active = () =>

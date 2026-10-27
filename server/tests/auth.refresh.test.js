@@ -27,7 +27,7 @@ describe('POST /api/auth/refresh', () => {
     await resetDb();
     await request(app)
       .post('/api/auth/register')
-      .send({ ...credentials, fullName: 'Ahmed Test' });
+      .send({ ...credentials, phone: '20123456', fullName: 'Ahmed Test' });
   });
 
   it('returns a new access token and a new refresh cookie', async () => {

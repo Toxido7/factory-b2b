@@ -1,10 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../features/auth/AuthContext.jsx";
 
 function FullScreenLoading() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex min-h-screen items-center justify-center text-muted">
-      Loading...
+      {t("common.loading")}
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { resendVerification } from "../features/auth/authApi.js";
 import { useAuth } from "../features/auth/AuthContext.jsx";
 
 export default function VerifyBanner() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [state, setState] = useState("idle"); // idle | sending | sent | error
 
@@ -21,9 +23,9 @@ export default function VerifyBanner() {
 
   return (
     <div className="bg-accent px-8 py-2 text-center text-sm font-medium text-navy">
-      Please verify your email to send requests.{" "}
+      {t("banner.verify")}{" "}
       {state === "sent" ? (
-        "Email sent, check your inbox."
+        t("banner.sent")
       ) : (
         <button
           type="button"
@@ -31,7 +33,7 @@ export default function VerifyBanner() {
           disabled={state === "sending"}
           className="underline"
         >
-          {state === "error" ? "Failed, try again" : "Resend the email"}
+          {state === "error" ? t("banner.failed") : t("banner.resend")}
         </button>
       )}
     </div>

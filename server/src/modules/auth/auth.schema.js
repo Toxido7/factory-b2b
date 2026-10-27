@@ -15,13 +15,19 @@ const passwordRule = z
   .max(72, 'Password must be at most 72 characters')
   .regex(/[A-Za-z]/, 'Password must contain a letter');
 
+const phoneRule = z
+  .string()
+  .trim()
+  .min(1, 'Phone number is required')
+  .regex(/^\+?[0-9\s().-]{8,20}$/, 'Invalid phone number');
+
 export const registerSchema = z.object({
   body: z.object({
     email: z.string().trim().toLowerCase().email().max(255),
     password: passwordRule,
     fullName: z.string().trim().min(2).max(100),
     companyName: optionalText(150),
-    phone: optionalText(30),
+    phone: phoneRule,
   }),
 });
 export const loginSchema = z.object({

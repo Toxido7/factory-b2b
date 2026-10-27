@@ -12,7 +12,7 @@ const login = (body = creds) => request(app).post('/api/auth/login').send(body);
 const setup = async (email = creds.email) => {
   await request(app)
     .post('/api/auth/register')
-    .send({ ...creds, email, fullName: 'Pw User' });
+    .send({ ...creds, email, phone: '20123456', fullName: 'Pw User' });
   const res = await login({ ...creds, email });
   const user = await prisma.user.findUnique({ where: { email } });
   return { token: res.body.data.accessToken, user };

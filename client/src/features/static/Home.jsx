@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { api } from "../../api/client.js";
 import Button from "../../components/Button.jsx";
 import { useAuth } from "../auth/AuthContext.jsx";
 
 export default function Home() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [result, setResult] = useState("");
 
@@ -36,16 +38,16 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-8 py-16">
       <h1 className="text-5xl font-bold">
-        Industrial supply, straight from the factory.
+        {t("home.title")}
       </h1>
 
       <div className="mt-8 flex gap-4">
         <Button as={Link} to="/products">
-          Browse products
+          {t("home.browse")}
         </Button>
         {!user && (
           <Button as={Link} to="/register" variant="ghost">
-            Create a business account
+            {t("home.createAccount")}
           </Button>
         )}
       </div>

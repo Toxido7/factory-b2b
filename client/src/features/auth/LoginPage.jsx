@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import Button from "../../components/Button.jsx";
 import Input from "../../components/Input.jsx";
+import { translateServerMessage } from "../../lib/formErrors.js";
 import { useAuth } from "./AuthContext.jsx";
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,19 +20,22 @@ export default function LoginPage() {
     setBusy(true);
     try {
       await login(email, password);
-      // GuestOnly sees the new user and redirects
     } catch (err) {
-      setError(err.response?.data?.error?.message ?? "Something went wrong");
+      setError(
+        translateServerMessage(
+          err.response?.data?.error?.message ?? t("common.genericError"),
+        ),
+      );
       setBusy(false);
     }
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <h1 className="text-2xl font-bold">Log in</h1>
+      <h1 className="text-2xl font-bold">{t("auth.login.title")}</h1>
       <Input
         id="email"
-        label="Email"
+        label={t("auth.email")}
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -37,7 +43,7 @@ export default function LoginPage() {
       />
       <Input
         id="password"
-        label="Password"
+        label={t("auth.password")}
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -47,15 +53,15 @@ export default function LoginPage() {
         <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>
       )}
       <Button type="submit" className="w-full" disabled={busy}>
-        {busy ? "Logging in..." : "Log in"}
+        {busy ? t("auth.login.submitting") : t("auth.login.submit")}
       </Button>
       <p className="text-center text-sm text-muted">
         <Link to="/forgot-password" className="underline">
-          Forgot password?
+          {t("auth.login.forgot")}
         </Link>
         {" · "}
         <Link to="/register" className="underline">
-          Create an account
+          {t("auth.login.create")}
         </Link>
       </p>
     </form>

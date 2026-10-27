@@ -122,7 +122,7 @@ describe('PATCH /api/admin/users/:id/status', () => {
     const creds = { email: 'victim@example.com', password: 'Password123' };
     await request(app)
       .post('/api/auth/register')
-      .send({ ...creds, fullName: 'Victim User' });
+      .send({ ...creds, phone: '20123456', fullName: 'Victim User' });
     const victim = await prisma.user.findUnique({ where: { email: creds.email } });
     const login = await request(app).post('/api/auth/login').send(creds);
     expect(login.status).toBe(200);

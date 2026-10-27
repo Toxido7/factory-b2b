@@ -1,0 +1,93 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "backToSite": "Retour au site",
+    "backToHome": "Retour à l'accueil",
+    "comingSoon": "bientôt disponible",
+    "genericError": "Une erreur est survenue"
+  },
+  "brand": {
+    "name": "[Nom de l'usine]",
+    "legal": "© [Nom de la société] · [Numéro fiscal]"
+  },
+  "nav": {
+    "products": "Produits",
+    "about": "À propos",
+    "quality": "Qualité",
+    "contact": "Contact",
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "admin": "Admin",
+    "dashboard": "Tableau de bord"
+  },
+  "banner": {
+    "verify": "Veuillez vérifier votre e-mail pour envoyer des demandes.",
+    "resend": "Renvoyer l'e-mail",
+    "sent": "E-mail envoyé, vérifiez votre boîte de réception.",
+    "failed": "Échec, réessayez"
+  },
+  "home": {
+    "title": "Fournisseur industriel, directement de l'usine.",
+    "browse": "Voir les produits",
+    "createAccount": "Créer un compte professionnel"
+  },
+  "notFound": {
+    "title": "Page introuvable"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "login": {
+      "title": "Connexion",
+      "submit": "Se connecter",
+      "submitting": "Connexion...",
+      "forgot": "Mot de passe oublié ?",
+      "create": "Créer un compte"
+    },
+    "register": {
+      "title": "Créer un compte professionnel",
+      "fullName": "Nom complet",
+      "company": "Société (facultatif)",
+      "phone": "Téléphone",
+      "submit": "Créer le compte",
+      "submitting": "Création...",
+      "haveAccount": "Vous avez déjà un compte ?",
+      "login": "Se connecter"
+    },
+    "verify": {
+      "loading": "Vérification de votre e-mail...",
+      "okTitle": "E-mail vérifié",
+      "okText": "Vous pouvez maintenant envoyer des demandes.",
+      "invalidTitle": "Lien non valide",
+      "missingToken": "Lien incomplet."
+    },
+    "forgot": {
+      "title": "Mot de passe oublié ?",
+      "submit": "Envoyer le lien",
+      "submitting": "Envoi...",
+      "sentTitle": "Vérifiez votre e-mail",
+      "sentText": "Si un compte existe pour cet e-mail, un lien de réinitialisation a été envoyé.",
+      "back": "Retour à la connexion"
+    },
+    "reset": {
+      "title": "Choisissez un nouveau mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "submit": "Enregistrer",
+      "submitting": "Enregistrement...",
+      "doneTitle": "Mot de passe mis à jour",
+      "invalidTitle": "Lien non valide",
+      "askNew": "Demander un nouveau lien"
+    }
+  },
+  "validation": {
+    "fullNameMin": "2 caractères minimum",
+    "fullNameMax": "100 caractères maximum",
+    "companyMax": "150 caractères maximum",
+    "phoneRequired": "Le numéro de téléphone est obligatoire",
+    "phoneInvalid": "Numéro de téléphone invalide",
+    "emailInvalid": "Adresse e-mail invalide",
+    "passwordMin": "8 caractères minimum",
+    "passwordMax": "72 caractères maximum",
+    "passwordLetter": "Doit contenir au moins une lettre"
+  }
+}

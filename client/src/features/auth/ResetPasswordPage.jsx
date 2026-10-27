@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useSearchParams } from "react-router";
@@ -9,6 +10,7 @@ import { resetPassword } from "./authApi.js";
 import { resetSchema } from "./schemas.js";
 
 export default function ResetPasswordPage() {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const token = params.get("token");
   const [done, setDone] = useState(false);
@@ -31,9 +33,9 @@ export default function ResetPasswordPage() {
   if (!token) {
     return (
       <div className="space-y-4 text-center">
-        <h1 className="text-2xl font-bold">Link not valid</h1>
+        <h1 className="text-2xl font-bold">{t("auth.reset.invalidTitle")}</h1>
         <Link to="/forgot-password" className="underline">
-          Ask for a new link
+          {t("auth.reset.askNew")}
         </Link>
       </div>
     );
@@ -42,9 +44,9 @@ export default function ResetPasswordPage() {
   if (done) {
     return (
       <div className="space-y-4 text-center">
-        <h1 className="text-2xl font-bold">Password updated</h1>
+        <h1 className="text-2xl font-bold">{t("auth.reset.doneTitle")}</h1>
         <Link to="/login" className="underline">
-          Log in
+          {t("nav.login")}
         </Link>
       </div>
     );
@@ -52,10 +54,10 @@ export default function ResetPasswordPage() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <h1 className="text-2xl font-bold">Choose a new password</h1>
+      <h1 className="text-2xl font-bold">{t("auth.reset.title")}</h1>
       <Input
         id="password"
-        label="New password"
+        label={t("auth.reset.newPassword")}
         type="password"
         error={errors.password?.message}
         {...register("password")}
@@ -66,7 +68,7 @@ export default function ResetPasswordPage() {
         </p>
       )}
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Saving..." : "Save password"}
+        {isSubmitting ? t("auth.reset.submitting") : t("auth.reset.submit")}
       </Button>
     </form>
   );

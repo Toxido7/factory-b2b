@@ -10,7 +10,7 @@ const credentials = { email: 'ahmed@test.com', password: 'Passw0rd123' };
 const register = () =>
   request(app)
     .post('/api/auth/register')
-    .send({ ...credentials, fullName: 'Ahmed Test' });
+    .send({ ...credentials, phone: '20123456', fullName: 'Ahmed Test' });
 const login = (body) => request(app).post('/api/auth/login').send(body);
 const getRefreshCookie = (res) =>
   (res.headers['set-cookie'] ?? []).find((c) => c.startsWith('refresh_token='));

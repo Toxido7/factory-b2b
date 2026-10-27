@@ -22,7 +22,7 @@ describe('Sprint 5 journey', () => {
     // 2. Two sessions: the first one expired 30 days ago, the second is fresh
     await request(app)
       .post('/api/auth/register')
-      .send({ ...creds, fullName: 'Cleanup User' });
+      .send({ ...creds, phone: '20123456', fullName: 'Cleanup User' });
     const oldCookie = firstCookie(await request(app).post('/api/auth/login').send(creds));
     const user = await prisma.user.findUnique({ where: { email: creds.email } });
     await prisma.refreshToken.updateMany({

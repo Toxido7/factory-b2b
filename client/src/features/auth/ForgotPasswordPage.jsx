@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router";
@@ -9,6 +10,7 @@ import { forgotPassword } from "./authApi.js";
 import { forgotSchema } from "./schemas.js";
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation();
   const [sent, setSent] = useState(false);
   const {
     register,
@@ -29,12 +31,12 @@ export default function ForgotPasswordPage() {
   if (sent) {
     return (
       <div className="space-y-4 text-center">
-        <h1 className="text-2xl font-bold">Check your email</h1>
+        <h1 className="text-2xl font-bold">{t("auth.forgot.sentTitle")}</h1>
         <p className="text-muted">
-          If an account exists for this email, a reset link has been sent.
+          {t("auth.forgot.sentText")}
         </p>
         <Link to="/login" className="underline">
-          Back to login
+          {t("auth.forgot.back")}
         </Link>
       </div>
     );
@@ -42,10 +44,10 @@ export default function ForgotPasswordPage() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <h1 className="text-2xl font-bold">Forgot your password?</h1>
+      <h1 className="text-2xl font-bold">{t("auth.forgot.title")}</h1>
       <Input
         id="email"
-        label="Email"
+        label={t("auth.email")}
         type="email"
         error={errors.email?.message}
         {...register("email")}
@@ -56,11 +58,11 @@ export default function ForgotPasswordPage() {
         </p>
       )}
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Sending..." : "Send reset link"}
+        {isSubmitting ? t("auth.forgot.submitting") : t("auth.forgot.submit")}
       </Button>
       <p className="text-center text-sm">
         <Link to="/login" className="underline">
-          Back to login
+          {t("auth.forgot.back")}
         </Link>
       </p>
     </form>

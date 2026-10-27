@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router";
 import { useAuth } from "./AuthContext.jsx";
 import { verifyEmail } from "./authApi.js";
 
 export default function VerifyEmailPage() {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const token = params.get("token");
   const { user, reloadUser } = useAuth();
   const [state, setState] = useState(token ? "loading" : "error");
-  const [message, setMessage] = useState(token ? "" : "Missing token.");
+  const [message, setMessage] = useState(token ? "" : t("auth.verify.missingToken"));
   const started = useRef(false); // the token is single-use: call only once
 
   useEffect(() => {
@@ -21,7 +23,7 @@ export default function VerifyEmailPage() {
       })
       .catch((err) => {
         setMessage(
-          err.response?.data?.error?.message ?? "Something went wrong",
+          err.response?.data?.error?.message ?? t("common.genericError"),
         );
         setState("error");
       });
@@ -29,22 +31,22 @@ export default function VerifyEmailPage() {
 
   return (
     <div className="space-y-4 text-center">
-      {state === "loading" && <p>Verifying your email...</p>}
+      {state === "loading" && <p>{t("auth.verify.loading")}</p>}
       {state === "ok" && (
         <>
-          <h1 className="text-2xl font-bold">Email verified</h1>
-          <p className="text-muted">You can now send requests.</p>
+          <h1 className="text-2xl font-bold">{t("auth.verify.okTitle")}</h1>
+          <p className="text-muted">{t("auth.verify.okText")}</p>
           <Link to={user ? "/" : "/login"} className="underline">
-            {user ? "Back to the site" : "Log in"}
+            {user ? t("common.backToSite") : t("nav.login")}
           </Link>
         </>
       )}
       {state === "error" && (
         <>
-          <h1 className="text-2xl font-bold">Link not valid</h1>
+          <h1 className="text-2xl font-bold">{t("auth.verify.invalidTitle")}</h1>
           <p className="text-muted">{message}</p>
           <Link to="/" className="underline">
-            Back to the site
+            {t("common.backToSite")}
           </Link>
         </>
       )}
