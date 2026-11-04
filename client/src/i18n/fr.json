@@ -276,6 +276,28 @@
     "estimateNote": "Estimation indicative. L'équipe vous confirmera le prix final par téléphone.",
     "viewList": "Voir ma liste"
   },
+  "requestPage": {
+    "title": "Ma liste de demande",
+    "intro": "Vérifiez vos produits et vos quantités, puis envoyez votre demande. Notre équipe vous appellera pour la confirmer.",
+    "unitPrice": "Prix unitaire",
+    "lineTotal": "Total",
+    "summary": "Récapitulatif",
+    "itemsCount_one": "{{count}} produit",
+    "itemsCount_other": "{{count}} produits",
+    "notesLabel": "Notes pour l'équipe (facultatif)",
+    "notesPlaceholder": "Précisions, délais souhaités…",
+    "send": "Envoyer la demande",
+    "loginHint": "Vous devrez vous connecter ou créer un compte pour envoyer votre demande. Votre liste sera conservée.",
+    "clear": "Vider la liste",
+    "browse": "Parcourir les produits",
+    "verifyNeeded": "Vérifiez votre adresse e-mail pour pouvoir envoyer votre demande.",
+    "sending": "Envoi en cours…",
+    "sendError": "Votre demande n'a pas pu être envoyée. Votre liste est conservée, veuillez réessayer.",
+    "sentTitle": "Demande envoyée",
+    "sentText": "Merci ! Notre équipe vous appellera pour confirmer votre demande.",
+    "sentReference": "Votre référence",
+    "sentBack": "Retour à l'accueil"
+  },
   "states": {
     "empty": {
       "title": "Rien à afficher pour le moment"

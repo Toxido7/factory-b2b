@@ -10,7 +10,15 @@ import {
 const KEY = "exqga.requestList";
 const MAX_ITEMS = 50; // same limit as the server
 const MAX_QTY = 100000; // same limit as the server
+const NOTES_KEY = "exqga.requestNotes";
 
+function loadNotes() {
+  try {
+    return localStorage.getItem(NOTES_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
 // Read the saved list. If anything is broken, start with an empty list.
 function load() {
   try {
@@ -32,7 +40,15 @@ const RequestListContext = createContext(null);
 export function RequestListProvider({ children }) {
   const [items, setItems] = useState(load);
   const [isOpen, setIsOpen] = useState(false);
+  const [notes, setNotes] = useState(loadNotes);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(NOTES_KEY, notes);
+    } catch {
+      /* ignore */
+    }
+  }, [notes]);
   // Save on every change, so a refresh keeps the list.
   useEffect(() => {
     try {
@@ -89,7 +105,10 @@ export function RequestListProvider({ children }) {
     setItems((prev) => prev.filter((i) => i.productId !== productId));
   }, []);
 
-  const clear = useCallback(() => setItems([]), []);
+  const clear = useCallback(() => {
+    setItems([]);
+    setNotes("");
+  }, []);
 
   // Display only: the server recalculates the real total.
   const estimatedTotal = useMemo(
@@ -103,6 +122,8 @@ export function RequestListProvider({ children }) {
       count: items.length,
       estimatedTotal,
       isOpen,
+      notes,
+      setNotes,
       openList: () => setIsOpen(true),
       closeList: () => setIsOpen(false),
       addItem,
@@ -110,7 +131,16 @@ export function RequestListProvider({ children }) {
       removeItem,
       clear,
     }),
-    [items, estimatedTotal, isOpen, addItem, updateQuantity, removeItem, clear],
+    [
+      items,
+      estimatedTotal,
+      isOpen,
+      addItem,
+      updateQuantity,
+      removeItem,
+      clear,
+      notes,
+    ],
   );
 
   return (
