@@ -26,10 +26,76 @@
     "sent": "E-mail envoyé, vérifiez votre boîte de réception.",
     "failed": "Échec, réessayez"
   },
+  "topbar": {
+    "text": "Devis pour les professionnels. Aucun paiement en ligne, notre équipe répond à chaque demande.",
+    "phone": "[Numéro de téléphone]"
+  },
   "home": {
+    "badge": "Direct usine, pour les entreprises",
     "title": "Fournisseur industriel, directement de l'usine.",
+    "text": "Parcourez le catalogue, composez votre liste de demande et envoyez-la. Notre équipe vous recontacte avec une offre confirmée. Remises sur volume et quantités minimales affichées sur chaque produit.",
     "browse": "Voir les produits",
-    "createAccount": "Créer un compte professionnel"
+    "createAccount": "Créer un compte professionnel",
+    "photo": "[Photo de l'usine]",
+    "floatOfferTitle": "Offre de notre équipe",
+    "floatOfferText": "après votre demande",
+    "floatMinTitle": "Quantité minimale affichée",
+    "floatMinText": "sur chaque produit",
+    "stats": {
+      "years": "Années d'expérience",
+      "yearsValue": "[00]+",
+      "employees": "Employés",
+      "employeesValue": "[000]",
+      "countries": "Pays servis",
+      "countriesValue": "[00]",
+      "units": "Unités par mois",
+      "unitsValue": "[00k]"
+    },
+    "how": {
+      "eyebrow": "COMMENT ÇA MARCHE",
+      "title": "Du catalogue à l'offre en trois étapes",
+      "s1Title": "Composez votre liste de demande",
+      "s1Text": "Parcourez le catalogue et ajoutez des produits. Les quantités commencent au minimum de chaque produit.",
+      "s2Title": "Envoyez-la à l'usine",
+      "s2Text": "Créez un compte professionnel gratuit, confirmez votre e-mail, puis envoyez la demande. Rien n'est facturé.",
+      "s3Title": "Nous vous contactons",
+      "s3Text": "Notre équipe étudie votre demande et répond avec une offre confirmée. Suivez son état dans votre compte."
+    },
+    "why": {
+      "eyebrow": "POURQUOI NOUS",
+      "title": "Pourquoi les entreprises commandent chez nous",
+      "w1Title": "Directement de l'usine",
+      "w1Text": "Pas d'intermédiaire entre vous et la production.",
+      "w2Title": "Prix dégressifs clairs",
+      "w2Text": "Remises et quantités minimales visibles avant votre demande.",
+      "w3Title": "Une qualité vérifiable",
+      "w3Text": "Certifications et normes présentées sur une seule page. [À compléter]",
+      "w4Title": "Un interlocuteur réel",
+      "w4Text": "Chaque demande est lue et traitée par notre équipe."
+    },
+    "cta": {
+      "title": "Prêt à envoyer votre première demande ?",
+      "text": "Créez votre compte professionnel en une minute. La navigation reste ouverte à tous.",
+      "create": "Créer un compte",
+      "contact": "Nous contacter"
+    }
+  },
+
+  "footer": {
+    "tagline": "[Une phrase sur l'usine]",
+    "shop": "Boutique",
+    "allProducts": "Tous les produits",
+    "categories": "Catégories",
+    "myRequests": "Mes demandes",
+    "company": "Entreprise",
+    "about": "L'usine",
+    "quality": "Qualité",
+    "contact": "Contact",
+    "address": "[Adresse]",
+    "phone": "[Numéro de téléphone]",
+    "email": "[Adresse e-mail]",
+    "privacy": "Confidentialité",
+    "terms": "Conditions"
   },
   "notFound": {
     "title": "Page introuvable"
