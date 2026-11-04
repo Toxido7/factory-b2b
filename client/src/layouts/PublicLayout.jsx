@@ -2,6 +2,7 @@ import { Link, NavLink, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import logo from '../assets/logo.png';
 import Button from '../components/Button.jsx';
+import { company, isReal } from '../config/company.js';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 
 const links = [
@@ -20,7 +21,11 @@ export default function PublicLayout() {
       <div className="hidden bg-accent text-sm text-ink md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-2">
           <span>{t('topbar.text')}</span>
-          <span>{t('topbar.phone')}</span>
+          {isReal(company.phone) ? (
+            <a href={`tel:${company.phone}`} className="hover:underline">{company.phone}</a>
+          ) : (
+            <span>{company.phone}</span>
+          )}
         </div>
       </div>
       <header className="border-b border-white/10 bg-ink">
@@ -89,9 +94,17 @@ export default function PublicLayout() {
           <div>
             <h2 className="font-bold text-white">{t('footer.contact')}</h2>
             <div className="mt-4 flex flex-col gap-3">
-              <span>{t('footer.address')}</span>
-              <span>{t('footer.phone')}</span>
-              <span>{t('footer.email')}</span>
+              <span>{company.address}</span>
+              {isReal(company.phone) ? (
+                <a href={`tel:${company.phone}`} className="hover:text-accent">{company.phone}</a>
+              ) : (
+                <span>{company.phone}</span>
+              )}
+              {isReal(company.email) ? (
+                <a href={`mailto:${company.email}`} className="hover:text-accent">{company.email}</a>
+              ) : (
+                <span>{company.email}</span>
+              )}
             </div>
           </div>
         </div>

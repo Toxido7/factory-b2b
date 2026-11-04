@@ -10,6 +10,10 @@ import AboutPage from "../features/static/AboutPage.jsx";
 import CategoriesPage from "../features/catalog/CategoriesPage.jsx";
 import ProductsPage from "../features/catalog/ProductsPage.jsx";
 import ProductPage from "../features/catalog/ProductPage.jsx";
+import QualityPage from "../features/static/QualityPage.jsx";
+import ContactPage from "../features/static/ContactPage.jsx";
+import PrivacyPage from "../features/static/PrivacyPage.jsx";
+import TermsPage from "../features/static/TermsPage.jsx";
 import LoginPage from "../features/auth/LoginPage.jsx";
 import RegisterPage from "../features/auth/RegisterPage.jsx";
 import ForgotPasswordPage from "../features/auth/ForgotPasswordPage.jsx";
@@ -26,8 +30,10 @@ export const router = createBrowserRouter([
       { path: "products/:slug", element: <ProductPage /> },
       { path: "categories", element: <CategoriesPage /> },
       { path: "about", element: <AboutPage /> },
-      { path: "quality", element: <ComingSoon title="Quality" /> },
-      { path: "contact", element: <ComingSoon title="Contact" /> },
+      { path: "quality", element: <QualityPage /> },
+      { path: "contact", element: <ContactPage /> },
+      { path: "privacy", element: <PrivacyPage /> },
+      { path: "terms", element: <TermsPage /> },
       { path: "styleguide", element: <StyleGuide /> },
       { path: "*", element: <NotFound /> },
     ],

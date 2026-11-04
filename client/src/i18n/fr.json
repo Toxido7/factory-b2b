@@ -27,8 +27,7 @@
     "failed": "Échec, réessayez"
   },
   "topbar": {
-    "text": "Devis pour les professionnels. Aucun paiement en ligne, notre équipe répond à chaque demande.",
-    "phone": "[Numéro de téléphone]"
+    "text": "Devis pour les professionnels. Aucun paiement en ligne, notre équipe répond à chaque demande."
   },
   "home": {
     "badge": "Maroquinerie & prêt-à-porter",
@@ -95,9 +94,6 @@
     "about": "L'atelier",
     "quality": "Qualité",
     "contact": "Contact",
-    "address": "[Adresse]",
-    "phone": "[Numéro de téléphone]",
-    "email": "[Adresse e-mail]",
     "privacy": "Confidentialité",
     "terms": "Conditions"
   },
@@ -221,6 +217,51 @@
     "backToCatalog": "Retour au catalogue",
     "image": "Image {{n}} sur {{total}}",
     "discount": "-{{percent}} %"
+  },
+  "quality": {
+    "title": "Qualité",
+    "intro": "[Présentation de la démarche qualité : matières, contrôles, savoir-faire. Texte à fournir par le client.]",
+    "certTitle": "Certifications et normes",
+    "certName": "[Nom de la certification]",
+    "certText": "[Description et organisme émetteur]",
+    "processTitle": "Notre démarche",
+    "p1Title": "Sélection des matières",
+    "p1Text": "[À compléter]",
+    "p2Title": "Fabrication soignée",
+    "p2Text": "[À compléter]",
+    "p3Title": "Contrôle avant livraison",
+    "p3Text": "[À compléter]"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "intro": "Notre équipe lit et répond à chaque message. Appelez-nous ou écrivez-nous.",
+    "address": "Adresse",
+    "phone": "Téléphone",
+    "whatsapp": "WhatsApp",
+    "email": "E-mail",
+    "hours": "Horaires",
+    "map": "[Carte de localisation]"
+  },
+  "legal": {
+    "updated": "Dernière mise à jour : [date]",
+    "placeholder": "[Texte à fournir par le client ou un juriste.]",
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "s1": "Données collectées",
+      "s2": "Utilisation des données",
+      "s3": "Conservation et sécurité",
+      "s4": "Vos droits",
+      "s5": "Nous contacter"
+    },
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "s1": "Objet du site",
+      "s2": "Demandes et offres",
+      "s3": "Prix et disponibilité",
+      "s4": "Propriété intellectuelle",
+      "s5": "Responsabilité",
+      "s6": "Droit applicable"
+    }
   },
   "states": {
     "empty": {
