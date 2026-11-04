@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function QuantityInput({ value, min, max = 100000, onChange, label }) {
+export default function QuantityInput({ value, min, max = 100000, onChange, label, id = 'quantity' }) {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = useState(String(value));
 
@@ -27,7 +27,7 @@ export default function QuantityInput({ value, min, max = 100000, onChange, labe
 
   return (
     <div>
-      <label htmlFor="quantity" className="mb-2 block text-sm font-medium text-ink">
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-ink">
         {label}
       </label>
       <div className="flex items-center rounded-full border border-line bg-surface">
@@ -41,7 +41,7 @@ export default function QuantityInput({ value, min, max = 100000, onChange, labe
           −
         </button>
         <input
-          id="quantity"
+          id={id}
           type="number"
           inputMode="numeric"
           aria-label={label}

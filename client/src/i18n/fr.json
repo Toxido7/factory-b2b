@@ -263,6 +263,19 @@
       "s6": "Droit applicable"
     }
   },
+  "requestList": {
+    "title": "Ma liste de demande",
+    "open": "Ouvrir la liste de demande",
+    "add": "Ajouter à la liste",
+    "empty": "Votre liste est vide.",
+    "emptyHint": "Ajoutez des produits pour envoyer une demande.",
+    "remove": "Retirer",
+    "quantity": "Quantité",
+    "minimum": "Minimum : {{count}}",
+    "estimatedTotal": "Total estimé",
+    "estimateNote": "Estimation indicative. L'équipe vous confirmera le prix final par téléphone.",
+    "viewList": "Voir ma liste"
+  },
   "states": {
     "empty": {
       "title": "Rien à afficher pour le moment"

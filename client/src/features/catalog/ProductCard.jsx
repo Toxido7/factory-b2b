@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button.jsx';
 import { formatMoney } from '../../lib/format.js';
+import { useRequestList } from '../requestList/RequestListContext.jsx';
 
 function ProductIcon() {
   return (
@@ -29,6 +30,7 @@ function PlusIcon() {
 
 export default function ProductCard({ product, isNew = false }) {
   const { t } = useTranslation();
+  const { addItem } = useRequestList();
   const discount = Math.round(Number(product.discountPercent));
   const image = product.images?.[0];
 
@@ -81,11 +83,11 @@ export default function ProductCard({ product, isNew = false }) {
           type="button"
           className="mt-5 w-full"
           onClick={() => {
-            // wired in stage F4
+            addItem(product);
           }}
         >
           <PlusIcon />
-          {t('catalog.addToList')}
+          {t('requestList.add')}
         </Button>
       </div>
     </article>

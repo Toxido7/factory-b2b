@@ -11,11 +11,13 @@ import { formatMoney } from '../../lib/format.js';
 import usePageTitle from '../../lib/usePageTitle.js';
 import ProductGallery from './ProductGallery.jsx';
 import { useProduct, useProducts } from './catalogApi.js';
+import { useRequestList } from '../requestList/RequestListContext.jsx';
 
 export default function ProductPage() {
   const { slug } = useParams();
   const { t } = useTranslation();
   const query = useProduct(slug);
+  const { addItem } = useRequestList();
   const product = query.data;
   const relatedQuery = useProducts({
     category: product?.category.slug ?? '',
@@ -117,10 +119,10 @@ export default function ProductPage() {
                     type="button"
                     className="mt-8 w-full"
                     onClick={() => {
-                      // wired in stage F4
+                      addItem(item, quantity);
                     }}
                   >
-                    {t('catalog.addToList')}
+                    {t('requestList.add')}
                   </Button>
                 </div>
               </div>
