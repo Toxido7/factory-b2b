@@ -89,5 +89,15 @@
     "passwordMin": "8 caractères minimum",
     "passwordMax": "72 caractères maximum",
     "passwordLetter": "Doit contenir au moins une lettre"
+  },
+  "states": {
+    "empty": {
+      "title": "Rien à afficher pour le moment"
+    },
+    "error": {
+      "title": "Impossible de charger les données",
+      "text": "Vérifiez votre connexion puis réessayez.",
+      "retry": "Réessayer"
+    }
   }
 }

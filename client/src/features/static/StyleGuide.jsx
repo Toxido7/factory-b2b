@@ -1,4 +1,7 @@
 import Button from "../../components/Button.jsx";
+import EmptyState from "../../components/EmptyState.jsx";
+import ErrorState from "../../components/ErrorState.jsx";
+import Skeleton from "../../components/Skeleton.jsx";
 
 const colors = [
   ["navy", "bg-navy"],
@@ -41,6 +44,17 @@ export default function StyleGuide() {
           placeholder="Search products"
           className="min-h-12 w-80 rounded-full border border-line bg-surface px-5 outline-none focus:border-navy"
         />
+      </section>
+
+      <section>
+        <h2 className="mb-4 text-xl font-semibold">States</h2>
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-12 w-64" />
+          <Skeleton className="h-24 w-full" />
+          <EmptyState />
+          <ErrorState onRetry={() => {}} />
+        </div>
       </section>
 
       <section>

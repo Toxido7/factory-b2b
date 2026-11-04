@@ -3,7 +3,6 @@ import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import Button from "../../components/Button.jsx";
 import Input from "../../components/Input.jsx";
-import { translateServerMessage } from "../../lib/formErrors.js";
 import { useAuth } from "./AuthContext.jsx";
 
 export default function LoginPage() {
@@ -21,11 +20,7 @@ export default function LoginPage() {
     try {
       await login(email, password);
     } catch (err) {
-      setError(
-        translateServerMessage(
-          err.response?.data?.error?.message ?? t("common.genericError"),
-        ),
-      );
+      setError(err.response?.data?.error?.message ?? t("common.genericError"));
       setBusy(false);
     }
   }
@@ -67,3 +62,4 @@ export default function LoginPage() {
     </form>
   );
 }
+x``;
