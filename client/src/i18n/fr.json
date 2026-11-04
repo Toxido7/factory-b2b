@@ -298,6 +298,52 @@
     "sentReference": "Votre référence",
     "sentBack": "Retour à l'accueil"
   },
+  "requestStatus": {
+    "PENDING": "En attente",
+    "CONTACTED": "Contacté",
+    "CONFIRMED": "Confirmée",
+    "REJECTED": "Refusée",
+    "CANCELLED": "Annulée"
+  },
+  "myRequests": {
+    "title": "Mes demandes",
+    "intro": "Retrouvez ici toutes les demandes que vous avez envoyées.",
+    "filterLabel": "Statut",
+    "filterAll": "Tous les statuts",
+    "reference": "Référence",
+    "date": "Date",
+    "items": "Produits",
+    "total": "Total estimé",
+    "status": "Statut",
+    "view": "Voir le détail",
+    "emptyTitle": "Aucune demande pour le moment",
+    "emptyText": "Vos demandes envoyées apparaîtront ici.",
+    "emptyFiltered": "Aucune demande avec ce statut.",
+    "browse": "Parcourir les produits"
+  },
+  "requestDetail": {
+    "back": "Retour à mes demandes",
+    "title": "Demande {{reference}}",
+    "sentOn": "Envoyée le {{date}}",
+    "product": "Produit",
+    "unitPrice": "Prix unitaire",
+    "discount": "Remise",
+    "quantity": "Quantité",
+    "lineTotal": "Total",
+    "notes": "Vos notes",
+    "noNotes": "Aucune note.",
+    "total": "Total estimé",
+    "totalNote": "Estimation indicative. Le prix final vous sera confirmé par téléphone.",
+    "notFoundTitle": "Demande introuvable",
+    "notFoundText": "Cette demande n'existe pas ou ne vous appartient pas.",
+    "status": {
+      "PENDING": "Votre demande a bien été reçue. Notre équipe va vous appeler.",
+      "CONTACTED": "Notre équipe vous a contacté. La confirmation est en cours.",
+      "CONFIRMED": "Votre demande est confirmée.",
+      "REJECTED": "Votre demande n'a pas pu être acceptée.",
+      "CANCELLED": "Cette demande a été annulée."
+    }
+  },
   "states": {
     "empty": {
       "title": "Rien à afficher pour le moment"

@@ -16,6 +16,8 @@ import PrivacyPage from "../features/static/PrivacyPage.jsx";
 import TermsPage from "../features/static/TermsPage.jsx";
 import RequestListPage from "../features/requestList/RequestListPage.jsx";
 import RequestSentPage from "../features/requestList/RequestSentPage.jsx";
+import MyRequestsPage from "../features/requestList/MyRequestsPage.jsx";
+import MyRequestDetailPage from "../features/requestList/MyRequestDetailPage.jsx";
 import LoginPage from "../features/auth/LoginPage.jsx";
 import RegisterPage from "../features/auth/RegisterPage.jsx";
 import ForgotPasswordPage from "../features/auth/ForgotPasswordPage.jsx";
@@ -40,6 +42,13 @@ export const router = createBrowserRouter([
       {
         element: <RequireAuth role="USER" />,
         children: [{ path: "request-list/sent", element: <RequestSentPage /> }],
+      },
+      {
+        element: <RequireAuth role="USER" />,
+        children: [
+          { path: "account/requests", element: <MyRequestsPage /> },
+          { path: "account/requests/:id", element: <MyRequestDetailPage /> },
+        ],
       },
       { path: "styleguide", element: <StyleGuide /> },
       { path: "*", element: <NotFound /> },

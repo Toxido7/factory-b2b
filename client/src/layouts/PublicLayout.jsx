@@ -73,6 +73,11 @@ export default function PublicLayout() {
                   {t('nav.admin')}
                 </Link>
               )}
+              {user.role === 'USER' && (
+                <Link to="/account/requests" className="font-medium text-white/80 hover:text-accent">
+                  {t('myRequests.title')}
+                </Link>
+              )}
               <span className="text-sm text-white/70">{user.fullName}</span>
               <Button variant="light" onClick={logout}>
                 {t('nav.logout')}
