@@ -10,7 +10,7 @@ export default function Input({ label, error, id, ...props }) {
       </label>
       <input
         id={id}
-        className={`min-h-12 w-full rounded-xl border bg-surface px-4 outline-none focus:border-navy ${
+        className={`min-h-12 w-full rounded-xl border bg-surface px-4 outline-none focus:border-ink ${
           error ? "border-red-500" : "border-line"
         }`}
         {...props}

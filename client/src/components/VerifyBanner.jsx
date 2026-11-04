@@ -22,7 +22,7 @@ export default function VerifyBanner() {
   }
 
   return (
-    <div className="bg-accent px-8 py-2 text-center text-sm font-medium text-navy">
+    <div className="bg-accent px-8 py-2 text-center text-sm font-medium text-ink">
       {t("banner.verify")}{" "}
       {state === "sent" ? (
         t("banner.sent")

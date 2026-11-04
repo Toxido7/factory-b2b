@@ -4,7 +4,7 @@ import ErrorState from "../../components/ErrorState.jsx";
 import Skeleton from "../../components/Skeleton.jsx";
 
 const colors = [
-  ["navy", "bg-navy"],
+  ["ink", "bg-ink"],
   ["accent", "bg-accent"],
   ["surface", "bg-surface"],
   ["line", "bg-line"],
@@ -42,7 +42,7 @@ export default function StyleGuide() {
         <h2 className="mb-4 text-xl font-semibold">Input</h2>
         <input
           placeholder="Search products"
-          className="min-h-12 w-80 rounded-full border border-line bg-surface px-5 outline-none focus:border-navy"
+          className="min-h-12 w-80 rounded-full border border-line bg-surface px-5 outline-none focus:border-ink"
         />
       </section>
 
@@ -63,7 +63,7 @@ export default function StyleGuide() {
           <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold">
             -10%
           </span>
-          <span className="rounded-full bg-navy px-3 py-1 text-xs font-bold text-white">
+          <span className="rounded-full bg-ink px-3 py-1 text-xs font-bold text-white">
             New
           </span>
           <span className="rounded-md bg-surface px-3 py-1 text-xs text-muted">

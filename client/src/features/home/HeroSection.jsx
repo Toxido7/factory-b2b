@@ -1,15 +1,8 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import logo from '../../assets/logo.png';
 import Button from '../../components/Button.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
-
-function OfferIcon() {
-  return (
-    <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M12 3v18m6-15H9.5a3.5 3.5 0 1 0 0 7H14.5a3.5 3.5 0 1 1 0 7H6" />
-    </svg>
-  );
-}
 
 function MinimumIcon() {
   return (
@@ -19,22 +12,30 @@ function MinimumIcon() {
   );
 }
 
+function CheckIcon() {
+  return (
+    <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m5 12 4 4L19 6" />
+    </svg>
+  );
+}
+
 export default function HeroSection() {
   const { t } = useTranslation();
   const { user } = useAuth();
 
   return (
-    <section className="py-20">
+    <section className="bg-ink py-20 text-white">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-8 lg:grid-cols-2">
         <div>
-          <div className="rise inline-flex items-center gap-2 rounded-full bg-accent/15 px-4 py-2 text-sm font-semibold text-navy">
+          <div className="rise inline-flex items-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
             <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
             {t('home.badge')}
           </div>
-          <h1 className="rise mt-6 max-w-2xl text-5xl font-bold leading-tight text-navy [animation-delay:80ms] md:text-6xl">
+          <h1 className="rise mt-6 max-w-2xl font-display text-5xl font-bold leading-tight text-white [animation-delay:80ms] md:text-6xl">
             {t('home.title')}
           </h1>
-          <p className="rise mt-6 max-w-xl text-lg leading-8 text-muted [animation-delay:160ms]">
+          <p className="rise mt-6 max-w-xl text-lg leading-8 text-white/70 [animation-delay:160ms]">
             {t('home.text')}
           </p>
           <div className="rise mt-8 flex flex-wrap gap-4 [animation-delay:240ms]">
@@ -42,7 +43,7 @@ export default function HeroSection() {
               {t('home.browse')}
             </Button>
             {!user && (
-              <Button as={Link} to="/register" variant="ghost">
+              <Button as={Link} to="/register" variant="light">
                 {t('home.createAccount')}
               </Button>
             )}
@@ -50,24 +51,24 @@ export default function HeroSection() {
         </div>
 
         <div className="relative min-h-[440px]">
-          <div className="flex h-[440px] items-end rounded-3xl bg-navy p-8">
-            <span className="text-sm font-semibold text-white/70">{t('home.photo')}</span>
+          <div className="flex h-[440px] items-center justify-center rounded-3xl bg-black p-8 shadow-2xl ring-1 ring-accent/30">
+            <img src={logo} alt={t('home.photo')} className="h-full w-full object-contain" />
           </div>
-          <div className="lift absolute left-4 top-8 flex max-w-[230px] items-center gap-3 rounded-2xl bg-white p-4 shadow-xl md:left-8">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-navy">
-              <OfferIcon />
+          <div className="lift static mt-6 flex max-w-[230px] items-center gap-3 rounded-2xl bg-white p-4 shadow-xl lg:absolute lg:-left-4 lg:top-8 lg:mt-0">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-ink">
+              <CheckIcon />
             </span>
             <span>
-              <strong className="block text-sm text-navy">{t('home.floatOfferTitle')}</strong>
+              <strong className="block text-sm text-ink">{t('home.floatOfferTitle')}</strong>
               <span className="text-xs text-muted">{t('home.floatOfferText')}</span>
             </span>
           </div>
-          <div className="lift absolute bottom-8 right-4 flex max-w-[230px] items-center gap-3 rounded-2xl bg-white p-4 shadow-xl md:right-8">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-navy">
+          <div className="lift static mt-4 flex max-w-[230px] items-center gap-3 rounded-2xl bg-white p-4 shadow-xl lg:absolute lg:-bottom-6 lg:-right-4 lg:mt-0">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-ink">
               <MinimumIcon />
             </span>
             <span>
-              <strong className="block text-sm text-navy">{t('home.floatMinTitle')}</strong>
+              <strong className="block text-sm text-ink">{t('home.floatMinTitle')}</strong>
               <span className="text-xs text-muted">{t('home.floatMinText')}</span>
             </span>
           </div>

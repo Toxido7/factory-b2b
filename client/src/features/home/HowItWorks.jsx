@@ -12,15 +12,15 @@ export default function HowItWorks() {
   return (
     <section className="bg-surface py-20">
       <div className="mx-auto max-w-7xl px-8">
-        <p className="text-sm font-bold tracking-widest text-accent">{t('home.how.eyebrow')}</p>
-        <h2 className="mt-3 text-3xl font-bold text-navy md:text-4xl">{t('home.how.title')}</h2>
+        <p className="text-sm font-bold tracking-[0.2em] text-ink">{t('home.how.eyebrow')}</p>
+        <h2 className="mt-3 text-3xl font-bold text-ink md:text-4xl">{t('home.how.title')}</h2>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {steps.map(([number, title, text]) => (
             <article key={number} className="lift rounded-3xl bg-white p-8">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accent font-bold text-navy">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accent font-bold text-ink">
                 {number}
               </span>
-              <h3 className="mt-6 text-xl font-bold text-navy">{t(title)}</h3>
+              <h3 className="mt-6 text-xl font-bold text-ink">{t(title)}</h3>
               <p className="mt-3 leading-7 text-muted">{t(text)}</p>
             </article>
           ))}

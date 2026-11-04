@@ -7,8 +7,8 @@
     "genericError": "Une erreur est survenue"
   },
   "brand": {
-    "name": "[Nom de l'usine]",
-    "legal": "© [Nom de la société] · [Numéro fiscal]"
+    "name": "EXQGA",
+    "legal": "© EXQGA · [Numéro fiscal]"
   },
   "nav": {
     "products": "Produits",
@@ -31,12 +31,12 @@
     "phone": "[Numéro de téléphone]"
   },
   "home": {
-    "badge": "Direct usine, pour les entreprises",
-    "title": "Fournisseur industriel, directement de l'usine.",
-    "text": "Parcourez le catalogue, composez votre liste de demande et envoyez-la. Notre équipe vous recontacte avec une offre confirmée. Remises sur volume et quantités minimales affichées sur chaque produit.",
+    "badge": "Maroquinerie & prêt-à-porter",
+    "title": "Du style à vos envies.",
+    "text": "Découvrez notre collection de maroquinerie et de prêt-à-porter. Composez votre liste de demande et envoyez-la : notre équipe vous recontacte avec une offre confirmée. Prix, remises et quantités minimales sont affichés sur chaque produit.",
     "browse": "Voir les produits",
     "createAccount": "Créer un compte professionnel",
-    "photo": "[Photo de l'usine]",
+    "photo": "[Photo de la collection]",
     "floatOfferTitle": "Offre de notre équipe",
     "floatOfferText": "après votre demande",
     "floatMinTitle": "Quantité minimale affichée",
@@ -56,7 +56,7 @@
       "title": "Du catalogue à l'offre en trois étapes",
       "s1Title": "Composez votre liste de demande",
       "s1Text": "Parcourez le catalogue et ajoutez des produits. Les quantités commencent au minimum de chaque produit.",
-      "s2Title": "Envoyez-la à l'usine",
+      "s2Title": "Envoyez-la à l'atelier",
       "s2Text": "Créez un compte professionnel gratuit, confirmez votre e-mail, puis envoyez la demande. Rien n'est facturé.",
       "s3Title": "Nous vous contactons",
       "s3Text": "Notre équipe étudie votre demande et répond avec une offre confirmée. Suivez son état dans votre compte."
@@ -64,7 +64,7 @@
     "why": {
       "eyebrow": "POURQUOI NOUS",
       "title": "Pourquoi les entreprises commandent chez nous",
-      "w1Title": "Directement de l'usine",
+      "w1Title": "Directement de notre atelier",
       "w1Text": "Pas d'intermédiaire entre vous et la production.",
       "w2Title": "Prix dégressifs clairs",
       "w2Text": "Remises et quantités minimales visibles avant votre demande.",
@@ -80,15 +80,19 @@
       "contact": "Nous contacter"
     }
   },
+  "about": {
+    "title": "L'atelier",
+    "intro": "[Présentation de l'atelier : histoire, mission, savoir-faire. Texte à fournir par le client.]"
+  },
 
   "footer": {
-    "tagline": "[Une phrase sur l'usine]",
+    "tagline": "Maroquinerie & prêt-à-porter. Du style à vos envies.",
     "shop": "Boutique",
     "allProducts": "Tous les produits",
     "categories": "Catégories",
     "myRequests": "Mes demandes",
     "company": "Entreprise",
-    "about": "L'usine",
+    "about": "L'atelier",
     "quality": "Qualité",
     "contact": "Contact",
     "address": "[Adresse]",
@@ -155,6 +159,68 @@
     "passwordMin": "8 caractères minimum",
     "passwordMax": "72 caractères maximum",
     "passwordLetter": "Doit contenir au moins une lettre"
+  },
+  "catalog": {
+    "eyebrow": "CATALOGUE",
+    "categoriesTitle": "Parcourir par catégorie",
+    "categoriesPageTitle": "Nos catégories",
+    "seeAll": "Voir tous les produits",
+    "allProducts": "Tous les produits",
+    "productsCount_one": "{{count}} produit",
+    "productsCount_other": "{{count}} produits",
+    "newEyebrow": "NOUVEAUTÉS",
+    "newTitle": "Nouveaux produits",
+    "viewCatalog": "Voir le catalogue",
+    "badgeNew": "Nouveau",
+    "minQty": "Min. {{count}} unités",
+    "addToList": "Ajouter à la liste",
+    "noCategories": "Aucune catégorie pour le moment",
+    "noProducts": "Aucun produit pour le moment"
+  },
+  "shop": {
+    "home": "Accueil",
+    "title": "Tous les produits",
+    "count_one": "{{count}} produit",
+    "count_other": "{{count}} produits",
+    "category": "Catégorie",
+    "all": "Tous les produits",
+    "price": "Prix (TND)",
+    "min": "Min",
+    "max": "Max",
+    "search": "Rechercher",
+    "searchPlaceholder": "Nom, référence ou description",
+    "sort": "Trier par",
+    "sortNewest": "Nouveautés",
+    "sortPriceAsc": "Prix croissant",
+    "sortPriceDesc": "Prix décroissant",
+    "sortName": "Nom (A-Z)",
+    "filters": "Filtres",
+    "reset": "Réinitialiser",
+    "close": "Fermer",
+    "apply": "Voir les résultats",
+    "noResultsTitle": "Aucun produit ne correspond",
+    "noResultsText": "Essayez d'autres mots-clés ou retirez des filtres.",
+    "prev": "Page précédente",
+    "next": "Page suivante",
+    "page": "Page {{page}}"
+  },
+  "product": {
+    "reference": "Référence",
+    "category": "Catégorie",
+    "minOrder": "Quantité minimale : {{count}} unités",
+    "quantity": "Quantité",
+    "decrease": "Diminuer la quantité",
+    "increase": "Augmenter la quantité",
+    "estimate": "Total estimé",
+    "estimateNote": "Estimation. Le prix final est confirmé par notre équipe.",
+    "description": "Description",
+    "noDescription": "Description à venir.",
+    "related": "Dans la même catégorie",
+    "notFoundTitle": "Produit introuvable",
+    "notFoundText": "Ce produit n'existe plus ou n'est plus disponible.",
+    "backToCatalog": "Retour au catalogue",
+    "image": "Image {{n}} sur {{total}}",
+    "discount": "-{{percent}} %"
   },
   "states": {
     "empty": {

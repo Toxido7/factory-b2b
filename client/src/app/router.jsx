@@ -6,6 +6,10 @@ import Home from "../features/static/Home.jsx";
 import StyleGuide from "../features/static/StyleGuide.jsx";
 import NotFound from "../features/static/NotFound.jsx";
 import ComingSoon from "../features/static/ComingSoon.jsx";
+import AboutPage from "../features/static/AboutPage.jsx";
+import CategoriesPage from "../features/catalog/CategoriesPage.jsx";
+import ProductsPage from "../features/catalog/ProductsPage.jsx";
+import ProductPage from "../features/catalog/ProductPage.jsx";
 import LoginPage from "../features/auth/LoginPage.jsx";
 import RegisterPage from "../features/auth/RegisterPage.jsx";
 import ForgotPasswordPage from "../features/auth/ForgotPasswordPage.jsx";
@@ -18,8 +22,10 @@ export const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { index: true, element: <Home /> },
-      { path: "products", element: <ComingSoon title="Products" /> },
-      { path: "about", element: <ComingSoon title="About" /> },
+      { path: "products", element: <ProductsPage /> },
+      { path: "products/:slug", element: <ProductPage /> },
+      { path: "categories", element: <CategoriesPage /> },
+      { path: "about", element: <AboutPage /> },
       { path: "quality", element: <ComingSoon title="Quality" /> },
       { path: "contact", element: <ComingSoon title="Contact" /> },
       { path: "styleguide", element: <StyleGuide /> },

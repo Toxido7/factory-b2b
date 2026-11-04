@@ -21,11 +21,11 @@ Monorepo: `server/` (Node 20, Express 5, Prisma 6, PostgreSQL, Zod, Vitest + sup
 
 - Folders: `src/api`, `src/app` (router, guards), `src/components`, `src/layouts`, `src/features/<name>`, `src/i18n`, `src/lib`.
 - The site is in FRENCH. Never write visible text directly in a component: use `t('key')` from react-i18next and add the key to `src/i18n/fr.json`. Wording: always "liste de demande", never "panier". Prices as `1 250,00 TND`, dates as `26/10/2026` (use `src/lib/format.js`).
-- Colors only from Tailwind tokens in `src/index.css` (`bg-navy`, `text-accent`, ...). Never write a hex color in a component.
+- Colors only from Tailwind tokens in `src/index.css` (`bg-ink`, `text-accent`, ...). Never write a hex color in a component.
 - API calls only through `src/api/client.js` (single-flight refresh). Access token stays in memory, never in localStorage.
 - Forms: react-hook-form + Zod. Server data: TanStack Query (from stage F3). Every page handles 4 states: loading, empty, error (with retry), success.
 - Accessibility: labels on inputs, visible focus, buttons are `<button>`, links are `<Link>`. Animations only on opacity/transform, 150-300 ms, respect `prefers-reduced-motion`.
-- Match the approved mockup style: IBM Plex Sans, rounded cards, pill buttons, navy + orange.
+- Brand: EXQGA, luxury fashion. Black (ink) + gold (accent) on warm off-white, Playfair Display titles, Inter body, rounded cards, pill buttons. Never gold text on a light background.
 
 ## Output
 

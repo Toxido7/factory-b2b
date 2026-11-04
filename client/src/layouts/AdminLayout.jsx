@@ -6,7 +6,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-60 bg-navy p-6 text-white">
+      <aside className="w-60 bg-ink p-6 text-white">
         <p className="mb-6 text-lg font-bold">{t("nav.admin")}</p>
         <nav className="flex flex-col gap-3">
           <NavLink to="/admin">{t("nav.dashboard")}</NavLink>
