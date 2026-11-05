@@ -30,6 +30,18 @@ export const registerSchema = z.object({
     phone: phoneRule,
   }),
 });
+export const updateProfileSchema = z.object({
+  body: z.object({
+    fullName: z.string().trim().min(2).max(100),
+    companyName: z
+      .string()
+      .trim()
+      .max(150)
+      .optional()
+      .transform((value) => (value === undefined ? undefined : value || null)),
+    phone: phoneRule,
+  }),
+});
 export const loginSchema = z.object({
   body: z.object({
     email: z.string().trim().toLowerCase().email(),

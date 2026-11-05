@@ -43,6 +43,10 @@ export const me = async (req, res) => {
   const user = await authService.getMe(req.auth.userId);
   res.json({ success: true, data: { user } });
 };
+export const updateMe = async (req, res) => {
+  const user = await authService.updateMe(req.auth.userId, req.validated.body);
+  res.json({ success: true, data: { user } });
+};
 export const verifyEmail = async (req, res) => {
   await authService.verifyEmail(req.validated.body.token);
   res.json({ success: true, data: { message: 'Email verified' } });

@@ -203,6 +203,28 @@ export const openapi = {
           401: ref('Unauthorized'),
         },
       },
+      patch: {
+        tags: ['Auth'],
+        summary: 'Update my profile',
+        security: bearer,
+        requestBody: jsonBody({
+          type: 'object',
+          required: ['fullName', 'phone'],
+          properties: {
+            fullName: str(),
+            companyName: str({ nullable: true }),
+            phone: str(),
+          },
+        }),
+        responses: {
+          200: success('The updated user', {
+            type: 'object',
+            properties: { user: { $ref: '#/components/schemas/User' } },
+          }),
+          400: ref('BadRequest'),
+          401: ref('Unauthorized'),
+        },
+      },
     },
     '/api/auth/verify-email': {
       post: {

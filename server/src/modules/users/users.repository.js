@@ -16,6 +16,9 @@ export const findByEmail = (email) => prisma.user.findUnique({ where: { email } 
 
 export const create = (data) => prisma.user.create({ data, select: publicUserSelect });
 export const findById = (id) => prisma.user.findUnique({ where: { id } });
+export const updateProfile = (id, data) =>
+  prisma.user.update({ where: { id }, data, select: publicUserSelect });
+
 export const createAdmin = ({ email, passwordHash, fullName }) =>
   prisma.user.create({
     data: { email, passwordHash, fullName, role: 'ADMIN', emailVerified: true },

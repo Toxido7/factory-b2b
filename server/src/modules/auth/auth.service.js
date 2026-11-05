@@ -160,6 +160,20 @@ export const getMe = async (userId) => {
 
   return toPublicUser(user);
 };
+export const updateMe = async (userId, { fullName, companyName, phone }) => {
+  const user = await usersRepository.findById(userId);
+
+  if (!user || !user.isActive) {
+    throw ApiError.unauthorized('Authentication required');
+  }
+
+  const updated = await usersRepository.updateProfile(userId, {
+    fullName,
+    companyName,
+    phone,
+  });
+  return toPublicUser(updated);
+};
 export const verifyEmail = async (rawToken) => {
   const invalid = () => ApiError.badRequest('Invalid or expired verification link');
 
