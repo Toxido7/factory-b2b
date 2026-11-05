@@ -344,6 +344,44 @@
       "CANCELLED": "Cette demande a été annulée."
     }
   },
+  "account": {
+    "title": "Mon compte",
+    "intro": "Gérez vos informations et votre sécurité.",
+    "myRequests": "Voir mes demandes",
+    "profile": {
+      "title": "Mes informations",
+      "email": "Adresse e-mail",
+      "emailHint": "L'adresse e-mail ne peut pas être modifiée.",
+      "verified": "Adresse vérifiée",
+      "notVerified": "Adresse non vérifiée",
+      "fullName": "Nom complet",
+      "company": "Société (facultatif)",
+      "phone": "Téléphone",
+      "phoneHint": "Notre équipe vous appelle sur ce numéro.",
+      "save": "Enregistrer",
+      "saved": "Vos informations ont été enregistrées."
+    },
+    "password": {
+      "title": "Mot de passe",
+      "current": "Mot de passe actuel",
+      "new": "Nouveau mot de passe",
+      "confirm": "Confirmer le nouveau mot de passe",
+      "mismatch": "Les mots de passe ne correspondent pas.",
+      "submit": "Changer le mot de passe",
+      "warning": "Pour votre sécurité, vous serez déconnecté de tous vos appareils."
+    },
+    "sessions": {
+      "title": "Sessions",
+      "text": "Déconnectez-vous de tous vos appareils si vous pensez que quelqu'un d'autre a accès à votre compte.",
+      "logoutAll": "Me déconnecter partout",
+      "confirmTitle": "Se déconnecter partout ?",
+      "confirmText": "Vous devrez vous reconnecter sur tous vos appareils.",
+      "confirm": "Oui, me déconnecter",
+      "cancel": "Annuler"
+    },
+    "loggedOutPassword": "Mot de passe modifié. Veuillez vous reconnecter.",
+    "loggedOutAll": "Vous avez été déconnecté de tous vos appareils."
+  },
   "states": {
     "empty": {
       "title": "Rien à afficher pour le moment"

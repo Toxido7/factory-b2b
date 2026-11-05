@@ -78,7 +78,9 @@ export default function PublicLayout() {
                   {t('myRequests.title')}
                 </Link>
               )}
-              <span className="text-sm text-white/70">{user.fullName}</span>
+              <Link to="/account" className="text-sm text-white/70 hover:text-accent">
+                {user.fullName}
+              </Link>
               <Button variant="light" onClick={logout}>
                 {t('nav.logout')}
               </Button>

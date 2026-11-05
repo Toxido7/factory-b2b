@@ -18,6 +18,7 @@ import RequestListPage from "../features/requestList/RequestListPage.jsx";
 import RequestSentPage from "../features/requestList/RequestSentPage.jsx";
 import MyRequestsPage from "../features/requestList/MyRequestsPage.jsx";
 import MyRequestDetailPage from "../features/requestList/MyRequestDetailPage.jsx";
+import AccountPage from "../features/auth/AccountPage.jsx";
 import LoginPage from "../features/auth/LoginPage.jsx";
 import RegisterPage from "../features/auth/RegisterPage.jsx";
 import ForgotPasswordPage from "../features/auth/ForgotPasswordPage.jsx";
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
           { path: "account/requests", element: <MyRequestsPage /> },
           { path: "account/requests/:id", element: <MyRequestDetailPage /> },
         ],
+      },
+      {
+        element: <RequireAuth />,
+        children: [{ path: "account", element: <AccountPage /> }],
       },
       { path: "styleguide", element: <StyleGuide /> },
       { path: "*", element: <NotFound /> },

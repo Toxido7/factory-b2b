@@ -23,6 +23,36 @@ export const registerSchema = z.object({
   password,
 });
 
+export const profileSchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "validation.fullNameMin")
+    .max(100, "validation.fullNameMax"),
+  companyName: z
+    .string()
+    .trim()
+    .max(150, "validation.companyMax")
+    .optional()
+    .transform((value) => (value === undefined ? undefined : value || null)),
+  phone: z
+    .string()
+    .trim()
+    .min(1, "validation.phoneRequired")
+    .regex(/^\+?[0-9\s().-]{8,20}$/, "validation.phoneInvalid"),
+});
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "validation.passwordRequired"),
+    newPassword: password,
+    confirmPassword: z.string().min(1, "validation.passwordRequired"),
+  })
+  .refine((values) => values.newPassword === values.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "account.password.mismatch",
+  });
+
 export const forgotSchema = z.object({ email: z.email("validation.emailInvalid") });
 
 export const resetSchema = z.object({ password });

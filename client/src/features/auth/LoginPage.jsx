@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
 import Button from "../../components/Button.jsx";
 import Input from "../../components/Input.jsx";
@@ -8,6 +9,7 @@ import { useAuth } from "./AuthContext.jsx";
 export default function LoginPage() {
   const { t } = useTranslation();
   const { login } = useAuth();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,6 +30,11 @@ export default function LoginPage() {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <h1 className="text-2xl font-bold">{t("auth.login.title")}</h1>
+      {location.state?.notice && (
+        <p className="rounded-xl bg-surface p-3 text-sm text-muted" role="status">
+          {location.state.notice}
+        </p>
+      )}
       <Input
         id="email"
         label={t("auth.email")}
