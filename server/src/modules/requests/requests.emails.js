@@ -9,13 +9,13 @@ const itemsText = (request) =>
   request.items
     .map(
       (i) =>
-        `- ${i.productName} (${i.sku}) | qty ${i.quantity} | unit ${money(i.unitPrice)} | discount ${i.discountPercent.toFixed(2)}% | line ${money(i.lineTotal)}`,
+        `- ${i.productName} (${i.sku}) | qté ${i.quantity} | prix unitaire ${money(i.unitPrice)} | remise ${i.discountPercent.toFixed(2)}% | total ${money(i.lineTotal)}`,
     )
     .join('\n');
 
 const itemsHtml = (request) =>
   `<table border="1" cellpadding="6" cellspacing="0">
-<tr><th>Product</th><th>SKU</th><th>Qty</th><th>Unit</th><th>Discount</th><th>Line</th></tr>
+<tr><th>Produit</th><th>Réf.</th><th>Qté</th><th>Prix unitaire</th><th>Remise</th><th>Total</th></tr>
 ${request.items
   .map(
     (i) =>
@@ -31,27 +31,27 @@ export const teamRequestEmail = (request) => {
   const notes = request.notes ?? '-';
 
   return {
-    subject: `New order request ${ref}`,
-    text: `New order request ${ref}
+    subject: `Nouvelle demande ${ref}`,
+    text: `Nouvelle demande ${ref}
 
-Customer: ${request.customerName}
-Email: ${request.customerEmail}
-Company: ${company}
-Phone: ${phone}
+Client : ${request.customerName}
+E-mail : ${request.customerEmail}
+Société : ${company}
+Téléphone : ${phone}
 
-Items:
+Produits :
 ${itemsText(request)}
 
-Estimated total: ${money(request.estimatedTotal)}
-Notes: ${notes}`,
-    html: `<h2>New order request ${ref}</h2>
-<p><b>Customer:</b> ${escapeHtml(request.customerName)}<br>
-<b>Email:</b> ${escapeHtml(request.customerEmail)}<br>
-<b>Company:</b> ${escapeHtml(company)}<br>
-<b>Phone:</b> ${escapeHtml(phone)}</p>
+Total estimé : ${money(request.estimatedTotal)}
+Notes : ${notes}`,
+    html: `<h2>Nouvelle demande ${ref}</h2>
+<p><b>Client :</b> ${escapeHtml(request.customerName)}<br>
+<b>E-mail :</b> ${escapeHtml(request.customerEmail)}<br>
+<b>Société :</b> ${escapeHtml(company)}<br>
+<b>Téléphone :</b> ${escapeHtml(phone)}</p>
 ${itemsHtml(request)}
-<p><b>Estimated total:</b> ${money(request.estimatedTotal)}</p>
-<p><b>Notes:</b> ${escapeHtml(notes)}</p>`,
+<p><b>Total estimé :</b> ${money(request.estimatedTotal)}</p>
+<p><b>Notes :</b> ${escapeHtml(notes)}</p>`,
   };
 };
 
@@ -59,18 +59,18 @@ export const customerRequestEmail = (request) => {
   const ref = referenceOf(request);
 
   return {
-    subject: `We received your request ${ref}`,
-    text: `Hello ${request.customerName},
+    subject: `Nous avons bien reçu votre demande ${ref}`,
+    text: `Bonjour ${request.customerName},
 
-We received your order request ${ref}. Our team will review it and contact you.
+Nous avons bien reçu votre demande ${ref}. Notre équipe va l'examiner et vous contactera par téléphone.
 
-Items:
+Produits :
 ${itemsText(request)}
 
-Estimated total: ${money(request.estimatedTotal)}`,
-    html: `<p>Hello ${escapeHtml(request.customerName)},</p>
-<p>We received your order request <b>${ref}</b>. Our team will review it and contact you.</p>
+Total estimé : ${money(request.estimatedTotal)}`,
+    html: `<p>Bonjour ${escapeHtml(request.customerName)},</p>
+<p>Nous avons bien reçu votre demande <b>${ref}</b>. Notre équipe va l'examiner et vous contactera par téléphone.</p>
 ${itemsHtml(request)}
-<p><b>Estimated total:</b> ${money(request.estimatedTotal)}</p>`,
+<p><b>Total estimé :</b> ${money(request.estimatedTotal)}</p>`,
   };
 };

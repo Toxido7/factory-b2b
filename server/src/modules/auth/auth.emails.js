@@ -1,26 +1,26 @@
 import { escapeHtml } from '../../utils/escapeHtml.js';
 
 export const verificationEmail = ({ fullName, url }) => ({
-  subject: 'Confirm your email address',
+  subject: 'Confirmez votre adresse e-mail',
   text:
-    `Hello ${fullName},\n\n` +
-    `Please confirm your email address by opening this link:\n${url}\n\n` +
-    `The link is valid for 24 hours. If you did not create an account, ignore this email.`,
+    `Bonjour ${fullName},\n\n` +
+    `Merci pour votre inscription. Confirmez votre adresse e-mail en ouvrant ce lien :\n${url}\n\n` +
+    `Le lien est valable 24 heures. Si vous n'avez pas créé de compte, ignorez cet e-mail.`,
   html:
-    `<p>Hello ${escapeHtml(fullName)},</p>` +
-    `<p>Please confirm your email address:</p>` +
-    `<p><a href="${escapeHtml(url)}">Confirm my email</a></p>` +
-    `<p>The link is valid for 24 hours. If you did not create an account, ignore this email.</p>`,
+    `<p>Bonjour ${escapeHtml(fullName)},</p>` +
+    `<p>Merci pour votre inscription. Confirmez votre adresse e-mail :</p>` +
+    `<p><a href="${escapeHtml(url)}">Confirmer mon adresse e-mail</a></p>` +
+    `<p>Le lien est valable 24 heures. Si vous n'avez pas créé de compte, ignorez cet e-mail.</p>`,
 });
 export const passwordResetEmail = ({ fullName, url }) => ({
-  subject: 'Reset your password',
+  subject: 'Réinitialisation de votre mot de passe',
   text:
-    `Hello ${fullName},\n\n` +
-    `We received a request to reset your password. Open this link to choose a new one:\n${url}\n\n` +
-    `The link is valid for 1 hour. If you did not ask for this, ignore this email: your password stays the same.`,
+    `Bonjour ${fullName},\n\n` +
+    `Nous avons reçu une demande de réinitialisation de votre mot de passe. Ouvrez ce lien pour en choisir un nouveau :\n${url}\n\n` +
+    `Le lien est valable 1 heure. Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail : votre mot de passe reste inchangé.`,
   html:
-    `<p>Hello ${escapeHtml(fullName)},</p>` +
-    `<p>We received a request to reset your password.</p>` +
-    `<p><a href="${escapeHtml(url)}">Choose a new password</a></p>` +
-    `<p>The link is valid for 1 hour. If you did not ask for this, ignore this email: your password stays the same.</p>`,
+    `<p>Bonjour ${escapeHtml(fullName)},</p>` +
+    `<p>Nous avons reçu une demande de réinitialisation de votre mot de passe.</p>` +
+    `<p><a href="${escapeHtml(url)}">Choisir un nouveau mot de passe</a></p>` +
+    `<p>Le lien est valable 1 heure. Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail : votre mot de passe reste inchangé.</p>`,
 });
