@@ -1,10 +1,10 @@
-import * as Dialog from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button.jsx';
+import ConfirmDialog from '../../components/ConfirmDialog.jsx';
 import Input from '../../components/Input.jsx';
 import PageHeader from '../../components/PageHeader.jsx';
 import { showServerError } from '../../lib/formErrors.js';
@@ -210,29 +210,16 @@ export default function AccountPage() {
         </section>
       </main>
 
-      <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50" />
-          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-6 shadow-xl">
-            <Dialog.Title className="font-display text-2xl font-bold text-ink">
-              {t('account.sessions.confirmTitle')}
-            </Dialog.Title>
-            <Dialog.Description className="mt-3 text-muted">
-              {t('account.sessions.confirmText')}
-            </Dialog.Description>
-            <div className="mt-6 flex flex-wrap justify-end gap-3">
-              <Dialog.Close asChild>
-                <Button type="button" variant="ghost">
-                  {t('account.sessions.cancel')}
-                </Button>
-              </Dialog.Close>
-              <Button type="button" onClick={confirmLogoutAll} disabled={logoutAll.isPending}>
-                {t('account.sessions.confirm')}
-              </Button>
-            </div>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <ConfirmDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        title={t('account.sessions.confirmTitle')}
+        text={t('account.sessions.confirmText')}
+        confirmLabel={t('account.sessions.confirm')}
+        cancelLabel={t('account.sessions.cancel')}
+        onConfirm={confirmLogoutAll}
+        loading={logoutAll.isPending}
+      />
     </div>
   );
 }

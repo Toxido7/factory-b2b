@@ -24,6 +24,8 @@ import RegisterPage from "../features/auth/RegisterPage.jsx";
 import ForgotPasswordPage from "../features/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "../features/auth/ResetPasswordPage.jsx";
 import VerifyEmailPage from "../features/auth/VerifyEmailPage.jsx";
+import AdminCategoriesPage from "../features/admin/AdminCategoriesPage.jsx";
+import AdminProductsPage from "../features/admin/AdminProductsPage.jsx";
 import { GuestOnly, RequireAuth } from "./guards.jsx";
 
 export const router = createBrowserRouter([
@@ -82,7 +84,20 @@ export const router = createBrowserRouter([
       {
         path: "admin",
         element: <AdminLayout />,
-        children: [{ index: true, element: <ComingSoon title="Dashboard" /> }],
+        children: [
+          { index: true, element: <ComingSoon title="admin.nav.dashboard" /> },
+          { path: "categories", element: <AdminCategoriesPage /> },
+          {
+            path: "products",
+            children: [
+              { index: true, element: <AdminProductsPage /> },
+              { path: "new", element: <ComingSoon title="admin.nav.products" /> },
+              { path: ":id", element: <ComingSoon title="admin.nav.products" /> },
+            ],
+          },
+          { path: "requests", element: <ComingSoon title="admin.nav.requests" /> },
+          { path: "users", element: <ComingSoon title="admin.nav.users" /> },
+        ],
       },
     ],
   },

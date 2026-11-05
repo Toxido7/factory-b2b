@@ -53,6 +53,20 @@ export const changePasswordSchema = z
     message: "account.password.mismatch",
   });
 
+export const categorySchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, "validation.categoryNameMin")
+    .max(100, "validation.categoryNameMax"),
+  description: z
+    .string()
+    .trim()
+    .max(500, "validation.categoryDescriptionMax")
+    .optional(),
+  parentId: z.string().optional(),
+});
+
 export const forgotSchema = z.object({ email: z.email("validation.emailInvalid") });
 
 export const resetSchema = z.object({ password });

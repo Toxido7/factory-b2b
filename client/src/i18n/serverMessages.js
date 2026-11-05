@@ -5,6 +5,7 @@ const serverMessages = {
   "Validation failed": "La validation a échoué",
   "Invalid email or password": "E-mail ou mot de passe invalide",
   "Account disabled": "Compte désactivé",
+  "Resource already exists": "Cette ressource existe déjà.",
   "Email already registered": "Cette adresse e-mail est déjà utilisée",
   "Missing refresh token": "Jeton de rafraîchissement manquant",
   "Invalid refresh token": "Jeton de rafraîchissement invalide",
