@@ -92,10 +92,10 @@ const optionalDecimalString = (message, options) =>
     }, message);
 
 export const productSchema = z.object({
-  sku: z.string().trim().min(1, 'adminProductForm.invalidNumber').max(50, 'adminProductForm.invalidNumber'),
-  name: z.string().trim().min(2, 'adminProductForm.invalidNumber').max(150, 'adminProductForm.invalidNumber'),
-  description: z.string().trim().max(5000, 'adminProductForm.invalidNumber').optional(),
-  categoryId: z.string().min(1, 'adminProductForm.invalidNumber'),
+  sku: z.string().trim().min(1, 'adminProductForm.skuRequired').max(50, 'adminProductForm.skuRequired'),
+  name: z.string().trim().min(2, 'adminProductForm.nameLength').max(150, 'adminProductForm.nameLength'),
+  description: z.string().trim().max(5000, 'adminProductForm.descriptionTooLong').optional(),
+  categoryId: z.string().min(1, 'adminProductForm.categoryRequired'),
   price: decimalString('adminProductForm.invalidPrice', {
     max: 99999999.99,
     positive: true,

@@ -83,7 +83,6 @@
     "title": "L'atelier",
     "intro": "[Présentation de l'atelier : histoire, mission, savoir-faire. Texte à fournir par le client.]"
   },
-
   "footer": {
     "tagline": "Maroquinerie & prêt-à-porter. Du style à vos envies.",
     "shop": "Boutique",
@@ -478,6 +477,10 @@
     "invalidPrice": "Prix invalide (2 décimales maximum).",
     "invalidDiscount": "La remise doit être entre 0 et 100.",
     "invalidMinQuantity": "La quantité minimale doit être un entier d'au moins 1.",
+    "skuRequired": "La référence est obligatoire (50 caractères maximum).",
+    "nameLength": "Le nom doit contenir entre 2 et 150 caractères.",
+    "descriptionTooLong": "La description est trop longue (5000 caractères maximum).",
+    "categoryRequired": "Veuillez choisir une catégorie.",
     "notFoundTitle": "Produit introuvable",
     "notFoundText": "Ce produit n'existe pas.",
     "photos": {
