@@ -457,6 +457,46 @@
     "hideText": "Le produit disparaîtra du site. Les demandes déjà envoyées gardent son nom et son prix.",
     "hideConfirm": "Oui, masquer"
   },
+  "adminProductForm": {
+    "newTitle": "Nouveau produit",
+    "editTitle": "Modifier le produit",
+    "back": "Retour aux produits",
+    "sku": "Référence (SKU)",
+    "skuHint": "Sera enregistrée en majuscules.",
+    "name": "Nom du produit",
+    "description": "Description (facultatif)",
+    "category": "Catégorie",
+    "chooseCategory": "Choisir une catégorie",
+    "price": "Prix (TND)",
+    "minQuantity": "Quantité minimale",
+    "discount": "Remise (%)",
+    "discountHint": "De 0 à 100. Laissez vide pour aucune remise.",
+    "create": "Créer le produit",
+    "created": "Produit créé. Ajoutez maintenant des photos.",
+    "saved": "Produit enregistré.",
+    "invalidNumber": "Nombre invalide.",
+    "invalidPrice": "Prix invalide (2 décimales maximum).",
+    "invalidDiscount": "La remise doit être entre 0 et 100.",
+    "invalidMinQuantity": "La quantité minimale doit être un entier d'au moins 1.",
+    "notFoundTitle": "Produit introuvable",
+    "notFoundText": "Ce produit n'existe pas.",
+    "photos": {
+      "title": "Photos",
+      "hint": "JPEG, PNG ou WebP, 5 Mo maximum, 5 photos au plus.",
+      "needSave": "Enregistrez le produit pour ajouter des photos.",
+      "add": "Ajouter une photo",
+      "uploading": "Envoi en cours…",
+      "empty": "Aucune photo pour le moment.",
+      "remove": "Supprimer la photo",
+      "removeTitle": "Supprimer cette photo ?",
+      "removeText": "La photo sera définitivement supprimée.",
+      "removeConfirm": "Oui, supprimer",
+      "badType": "Format non accepté. Utilisez JPEG, PNG ou WebP.",
+      "tooBig": "Photo trop lourde (5 Mo maximum).",
+      "tooMany": "Maximum 5 photos par produit.",
+      "main": "Photo principale"
+    }
+  },
   "states": {
     "empty": {
       "title": "Rien à afficher pour le moment"

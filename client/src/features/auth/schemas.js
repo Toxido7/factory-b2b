@@ -67,6 +67,64 @@ export const categorySchema = z.object({
   parentId: z.string().optional(),
 });
 
+const decimalString = (message, { min, max, positive = false } = {}) =>
+  z
+    .string()
+    .trim()
+    .min(1, message)
+    .refine((value) => {
+      const normalized = value.replace(',', '.');
+      if (!/^\d+(\.\d{1,2})?$/.test(normalized)) return false;
+      const number = Number(normalized);
+      return Number.isFinite(number)
+        && (!positive || number > 0)
+        && (min === undefined || number >= min)
+        && (max === undefined || number <= max);
+    }, message);
+
+const optionalDecimalString = (message, options) =>
+  z
+    .string()
+    .trim()
+    .refine((value) => {
+      if (!value) return true;
+      return decimalString(message, options).safeParse(value).success;
+    }, message);
+
+export const productSchema = z.object({
+  sku: z.string().trim().min(1, 'adminProductForm.invalidNumber').max(50, 'adminProductForm.invalidNumber'),
+  name: z.string().trim().min(2, 'adminProductForm.invalidNumber').max(150, 'adminProductForm.invalidNumber'),
+  description: z.string().trim().max(5000, 'adminProductForm.invalidNumber').optional(),
+  categoryId: z.string().min(1, 'adminProductForm.invalidNumber'),
+  price: decimalString('adminProductForm.invalidPrice', {
+    max: 99999999.99,
+    positive: true,
+  }),
+  minQuantity: z
+    .string()
+    .trim()
+    .refine((value) => {
+      if (!value) return true;
+      return /^\d+$/.test(value) && Number(value) >= 1 && Number(value) <= 1000000;
+    }, 'adminProductForm.invalidMinQuantity'),
+  discountPercent: optionalDecimalString('adminProductForm.invalidDiscount', {
+    min: 0,
+    max: 100,
+  }),
+});
+
+export function productFormToApi(values) {
+  return {
+    sku: values.sku.trim(),
+    name: values.name.trim(),
+    description: values.description.trim() || undefined,
+    categoryId: values.categoryId,
+    price: Number(values.price.replace(',', '.')),
+    minQuantity: values.minQuantity ? Number(values.minQuantity) : undefined,
+    discountPercent: values.discountPercent ? Number(values.discountPercent.replace(',', '.')) : undefined,
+  };
+}
+
 export const forgotSchema = z.object({ email: z.email("validation.emailInvalid") });
 
 export const resetSchema = z.object({ password });

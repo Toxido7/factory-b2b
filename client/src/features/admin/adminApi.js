@@ -53,3 +53,57 @@ export function useUpdateProduct() {
     onSuccess: () => queryClient.invalidateQueries(),
   });
 }
+// One product (admin view, hidden ones included).
+export function useAdminProduct(id) {
+  return useQuery({
+    queryKey: ["admin", "products", "detail", id],
+    queryFn: async () =>
+      (await api.get(`/admin/products/${id}`)).data.data.product,
+    retry: false, // a 404 will not fix itself
+  });
+}
+
+// POST: optional fields are left out when empty (the server refuses null on create).
+export function useCreateProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (values) => {
+      const body = {
+        sku: values.sku,
+        name: values.name,
+        price: values.price,
+        categoryId: values.categoryId,
+      };
+      if (values.description) body.description = values.description;
+      if (values.minQuantity) body.minQuantity = values.minQuantity;
+      if (values.discountPercent) body.discountPercent = values.discountPercent;
+      return (await api.post("/admin/products", body)).data.data.product;
+    },
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+}
+
+// Upload one photo (multipart, field name "image").
+export function useUploadProductImage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, file }) => {
+      const form = new FormData();
+      form.append("image", file);
+      return (await api.post(`/admin/products/${id}/images`, form)).data.data
+        .product;
+    },
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+}
+
+// Delete one photo by its file name (the last part of its URL).
+export function useDeleteProductImage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, filename }) =>
+      (await api.delete(`/admin/products/${id}/images/${filename}`)).data.data
+        .product,
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+}
