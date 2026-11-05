@@ -11,6 +11,8 @@ const serverMessages = {
   "Refresh token expired": "Jeton de rafraîchissement expiré",
   "Invalid or expired verification link": "Lien de vérification invalide ou expiré",
   "Email is already verified": "L'adresse e-mail est déjà vérifiée",
+  "Please verify your email before sending a request":
+    "Veuillez vérifier votre adresse e-mail avant d'envoyer une demande.",
   "Invalid or expired reset link": "Lien de réinitialisation invalide ou expiré",
   "Current password is incorrect": "Le mot de passe actuel est incorrect",
   "New password must be different from the current one":
