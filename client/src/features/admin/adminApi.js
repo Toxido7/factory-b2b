@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { api } from "../../api/client"; // same import as requestsApi.js
 
 // All categories (no pagination on the server).
@@ -105,5 +110,42 @@ export function useDeleteProductImage() {
       (await api.delete(`/admin/products/${id}/images/${filename}`)).data.data
         .product,
     onSuccess: () => queryClient.invalidateQueries(),
+  });
+}
+// One page of ALL customers' requests. Filtering and paging are done by the server.
+export function useAdminRequests({ page, status, q }) {
+  return useQuery({
+    queryKey: ["admin", "requests", "list", { page, status, q }],
+    queryFn: async () => {
+      const params = { page, limit: 20 };
+      if (status) params.status = status;
+      if (q) params.q = q;
+      const res = await api.get("/admin/requests", { params });
+      return res.data.data; // { requests, pagination }
+    },
+    placeholderData: keepPreviousData,
+  });
+}
+
+// One request with items, customer details and handledBy (used in F7.2).
+export function useAdminRequest(id) {
+  return useQuery({
+    queryKey: ["admin", "requests", "detail", id],
+    queryFn: async () =>
+      (await api.get(`/admin/requests/${id}`)).data.data.request,
+    retry: false, // a 404 will not fix itself
+  });
+}
+
+// Change the status of a request (used in F7.2). The server checks the allowed transitions.
+export function useChangeRequestStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, status }) =>
+      (await api.patch(`/admin/requests/${id}/status`, { status })).data.data
+        .request,
+    // refreshes the list AND the detail, both start with these two key parts
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["admin", "requests"] }),
   });
 }

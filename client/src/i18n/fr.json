@@ -500,6 +500,28 @@
       "main": "Photo principale"
     }
   },
+  "adminRequests": {
+    "title": "Demandes",
+    "intro": "Toutes les demandes envoyées par les clients, de la plus récente à la plus ancienne.",
+    "searchLabel": "Rechercher (référence, nom, e-mail, société)",
+    "searchButton": "Rechercher",
+    "statusLabel": "Statut",
+    "allStatuses": "Tous les statuts",
+    "count_one": "{{count}} demande",
+    "count_other": "{{count}} demandes",
+    "colReference": "Référence",
+    "colDate": "Date",
+    "colCustomer": "Client",
+    "colItems": "Produits",
+    "colTotal": "Total estimé",
+    "colStatus": "Statut",
+    "colActions": "Actions",
+    "view": "Ouvrir",
+    "emptyTitle": "Aucune demande pour le moment",
+    "emptyText": "Les demandes des clients apparaîtront ici.",
+    "noResults": "Aucune demande ne correspond à votre recherche.",
+    "noCompany": "Sans société"
+  },
   "states": {
     "empty": {
       "title": "Rien à afficher pour le moment"
