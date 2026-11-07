@@ -28,6 +28,8 @@ import AdminCategoriesPage from "../features/admin/AdminCategoriesPage.jsx";
 import AdminProductsPage from "../features/admin/AdminProductsPage.jsx";
 import AdminProductFormPage from "../features/admin/AdminProductFormPage.jsx";
 import AdminRequestsPage from "../features/admin/AdminRequestsPage.jsx";
+import AdminRequestDetailPage from "../features/admin/AdminRequestDetailPage.jsx";
+import AdminUsersPage from "../features/admin/AdminUsersPage.jsx";
 import { GuestOnly, RequireAuth } from "./guards.jsx";
 
 export const router = createBrowserRouter([
@@ -101,10 +103,10 @@ export const router = createBrowserRouter([
             path: "requests",
             children: [
               { index: true, element: <AdminRequestsPage /> },
-              { path: ":id", element: <ComingSoon title="admin.nav.requests" /> },
+              { path: ":id", element: <AdminRequestDetailPage /> },
             ],
           },
-          { path: "users", element: <ComingSoon title="admin.nav.users" /> },
+          { path: "users", element: <AdminUsersPage /> },
         ],
       },
     ],

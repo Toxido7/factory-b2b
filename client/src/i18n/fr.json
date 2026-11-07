@@ -522,6 +522,104 @@
     "noResults": "Aucune demande ne correspond à votre recherche.",
     "noCompany": "Sans société"
   },
+  "adminRequestDetail": {
+    "back": "Retour aux demandes",
+    "title": "Demande {{reference}}",
+    "receivedOn": "Reçue le {{date}}",
+    "handledBy": "Dernière action par {{name}}",
+    "notHandled": "Pas encore traitée",
+    "emailNotSent": "L'e-mail de notification à l'équipe n'a pas été envoyé pour cette demande. Vérifiez-la ici.",
+    "customer": "Client",
+    "name": "Nom",
+    "company": "Société",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "noPhone": "Non renseigné",
+    "items": "Produits demandés",
+    "product": "Produit",
+    "unitPrice": "Prix unitaire",
+    "discount": "Remise",
+    "quantity": "Quantité",
+    "lineTotal": "Total",
+    "notes": "Notes du client",
+    "noNotes": "Aucune note.",
+    "total": "Total estimé",
+    "statusTitle": "Changer le statut",
+    "noEmail": "Le client ne reçoit aucun e-mail quand vous changez le statut. Appelez-le pour l'informer.",
+    "finalStatus": "Ce statut est final : aucune autre modification n'est possible.",
+    "changed": "Statut mis à jour.",
+    "invalidTransition": "Ce changement n'est plus possible : la demande a été modifiée entre-temps. La page a été actualisée.",
+    "notFoundTitle": "Demande introuvable",
+    "notFoundText": "Cette demande n'existe pas.",
+    "actions": {
+      "CONTACTED": "Marquer comme contactée",
+      "CONFIRMED": "Confirmer la demande",
+      "REJECTED": "Refuser la demande",
+      "CANCELLED": "Annuler la demande"
+    },
+    "confirm": {
+      "CONFIRMED": {
+        "title": "Confirmer cette demande ?",
+        "text": "Vous confirmez l'offre au client. Seule une annulation sera possible ensuite."
+      },
+      "REJECTED": {
+        "title": "Refuser cette demande ?",
+        "text": "Ce statut est final. Vous ne pourrez plus le modifier."
+      },
+      "CANCELLED": {
+        "title": "Annuler cette demande ?",
+        "text": "Ce statut est final. Vous ne pourrez plus le modifier."
+      },
+      "yes": "Oui, continuer"
+    }
+  },
+  "adminUsers": {
+    "title": "Clients",
+    "intro": "Les comptes des clients et de l'équipe. Désactivez un compte ou donnez l'accès administrateur.",
+    "searchLabel": "Rechercher (nom, e-mail, société)",
+    "searchButton": "Rechercher",
+    "statusLabel": "Statut",
+    "roleLabel": "Rôle",
+    "allStatuses": "Tous les statuts",
+    "allRoles": "Tous les rôles",
+    "active": "Actifs",
+    "disabled": "Désactivés",
+    "roleUSER": "Client",
+    "roleADMIN": "Administrateur",
+    "count_one": "{{count}} compte",
+    "count_other": "{{count}} comptes",
+    "colName": "Nom",
+    "colEmail": "E-mail",
+    "colPhone": "Téléphone",
+    "colRole": "Rôle",
+    "colRequests": "Demandes",
+    "colJoined": "Inscrit le",
+    "colStatus": "Statut",
+    "colActions": "Actions",
+    "noCompany": "Sans société",
+    "noPhone": "-",
+    "verified": "Vérifié",
+    "notVerified": "Non vérifié",
+    "you": "Vous",
+    "statusActive": "Actif",
+    "statusDisabled": "Désactivé",
+    "emptyTitle": "Aucun compte",
+    "noResults": "Aucun compte ne correspond à votre recherche.",
+    "disable": "Désactiver",
+    "enable": "Réactiver",
+    "makeAdmin": "Rendre administrateur",
+    "removeAdmin": "Retirer l'accès admin",
+    "done": "Modification enregistrée.",
+    "confirm": {
+      "yes": "Oui, continuer",
+      "disableTitle": "Désactiver ce compte ?",
+      "disableText": "{{name}} ne pourra plus se connecter et sera déconnecté de tous ses appareils. Vous pourrez le réactiver à tout moment.",
+      "makeAdminTitle": "Donner l'accès administrateur ?",
+      "makeAdminText": "{{name}} pourra gérer le catalogue, les demandes et les comptes. À n'accorder qu'à une personne de confiance.",
+      "removeAdminTitle": "Retirer l'accès administrateur ?",
+      "removeAdminText": "{{name}} redeviendra un simple client et sera déconnecté de tous ses appareils."
+    }
+  },
   "states": {
     "empty": {
       "title": "Rien à afficher pour le moment"

@@ -149,3 +149,41 @@ export function useChangeRequestStatus() {
       queryClient.invalidateQueries({ queryKey: ["admin", "requests"] }),
   });
 }
+// One page of customers. Search, filters and paging are done by the server.
+export function useAdminUsers({ page, q, isActive, role }) {
+  return useQuery({
+    queryKey: ["admin", "users", "list", { page, q, isActive, role }],
+    queryFn: async () => {
+      const params = { page, limit: 20 };
+      if (q) params.q = q;
+      if (isActive) params.isActive = isActive; // 'true' or 'false'
+      if (role) params.role = role; // 'USER' or 'ADMIN'
+      const res = await api.get("/admin/users", { params });
+      return res.data.data; // { users, pagination }
+    },
+    placeholderData: keepPreviousData,
+  });
+}
+
+// Disable or enable an account. Disabling also logs the user out everywhere (server).
+export function useSetUserActive() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, isActive }) =>
+      (await api.patch(`/admin/users/${id}/status`, { isActive })).data.data
+        .user,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["admin", "users"] }),
+  });
+}
+
+// Promote to ADMIN or demote to USER. The server also logs that user out everywhere.
+export function useSetUserRole() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, role }) =>
+      (await api.patch(`/admin/users/${id}/role`, { role })).data.data.user,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["admin", "users"] }),
+  });
+}
