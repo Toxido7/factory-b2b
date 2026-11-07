@@ -30,6 +30,7 @@ import AdminProductFormPage from "../features/admin/AdminProductFormPage.jsx";
 import AdminRequestsPage from "../features/admin/AdminRequestsPage.jsx";
 import AdminRequestDetailPage from "../features/admin/AdminRequestDetailPage.jsx";
 import AdminUsersPage from "../features/admin/AdminUsersPage.jsx";
+import AdminDashboardPage from "../features/admin/AdminDashboardPage.jsx";
 import { GuestOnly, RequireAuth } from "./guards.jsx";
 
 export const router = createBrowserRouter([
@@ -89,7 +90,7 @@ export const router = createBrowserRouter([
         path: "admin",
         element: <AdminLayout />,
         children: [
-          { index: true, element: <ComingSoon title="admin.nav.dashboard" /> },
+          { index: true, element: <AdminDashboardPage /> },
           { path: "categories", element: <AdminCategoriesPage /> },
           {
             path: "products",

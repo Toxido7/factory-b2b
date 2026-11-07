@@ -620,6 +620,38 @@
       "removeAdminText": "{{name}} redeviendra un simple client et sera déconnecté de tous ses appareils."
     }
   },
+  "adminDashboard": {
+    "title": "Tableau de bord",
+    "intro": "Une vue d'ensemble de l'activité sur la période choisie.",
+    "periodLabel": "Période",
+    "days": "{{count}} jours",
+    "kpiPending": "En attente",
+    "kpiPendingHint": "demandes à traiter (sur la période)",
+    "kpiTotal": "Demandes reçues",
+    "kpiTotalHint": "sur la période",
+    "kpiConversion": "Taux de confirmation",
+    "kpiConversionHint": "demandes confirmées",
+    "kpiCustomers": "Nouveaux clients",
+    "kpiCustomersHint": "comptes créés sur la période",
+    "seeList": "Voir la liste",
+    "statusTitle": "Répartition par statut",
+    "chartTitle": "Demandes par jour",
+    "chartSummary": "{{total}} demandes entre le {{from}} et le {{to}}, maximum {{max}} en une journée.",
+    "chartRequests_one": "{{count}} demande",
+    "chartRequests_other": "{{count}} demandes",
+    "chartTableDate": "Date",
+    "chartTableCount": "Demandes",
+    "noActivity": "Aucune demande sur cette période.",
+    "topProducts": "Produits les plus demandés",
+    "topProductsHint": "Quantités demandées (hors demandes refusées ou annulées)",
+    "topCustomers": "Meilleurs clients",
+    "topCustomersHint": "Valeur estimée (hors demandes refusées ou annulées)",
+    "units": "{{count}} unités",
+    "requestsCount_one": "{{count}} demande",
+    "requestsCount_other": "{{count}} demandes",
+    "noCompany": "Sans société",
+    "emptyList": "Rien à afficher sur cette période."
+  },
   "states": {
     "empty": {
       "title": "Rien à afficher pour le moment"

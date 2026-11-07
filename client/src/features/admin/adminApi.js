@@ -187,3 +187,53 @@ export function useSetUserRole() {
       queryClient.invalidateQueries({ queryKey: ["admin", "users"] }),
   });
 }
+// Numbers for the 4 KPI cards and the status split.
+export function useAdminOverview({ from, to }) {
+  return useQuery({
+    queryKey: ["admin", "stats", "overview", { from, to }],
+    queryFn: async () =>
+      (await api.get("/admin/stats/overview", { params: { from, to } })).data
+        .data,
+    placeholderData: keepPreviousData,
+  });
+}
+
+// One point per day (empty days come back with count 0).
+export function useAdminRequestsOverTime({ from, to }) {
+  return useQuery({
+    queryKey: ["admin", "stats", "over-time", { from, to }],
+    queryFn: async () =>
+      (
+        await api.get("/admin/stats/requests-over-time", {
+          params: { from, to, interval: "day" },
+        })
+      ).data.data,
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useAdminTopProducts({ from, to }) {
+  return useQuery({
+    queryKey: ["admin", "stats", "top-products", { from, to }],
+    queryFn: async () =>
+      (
+        await api.get("/admin/stats/top-products", {
+          params: { from, to, limit: 5 },
+        })
+      ).data.data,
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useAdminTopCustomers({ from, to }) {
+  return useQuery({
+    queryKey: ["admin", "stats", "top-customers", { from, to }],
+    queryFn: async () =>
+      (
+        await api.get("/admin/stats/top-customers", {
+          params: { from, to, limit: 5 },
+        })
+      ).data.data,
+    placeholderData: keepPreviousData,
+  });
+}

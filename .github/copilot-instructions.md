@@ -30,3 +30,12 @@ Monorepo: `server/` (Node 20, Express 5, Prisma 6, PostgreSQL, Zod, Vitest + sup
 ## Output
 
 When you finish a task, list the changed files and the result of the commands you ran (`npm test` count, `npm run build`).
+
+## Motion and design
+
+- Use Motion (import from `motion/react`) and the components in `client/src/components/motion` (`Reveal`, `Stagger`/`StaggerItem`, `CountUp`) plus constants from `client/src/lib/motion.js`.
+- Animate only opacity and transform, with one calm feel: no bouncy springs and no loops.
+- Everything must respect reduced motion; `MotionConfig` is global.
+- Use icons only from `lucide-react`; decorative icons must have `aria-hidden`.
+- Never use gold text on a light background.
+- Do not install animation or chart libraries without being told.

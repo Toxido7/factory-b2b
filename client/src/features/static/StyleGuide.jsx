@@ -2,6 +2,9 @@ import Button from "../../components/Button.jsx";
 import EmptyState from "../../components/EmptyState.jsx";
 import ErrorState from "../../components/ErrorState.jsx";
 import Skeleton from "../../components/Skeleton.jsx";
+import CountUp from "../../components/motion/CountUp.jsx";
+import Reveal from "../../components/motion/Reveal.jsx";
+import { Stagger, StaggerItem } from "../../components/motion/Stagger.jsx";
 
 const colors = [
   ["ink", "bg-ink"],
@@ -78,6 +81,26 @@ export default function StyleGuide() {
           <p className="text-xs text-muted">Category name</p>
           <p className="font-semibold">Product name</p>
           <p className="mt-2 text-xl font-bold">00.00 TND</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="mb-4 text-xl font-semibold">Motion</h2>
+        <Reveal className="rounded-3xl border border-line bg-white p-6">
+          <p className="font-semibold">Reveal card</p>
+          <p className="mt-2 text-muted">Appears once as it enters the viewport.</p>
+        </Reveal>
+        <Stagger className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {["First", "Second", "Third", "Fourth"].map((label) => (
+            <StaggerItem key={label} className="rounded-3xl border border-line bg-surface p-6">
+              <p className="font-semibold">{label}</p>
+            </StaggerItem>
+          ))}
+        </Stagger>
+        <div className="mt-6 flex flex-wrap gap-8 text-3xl font-bold text-ink">
+          <CountUp value={1280} />
+          <CountUp value={33.3} decimals={1} suffix=" %" />
+          <CountUp value={42} />
         </div>
       </section>
     </div>
