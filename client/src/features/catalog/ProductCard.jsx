@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button.jsx';
 import { formatMoney } from '../../lib/format.js';
+import { flyToList } from '../../lib/flyToList.js';
 import { useRequestList } from '../requestList/RequestListContext.jsx';
 
 function ProductIcon() {
@@ -43,7 +44,7 @@ export default function ProductCard({ product, isNew = false }) {
               src={image}
               alt={product.name}
               loading="lazy"
-              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-700 motion-reduce:transition-none group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full items-center justify-center">
@@ -82,8 +83,9 @@ export default function ProductCard({ product, isNew = false }) {
         <Button
           type="button"
           className="mt-5 w-full"
-          onClick={() => {
+          onClick={(event) => {
             addItem(product);
+            flyToList(event.currentTarget, product.images?.[0]);
           }}
         >
           <PlusIcon />

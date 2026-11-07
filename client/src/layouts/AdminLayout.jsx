@@ -1,10 +1,13 @@
-import { Link, NavLink, Outlet } from 'react-router';
+import { Link, NavLink, Outlet, useLocation } from 'react-router';
+import { motion } from 'motion/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Drawer from '../components/Drawer.jsx';
+import { EASE, DURATION } from '../lib/motion.js';
 
 export default function AdminLayout() {
   const { t } = useTranslation();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const links = [
     { to: '/admin', key: 'admin.nav.dashboard', end: true },
@@ -69,7 +72,14 @@ export default function AdminLayout() {
           </button>
         </header>
         <main className="min-h-screen p-6 lg:p-8">
-          <Outlet />
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: DURATION, ease: EASE }}
+          >
+            <Outlet />
+          </motion.div>
         </main>
       </div>
       <Drawer open={menuOpen} onOpenChange={setMenuOpen} title={t('admin.title')}>

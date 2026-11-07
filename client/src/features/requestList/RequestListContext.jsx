@@ -40,6 +40,7 @@ const RequestListContext = createContext(null);
 export function RequestListProvider({ children }) {
   const [items, setItems] = useState(load);
   const [isOpen, setIsOpen] = useState(false);
+  const [pulse, setPulse] = useState(0); // goes up by 1 every time something is added
   const [notes, setNotes] = useState(loadNotes);
 
   useEffect(() => {
@@ -88,7 +89,7 @@ export function RequestListProvider({ children }) {
         },
       ];
     });
-    setIsOpen(true); // show the drawer so the user sees the result
+    setPulse((p) => p + 1); // the header badge pops (the drawer no longer opens by itself)
   }, []);
 
   const updateQuantity = useCallback((productId, quantity) => {
@@ -122,6 +123,7 @@ export function RequestListProvider({ children }) {
       count: items.length,
       estimatedTotal,
       isOpen,
+      pulse,
       notes,
       setNotes,
       openList: () => setIsOpen(true),
@@ -135,6 +137,7 @@ export function RequestListProvider({ children }) {
       items,
       estimatedTotal,
       isOpen,
+      pulse,
       addItem,
       updateQuantity,
       removeItem,

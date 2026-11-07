@@ -8,6 +8,7 @@ import QueryState from '../../components/QueryState.jsx';
 import QuantityInput from '../../components/QuantityInput.jsx';
 import Skeleton from '../../components/Skeleton.jsx';
 import { formatMoney } from '../../lib/format.js';
+import { flyToList } from '../../lib/flyToList.js';
 import usePageTitle from '../../lib/usePageTitle.js';
 import ProductGallery from './ProductGallery.jsx';
 import { useProduct, useProducts } from './catalogApi.js';
@@ -118,8 +119,9 @@ export default function ProductPage() {
                   <Button
                     type="button"
                     className="mt-8 w-full"
-                    onClick={() => {
+                    onClick={(event) => {
                       addItem(item, quantity);
+                      flyToList(event.currentTarget, item.images?.[0]);
                     }}
                   >
                     {t('requestList.add')}

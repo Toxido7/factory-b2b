@@ -1,4 +1,5 @@
-import { Link, NavLink, Outlet } from 'react-router';
+import { Link, NavLink, Outlet, useLocation } from 'react-router';
+import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import logo from '../assets/logo.png';
 import Button from '../components/Button.jsx';
@@ -6,6 +7,8 @@ import RequestListDrawer from '../components/RequestListDrawer.jsx';
 import { company, isReal } from '../config/company.js';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { useRequestList } from '../features/requestList/RequestListContext.jsx';
+import { FLY_DURATION } from '../lib/flyToList.js';
+import { EASE, DURATION } from '../lib/motion.js';
 
 const links = [
   { to: "/categories", key: "nav.products" },
@@ -17,7 +20,8 @@ const links = [
 export default function PublicLayout() {
   const { t } = useTranslation();
   const { user, status, logout } = useAuth();
-  const { count, openList } = useRequestList();
+  const { count, pulse, openList } = useRequestList();
+  const location = useLocation();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -51,6 +55,7 @@ export default function PublicLayout() {
           <div className="flex items-center gap-4">
             <button
               type="button"
+              data-request-badge
               className="relative flex h-11 w-11 items-center justify-center rounded-full text-white hover:text-accent"
               aria-label={t('requestList.open')}
               onClick={openList}
@@ -59,9 +64,15 @@ export default function PublicLayout() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" d="M5 8h14l-1 12H6L5 8Zm3 0a4 4 0 0 1 8 0" />
               </svg>
               {count > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-xs font-bold text-ink">
+                <motion.span
+                  key={pulse}
+                  initial={{ scale: 1 }}
+                  animate={pulse > 0 ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.35, delay: pulse > 0 ? FLY_DURATION : 0, ease: EASE }}
+                  className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-xs font-bold text-ink"
+                >
                   {count}
-                </span>
+                </motion.span>
               )}
             </button>
             {status === 'loading' ? (
@@ -94,7 +105,14 @@ export default function PublicLayout() {
         </div>
       </header>
       <main className="flex-1">
-        <Outlet />
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: DURATION, ease: EASE }}
+        >
+          <Outlet />
+        </motion.div>
       </main>
       <footer className="bg-ink px-8 py-14 text-white/70">
         <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-4">
