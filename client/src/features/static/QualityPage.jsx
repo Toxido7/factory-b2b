@@ -2,12 +2,13 @@ import { useTranslation } from 'react-i18next';
 import CtaBanner from '../home/CtaBanner.jsx';
 import PageHeader from '../../components/PageHeader.jsx';
 import usePageTitle from '../../lib/usePageTitle.js';
+import { useSiteContent } from '../content/useSiteContent.js';
 
 const certifications = ['cert-1', 'cert-2', 'cert-3'];
 const steps = [
-  ['1', 'quality.p1Title', 'quality.p1Text'],
-  ['2', 'quality.p2Title', 'quality.p2Text'],
-  ['3', 'quality.p3Title', 'quality.p3Text'],
+  ['1', 'quality.p1Title', 'quality.p1', 'quality.p1Text'],
+  ['2', 'quality.p2Title', 'quality.p2', 'quality.p2Text'],
+  ['3', 'quality.p3Title', 'quality.p3', 'quality.p3Text'],
 ];
 
 function QualityIcon() {
@@ -21,11 +22,17 @@ function QualityIcon() {
 
 export default function QualityPage() {
   const { t } = useTranslation();
+  const { text } = useSiteContent();
   usePageTitle(t('quality.title'));
 
   return (
     <div>
-      <PageHeader title="quality.title" intro="quality.intro" />
+      <PageHeader title="quality.title" />
+      <div className="bg-surface">
+        <p className="mx-auto max-w-7xl px-8 pb-16 whitespace-pre-line leading-7 text-muted">
+          {text('quality.intro', t('quality.intro'))}
+        </p>
+      </div>
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-8">
           <h2 className="font-display text-3xl font-bold text-ink">{t('quality.certTitle')}</h2>
@@ -35,8 +42,12 @@ export default function QualityPage() {
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ink text-accent">
                   <QualityIcon />
                 </span>
-                <h3 className="mt-6 font-display text-xl font-bold text-ink">{t('quality.certName')}</h3>
-                <p className="mt-3 leading-7 text-muted">{t('quality.certText')}</p>
+                <h3 className="mt-6 font-display text-xl font-bold text-ink">
+                  {text('quality.certName', t('quality.certName'))}
+                </h3>
+                <p className="mt-3 whitespace-pre-line leading-7 text-muted">
+                  {text('quality.certText', t('quality.certText'))}
+                </p>
               </article>
             ))}
           </div>
@@ -46,13 +57,15 @@ export default function QualityPage() {
         <div className="mx-auto max-w-7xl px-8">
           <h2 className="font-display text-3xl font-bold text-ink">{t('quality.processTitle')}</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {steps.map(([number, title, text]) => (
+            {steps.map(([number, title, contentKey, fallbackKey]) => (
               <article key={number} className="rounded-3xl bg-white p-8">
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accent font-bold text-ink">
                   {number}
                 </span>
                 <h3 className="mt-6 font-display text-xl font-bold text-ink">{t(title)}</h3>
-                <p className="mt-3 leading-7 text-muted">{t(text)}</p>
+                <p className="mt-3 whitespace-pre-line leading-7 text-muted">
+                  {text(contentKey, t(fallbackKey))}
+                </p>
               </article>
             ))}
           </div>

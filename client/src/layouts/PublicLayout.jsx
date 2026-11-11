@@ -11,7 +11,9 @@ import Button from '../components/Button.jsx';
 import AccountMenu from '../components/AccountMenu.jsx';
 import VerifyBanner from '../components/VerifyBanner.jsx';
 import RequestListDrawer from '../components/RequestListDrawer.jsx';
-import { company, isReal } from '../config/company.js';
+import { isReal } from '../config/company.js';
+import useCompany from '../features/content/useCompany.js';
+import { useSiteContent } from '../features/content/useSiteContent.js';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { useRequestList } from '../features/requestList/RequestListContext.jsx';
 import { FLY_DURATION } from '../lib/flyToList.js';
@@ -29,6 +31,8 @@ const links = [
 export default function PublicLayout() {
   const { t } = useTranslation();
   const { user, status } = useAuth();
+  const company = useCompany();
+  const { text } = useSiteContent();
   const { count, pulse, openList } = useRequestList();
   const location = useLocation();
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -48,7 +52,7 @@ export default function PublicLayout() {
     <div className="flex min-h-screen flex-col">
       <div className="hidden bg-accent text-sm text-ink md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-2">
-          <span>{t('topbar.text')}</span>
+          <span>{text('general.topbar', t('topbar.text'))}</span>
           {isReal(company.phone) ? (
             <a href={`tel:${company.phone}`} className="hover:underline">{company.phone}</a>
           ) : (
@@ -153,7 +157,7 @@ export default function PublicLayout() {
               className="h-24 w-auto"
               alt={t('brand.name')}
             />
-            <p className="mt-4 max-w-xs leading-7">{t('footer.tagline')}</p>
+            <p className="mt-4 max-w-xs leading-7">{text('general.tagline', t('footer.tagline'))}</p>
           </div>
           <div>
             <h2 className="font-bold text-white">{t('footer.shop')}</h2>
@@ -174,7 +178,7 @@ export default function PublicLayout() {
           <div>
             <h2 className="font-bold text-white">{t('footer.contact')}</h2>
             <div className="mt-4 flex flex-col gap-3">
-              <span>{company.address}</span>
+              <span className="whitespace-pre-line">{company.address}</span>
               {isReal(company.phone) ? (
                 <a href={`tel:${company.phone}`} className="hover:text-accent">{company.phone}</a>
               ) : (
@@ -185,11 +189,37 @@ export default function PublicLayout() {
               ) : (
                 <span>{company.email}</span>
               )}
+              {company.facebook && (
+                <a
+                  href={company.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="hover:text-accent"
+                >
+                  Facebook
+                </a>
+              )}
+              {company.instagram && (
+                <a
+                  href={company.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="hover:text-accent"
+                >
+                  Instagram
+                </a>
+              )}
             </div>
           </div>
         </div>
         <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-4 border-t border-white/10 pt-6 text-sm md:flex-row md:items-center md:justify-between">
-          <span>{t('brand.legal')}</span>
+          <span>
+            {text('general.taxNumber', '')
+              ? t('brand.copyrightTax', { name: company.name, tax: text('general.taxNumber', '') })
+              : t('brand.copyright', { name: company.name })}
+          </span>
           <div className="flex gap-5">
             <Link to="/privacy" className="hover:text-accent">{t('footer.privacy')}</Link>
             <Link to="/terms" className="hover:text-accent">{t('footer.terms')}</Link>

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import PageHeader from '../../components/PageHeader.jsx';
-import { company, isReal } from '../../config/company.js';
+import { isReal } from '../../config/company.js';
+import useCompany from '../content/useCompany.js';
 import usePageTitle from '../../lib/usePageTitle.js';
 
 const contactItems = [
@@ -23,11 +24,12 @@ function ContactValue({ type, value }) {
   if (type === 'phone' && isReal(value)) return <a href={`tel:${value}`} className="hover:text-accent">{value}</a>;
   if (type === 'email' && isReal(value)) return <a href={`mailto:${value}`} className="hover:text-accent">{value}</a>;
   if (type === 'whatsapp' && isReal(value)) return <a href={`https://wa.me/${value}`} className="hover:text-accent">{value}</a>;
-  return <span>{value}</span>;
+  return <span className="whitespace-pre-line">{value}</span>;
 }
 
 export default function ContactPage() {
   const { t } = useTranslation();
+  const company = useCompany();
   usePageTitle(t('contact.title'));
 
   return (

@@ -237,3 +237,26 @@ export function useAdminTopCustomers({ from, to }) {
     placeholderData: keepPreviousData,
   });
 }
+export function useAdminContent() {
+  return useQuery({
+    queryKey: ["admin", "content"],
+    queryFn: async () => {
+      const res = await api.get("/admin/content");
+      return res.data.data.fields;
+    },
+  });
+}
+
+export function useUpdateContent() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (values) => {
+      const res = await api.patch("/admin/content", { values });
+      return res.data.data.fields;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "content"] });
+      qc.invalidateQueries({ queryKey: ["content"] });
+    },
+  });
+}

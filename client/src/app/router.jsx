@@ -35,6 +35,7 @@ const AdminRequestsPage = lazy(() => import("../features/admin/AdminRequestsPage
 const AdminRequestDetailPage = lazy(() => import("../features/admin/AdminRequestDetailPage.jsx"));
 const AdminUsersPage = lazy(() => import("../features/admin/AdminUsersPage.jsx"));
 const AdminDashboardPage = lazy(() => import("../features/admin/AdminDashboardPage.jsx"));
+const AdminContentPage = lazy(() => import("../features/admin/content/AdminContentPage.jsx"));
 
 export const router = createBrowserRouter([
   {
@@ -115,6 +116,7 @@ export const router = createBrowserRouter([
             ],
           },
           { path: "users", element: <AdminUsersPage /> },
+          { path: "content", element: <AdminContentPage /> },
         ],
       },
     ],

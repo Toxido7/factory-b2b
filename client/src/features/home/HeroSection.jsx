@@ -8,6 +8,7 @@ import Button from '../../components/Button.jsx';
 import Parallax from '../../components/motion/Parallax.jsx';
 import { DURATION, EASE, STAGGER, riseVariants } from '../../lib/motion.js';
 import { useAuth } from '../auth/AuthContext.jsx';
+import { useSiteContent } from '../content/useSiteContent.js';
 
 function MinimumIcon() {
   return (
@@ -28,6 +29,7 @@ function CheckIcon() {
 export default function HeroSection() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { text } = useSiteContent();
   const heroContentVariants = {
     hidden: {},
     show: { transition: { staggerChildren: STAGGER } },
@@ -56,10 +58,10 @@ export default function HeroSection() {
             {t('home.badge')}
           </motion.div>
           <motion.h1 variants={riseVariants} className="mt-6 max-w-2xl font-display text-5xl font-bold leading-tight text-white md:text-6xl">
-            {t('home.title')}
+            {text('home.title', t('home.title'))}
           </motion.h1>
-          <motion.p variants={riseVariants} className="mt-6 max-w-xl text-lg leading-8 text-white/70">
-            {t('home.text')}
+          <motion.p variants={riseVariants} className="mt-6 max-w-xl whitespace-pre-line text-lg leading-8 text-white/70">
+            {text('home.text', t('home.text'))}
           </motion.p>
           <motion.div variants={riseVariants} className="mt-8 flex flex-wrap gap-4">
             <Button as={Link} to="/products">

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Drawer from '../components/Drawer.jsx';
 import { EASE, DURATION } from '../lib/motion.js';
 import PageFallback from '../components/PageFallback.jsx';
+import { PenLine } from 'lucide-react';
 
 export default function AdminLayout() {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ export default function AdminLayout() {
     { to: '/admin/products', key: 'admin.nav.products' },
     { to: '/admin/requests', key: 'admin.nav.requests' },
     { to: '/admin/users', key: 'admin.nav.users' },
+    { to: '/admin/content', key: 'adminContent.nav', icon: PenLine },
   ];
 
   function navigation(dark = true) {
@@ -35,6 +37,7 @@ export default function AdminLayout() {
               }`
             }
           >
+            {link.icon && <link.icon aria-hidden="true" className="mr-2 inline-block h-4 w-4" />}
             {t(link.key)}
           </NavLink>
         ))}

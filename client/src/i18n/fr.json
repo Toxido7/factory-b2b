@@ -8,7 +8,9 @@
   },
   "brand": {
     "name": "EXQGA",
-    "legal": "© EXQGA · [Numéro fiscal]"
+    "legal": "© EXQGA · [Numéro fiscal]",
+    "copyright": "© {{name}}",
+    "copyrightTax": "© {{name}} · N° fiscal : {{tax}}"
   },
   "nav": {
     "products": "Produits",
@@ -682,6 +684,158 @@
     "resent": "E-mail renvoyé. Vérifiez votre boîte de réception.",
     "verified": "Votre e-mail est vérifié. Vous pouvez envoyer votre demande.",
     "close": "J'ai compris"
+  },
+  "adminContent": {
+    "nav": "Contenu du site",
+    "title": "Contenu du site",
+    "subtitle": "Modifiez ici les textes et les coordonnées de votre site. Après avoir enregistré, les changements sont visibles tout de suite.",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "noChanges": "Aucun changement à enregistrer",
+    "saved": "Enregistré. Vos changements sont visibles sur le site.",
+    "viewSite": "Voir sur le site",
+    "resetField": "Remettre le texte d'origine",
+    "notFilled": "Pas encore rempli",
+    "counter": "{{count}} / {{max}} caractères",
+    "serverError": "Certaines informations ne sont pas valides. Vérifiez les champs en rouge.",
+    "unsaved": {
+      "title": "Modifications non enregistrées",
+      "text": "Si vous quittez cette section, vos changements seront perdus.",
+      "leave": "Quitter sans enregistrer",
+      "stay": "Rester ici"
+    },
+    "errors": {
+      "phone": "Numéro invalide. Utilisez des chiffres, par exemple 71 000 000.",
+      "email": "Adresse e-mail invalide. Exemple : contact@exqga.tn",
+      "url": "Le lien doit commencer par https://",
+      "tooLong": "Texte trop long (maximum {{max}} caractères)"
+    },
+    "groups": {
+      "contact": {
+        "title": "Coordonnées",
+        "intro": "Téléphone, adresse et réseaux affichés en bas de chaque page et sur la page Contact."
+      },
+      "general": {
+        "title": "Textes généraux",
+        "intro": "Le message tout en haut du site et la phrase en bas de page."
+      },
+      "home": {
+        "title": "Page d'accueil",
+        "intro": "Le grand titre et les chiffres de la page d'accueil."
+      },
+      "about": {
+        "title": "L'atelier",
+        "intro": "La présentation de votre atelier."
+      },
+      "quality": {
+        "title": "Qualité",
+        "intro": "Votre démarche qualité et vos certifications."
+      }
+    },
+    "fields": {
+      "contact": {
+        "phone": {
+          "label": "Numéro de téléphone",
+          "help": "Le numéro que vos clients appellent. Exemple : 71 000 000"
+        },
+        "whatsapp": {
+          "label": "Numéro WhatsApp",
+          "help": "Exemple : 20 000 000"
+        },
+        "email": {
+          "label": "Adresse e-mail",
+          "help": "L'adresse affichée aux clients sur le site. Les demandes envoyées arrivent sur une autre adresse, réglée par votre développeur."
+        },
+        "address": {
+          "label": "Adresse",
+          "help": "Rue et ville. Vous pouvez écrire sur plusieurs lignes."
+        },
+        "hours": {
+          "label": "Horaires d'ouverture",
+          "help": "Exemple : Du lundi au vendredi, de 8h à 17h"
+        },
+        "facebook": {
+          "label": "Lien Facebook (facultatif)",
+          "help": "Collez l'adresse de votre page. Elle commence par https://. Laissez vide pour ne rien afficher."
+        },
+        "instagram": {
+          "label": "Lien Instagram (facultatif)",
+          "help": "Collez l'adresse de votre page. Elle commence par https://. Laissez vide pour ne rien afficher."
+        }
+      },
+      "general": {
+        "topbar": {
+          "label": "Message tout en haut du site",
+          "help": "Une phrase courte, sur la bande dorée en haut de chaque page."
+        },
+        "tagline": {
+          "label": "Phrase en bas de page",
+          "help": "Une courte phrase sous le logo, en bas de chaque page."
+        },
+        "taxNumber": {
+          "label": "Numéro fiscal",
+          "help": "Affiché tout en bas de la page. Laissez vide pour ne rien afficher."
+        }
+      },
+      "home": {
+        "title": {
+          "label": "Grand titre",
+          "help": "Le titre en gros sur la page d'accueil."
+        },
+        "text": {
+          "label": "Texte sous le titre",
+          "help": "Quelques phrases pour présenter votre atelier."
+        },
+        "statYears": {
+          "label": "Années d'expérience",
+          "help": "Un nombre, par exemple 15 ou 15+."
+        },
+        "statEmployees": {
+          "label": "Nombre d'employés",
+          "help": "Un nombre, par exemple 40."
+        },
+        "statCountries": {
+          "label": "Pays servis",
+          "help": "Un nombre, par exemple 5."
+        },
+        "statUnits": {
+          "label": "Unités par mois",
+          "help": "Un nombre. Écrivez k pour des milliers : 5k."
+        }
+      },
+      "about": {
+        "intro": {
+          "label": "Présentation de l'atelier",
+          "help": "Racontez votre histoire, votre mission et votre savoir-faire. Appuyez sur Entrée pour changer de paragraphe."
+        }
+      },
+      "quality": {
+        "intro": {
+          "label": "Présentation de la qualité",
+          "help": "Expliquez en quelques lignes comment vous travaillez."
+        },
+        "certName": {
+          "label": "Nom de la certification",
+          "help": "Exemple : ISO 9001"
+        },
+        "certText": {
+          "label": "Description de la certification",
+          "help": "Qui l'a délivrée, et ce qu'elle garantit."
+        },
+        "p1": {
+          "label": "Étape 1 : choix des matières",
+          "help": "Comment vous choisissez vos matières."
+        },
+        "p2": {
+          "label": "Étape 2 : fabrication",
+          "help": "Comment vous fabriquez vos produits."
+        },
+        "p3": {
+          "label": "Étape 3 : contrôle avant livraison",
+          "help": "Comment vous contrôlez avant l'envoi."
+        }
+      }
+    }
   },
 
   "states": {
