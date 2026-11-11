@@ -17,6 +17,8 @@ import requestsRoutes from './modules/requests/requests.routes.js';
 import requestsAdminRoutes from './modules/requests/requests.admin.routes.js';
 import usersAdminRoutes from './modules/users/users.admin.routes.js';
 import statsAdminRoutes from './modules/stats/stats.admin.routes.js';
+import contentRoutes from './modules/content/content.routes.js';
+import contentAdminRoutes from './modules/content/content.admin.routes.js';
 import swaggerUi from 'swagger-ui-express';
 import { openapi } from './docs/openapi.js';
 const app = express();
@@ -45,6 +47,8 @@ if (env.NODE_ENV !== 'production') {
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/admin/categories', adminOnly, categoriesAdminRoutes);
+app.use('/api/content', contentRoutes);
+app.use('/api/admin/content', adminOnly, contentAdminRoutes);
 
 app.use('/api/products', productsRoutes);
 app.use('/api/admin/products', adminOnly, productsAdminRoutes);

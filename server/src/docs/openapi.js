@@ -118,6 +118,7 @@ export const openapi = {
     { name: 'Admin requests', description: 'Admin only: see all requests, change status' },
     { name: 'Admin users', description: 'Admin only: customers and admin roles' },
     { name: 'Admin stats', description: 'Admin only: dashboard numbers' },
+    { name: 'Site content', description: 'Editable public website content' },
   ],
   paths: {
     // ---------- Auth ----------
@@ -448,6 +449,72 @@ export const openapi = {
           401: ref('Unauthorized'),
           403: ref('Forbidden'),
           404: ref('NotFound'),
+        },
+      },
+    },
+
+    '/api/content': {
+      get: {
+        tags: ['Site content'],
+        summary: 'Get saved public site content',
+        responses: {
+          200: success('Saved content values', {
+            type: 'object',
+            properties: { content: { type: 'object', additionalProperties: { type: 'string' } } },
+          }),
+        },
+      },
+    },
+    '/api/admin/content': {
+      get: {
+        tags: ['Site content'],
+        summary: 'List editable site content fields',
+        security: bearer,
+        responses: {
+          200: success('Content fields', {
+            type: 'object',
+            properties: {
+              fields: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    key: str(),
+                    group: str(),
+                    type: str(),
+                    maxLength: { type: 'integer' },
+                    value: str({ nullable: true }),
+                  },
+                },
+              },
+            },
+          }),
+          ...adminErrors,
+        },
+      },
+      patch: {
+        tags: ['Site content'],
+        summary: 'Save or reset site content values',
+        security: bearer,
+        requestBody: jsonBody({
+          type: 'object',
+          required: ['values'],
+          properties: {
+            values: {
+              type: 'object',
+              minProperties: 1,
+              maxProperties: 50,
+              additionalProperties: { type: 'string' },
+            },
+          },
+        }),
+        responses: {
+          200: success('Updated content fields', {
+            type: 'object',
+            properties: { fields: { type: 'array' } },
+          }),
+          400: ref('BadRequest'),
+          ...adminErrors,
         },
       },
     },

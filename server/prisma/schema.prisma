@@ -99,6 +99,15 @@ model Product {
   @@index([isActive])
   @@map("products")
 }
+
+model SiteContent {
+  key       String   @id
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("site_content")
+}
+
 enum RequestStatus {
   PENDING
   CONTACTED
