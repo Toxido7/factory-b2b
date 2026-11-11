@@ -837,6 +837,19 @@
       }
     }
   },
+  "errorPage": {
+    "title": "Oups, un problème est survenu",
+    "text": "Ne vous inquiétez pas, vos données ne sont pas perdues. Essayez de recharger la page ou revenez à l'accueil.",
+    "reload": "Recharger la page",
+    "home": "Retour à l'accueil"
+  },
+  "notFoundPage": {
+    "title": "Page introuvable",
+    "text": "Cette page n'existe pas ou a été déplacée.",
+    "home": "Retour à l'accueil",
+    "products": "Voir les produits"
+  },
+  "skipLink": "Aller au contenu principal",
 
   "states": {
     "empty": {

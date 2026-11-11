@@ -6,11 +6,14 @@ import Drawer from '../components/Drawer.jsx';
 import { EASE, DURATION } from '../lib/motion.js';
 import PageFallback from '../components/PageFallback.jsx';
 import { PenLine } from 'lucide-react';
+import RouteFocus from '../components/RouteFocus.jsx';
+import usePageMeta from '../lib/usePageMeta.js';
 
 export default function AdminLayout() {
   const { t } = useTranslation();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  usePageMeta();
   const links = [
     { to: '/admin', key: 'admin.nav.dashboard', end: true },
     { to: '/admin/categories', key: 'admin.nav.categories' },
@@ -57,6 +60,12 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-surface">
+      <a
+        href="#main"
+        className="sr-only fixed left-4 top-4 z-50 rounded-full bg-white px-4 py-3 text-ink focus:not-sr-only focus:outline-3 focus:outline-accent"
+      >
+        {t('skipLink')}
+      </a>
       <aside className="fixed inset-y-0 left-0 hidden w-64 bg-ink p-6 text-white lg:block">
         <p className="mb-8 text-lg font-bold">{t('admin.title')}</p>
         {navigation()}
@@ -75,7 +84,8 @@ export default function AdminLayout() {
             </svg>
           </button>
         </header>
-        <main className="min-h-screen p-6 lg:p-8">
+        <main id="main" tabIndex={-1} className="min-h-screen p-6 outline-none lg:p-8">
+          <RouteFocus />
           <motion.div
             key={location.pathname}
             initial={{ opacity: 0, y: 8 }}

@@ -4,7 +4,6 @@ import PublicLayout from "../layouts/PublicLayout.jsx";
 import AuthLayout from "../layouts/AuthLayout.jsx";
 import Home from "../features/static/Home.jsx";
 import StyleGuide from "../features/static/StyleGuide.jsx";
-import NotFound from "../features/static/NotFound.jsx";
 import ComingSoon from "../features/static/ComingSoon.jsx";
 import AboutPage from "../features/static/AboutPage.jsx";
 import CategoriesPage from "../features/catalog/CategoriesPage.jsx";
@@ -20,6 +19,8 @@ import ForgotPasswordPage from "../features/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "../features/auth/ResetPasswordPage.jsx";
 import VerifyEmailPage from "../features/auth/VerifyEmailPage.jsx";
 import PageFallback from "../components/PageFallback.jsx";
+import ErrorPage from "../components/ErrorPage.jsx";
+import NotFoundPage from "../components/NotFoundPage.jsx";
 import { GuestOnly, RequireAuth } from "./guards.jsx";
 
 const AdminLayout = lazy(() => import("../layouts/AdminLayout.jsx"));
@@ -40,6 +41,7 @@ const AdminContentPage = lazy(() => import("../features/admin/content/AdminConte
 export const router = createBrowserRouter([
   {
     element: <PublicLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Home /> },
       { path: "products", element: <ProductsPage /> },
@@ -84,11 +86,12 @@ export const router = createBrowserRouter([
         ],
       },
       { path: "styleguide", element: <StyleGuide /> },
-      { path: "*", element: <NotFound /> },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
   {
     element: <RequireAuth role="ADMIN" />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "admin",

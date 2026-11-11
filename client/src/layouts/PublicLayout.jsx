@@ -20,6 +20,8 @@ import { FLY_DURATION } from '../lib/flyToList.js';
 import { EASE, DURATION } from '../lib/motion.js';
 import PageFallback from '../components/PageFallback.jsx';
 import SearchDialog from '../components/SearchDialog.jsx';
+import RouteFocus from '../components/RouteFocus.jsx';
+import usePageMeta from '../lib/usePageMeta.js';
 
 const links = [
   { to: "/categories", key: "nav.products" },
@@ -37,6 +39,7 @@ export default function PublicLayout() {
   const location = useLocation();
   const [hasScrolled, setHasScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  usePageMeta();
 
   useEffect(() => {
     function updateScrolledState() {
@@ -50,6 +53,12 @@ export default function PublicLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <a
+        href="#main"
+        className="sr-only fixed left-4 top-4 z-50 rounded-full bg-white px-4 py-3 text-ink focus:not-sr-only focus:outline-3 focus:outline-accent"
+      >
+        {t('skipLink')}
+      </a>
       <div className="hidden bg-accent text-sm text-ink md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-2">
           <span>{text('general.topbar', t('topbar.text'))}</span>
@@ -130,7 +139,8 @@ export default function PublicLayout() {
         </div>
       </header>
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-      <main className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1 outline-none">
+        <RouteFocus />
         <motion.div
           key={location.pathname}
           initial={{ opacity: 0, y: 8 }}
