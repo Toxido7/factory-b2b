@@ -1,0 +1,13 @@
+# Update the domain at deploy time.
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /account/
+Disallow: /request-list
+Disallow: /login
+Disallow: /register
+Disallow: /verify-email
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /api/
+Sitemap: https://exqga.tn/sitemap.xml
