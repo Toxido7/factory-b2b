@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import Button from '../../components/Button.jsx';
 import ConfirmDialog from '../../components/ConfirmDialog.jsx';
 import EmptyState from '../../components/EmptyState.jsx';
@@ -131,7 +132,7 @@ export default function AdminUsersPage() {
     setDialog(null);
     setActiveAction(null);
     if (!error) {
-      setNotice('done');
+      toast.success(t('adminUsers.done'));
       window.setTimeout(() => actionRefs.current[`${id}:${action}`]?.focus(), 0);
       return;
     }
@@ -233,7 +234,7 @@ export default function AdminUsersPage() {
             role={notice.type === 'error' ? 'alert' : 'status'}
             className={`mb-6 rounded-xl bg-surface p-3 text-sm ${notice.type === 'error' ? 'text-red-700' : 'text-muted'}`}
           >
-            {notice.type === 'error' ? notice.message : t('adminUsers.done')}
+            {notice.message}
           </p>
         )}
         <QueryState

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import Button from '../../components/Button.jsx';
 import ConfirmDialog from '../../components/ConfirmDialog.jsx';
 import EmptyState from '../../components/EmptyState.jsx';
@@ -183,13 +184,97 @@ function PhotosSection({ product, id }) {
   );
 }
 
+function PendingPhotosSection({ productName, pendingFiles, setPendingFiles }) {
+  const { t } = useTranslation();
+  const inputRef = useRef(null);
+  const pendingRef = useRef(pendingFiles);
+  const [photoError, setPhotoError] = useState('');
+  pendingRef.current = pendingFiles;
+
+  useEffect(() => () => {
+    pendingRef.current.forEach(({ preview }) => URL.revokeObjectURL(preview));
+  }, []);
+
+  function handleFile(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setPhotoError(t('adminProductForm.photos.badType'));
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setPhotoError(t('adminProductForm.photos.tooBig'));
+      return;
+    }
+    if (pendingFiles.length >= 5) {
+      setPhotoError(t('adminProductForm.photos.tooMany'));
+      return;
+    }
+    setPhotoError('');
+    setPendingFiles((current) => [
+      ...current,
+      { file, preview: URL.createObjectURL(file) },
+    ]);
+  }
+
+  function removePending(preview) {
+    URL.revokeObjectURL(preview);
+    setPendingFiles((current) => current.filter((item) => item.preview !== preview));
+  }
+
+  return (
+    <section className="mt-6 rounded-3xl border border-line bg-white p-6 sm:p-8">
+      <h2 className="font-display text-2xl font-bold text-ink">{t('adminProductForm.photos.title')}</h2>
+      <p className="mt-2 text-sm text-muted">{t('adminProductForm.photos.hint')}</p>
+      <p className="mt-1 text-sm text-muted">{t('adminProductForm.photos.pendingHint')}</p>
+      {photoError && <p role="alert" className="mt-4 rounded-xl bg-surface p-3 text-sm text-red-700">{photoError}</p>}
+      {pendingFiles.length > 0 && (
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {pendingFiles.map(({ preview }) => (
+            <div key={preview} className="relative">
+              <div className="aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-surface to-line">
+                <ProductPhoto url={preview} name={productName} />
+              </div>
+              {pendingFiles[0].preview === preview && (
+                <p className="mt-2 text-sm text-muted">{t('adminProductForm.photos.main')}</p>
+              )}
+              <button
+                type="button"
+                aria-label={t('adminProductForm.photos.remove')}
+                className="mt-2 text-sm font-medium text-ink underline hover:text-accent focus-visible:outline-2 focus-visible:outline-ink"
+                onClick={() => removePending(preview)}
+              >
+                {t('adminProductForm.photos.remove')}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      <label className="mt-6 inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full border-2 border-ink px-6 font-semibold text-ink transition hover:bg-ink hover:text-white focus-within:outline-3 focus-within:outline-ink">
+        <span>{t('adminProductForm.photos.add')}</span>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="sr-only"
+          onChange={handleFile}
+        />
+      </label>
+    </section>
+  );
+}
+
 function ProductForm({ product, categories, mode, onSaved }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const create = useCreateProduct();
   const update = useUpdateProduct();
+  const upload = useUploadProductImage();
   const mutation = mode === 'create' ? create : update;
+  const [pendingFiles, setPendingFiles] = useState([]);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const {
     register,
     handleSubmit,
@@ -197,6 +282,13 @@ function ProductForm({ product, categories, mode, onSaved }) {
     setError,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(productSchema), defaultValues: initialValues(product) });
+
+  useEffect(() => {
+    if (location.state?.notice) {
+      toast.success(location.state.notice);
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location, navigate]);
 
   useEffect(() => {
     reset(initialValues(product));
@@ -207,9 +299,23 @@ function ProductForm({ product, categories, mode, onSaved }) {
       const apiValues = productFormToApi(values);
       if (mode === 'create') {
         const created = await create.mutateAsync(apiValues);
+        let failures = 0;
+        setUploadingPhotos(pendingFiles.length > 0);
+        for (const { file } of pendingFiles) {
+          try {
+            await upload.mutateAsync({ id: created.id, file });
+          } catch {
+            failures += 1;
+          }
+        }
+        setUploadingPhotos(false);
+        if (failures > 0) {
+          toast.error(t('adminProductForm.photos.partialFail', { count: failures }));
+        } else {
+          toast.success(t('adminProductForm.created'));
+        }
         navigate(`/admin/products/${created.id}`, {
           replace: true,
-          state: { notice: t('adminProductForm.created') },
         });
       } else {
         await update.mutateAsync({
@@ -228,20 +334,23 @@ function ProductForm({ product, categories, mode, onSaved }) {
 
   return (
     <>
-      {location.state?.notice && <p role="status" className="mb-6 rounded-xl bg-surface p-3 text-sm text-muted">{location.state.notice}</p>}
       <section className="rounded-3xl border border-line bg-white p-6 sm:p-8">
         <form onSubmit={handleSubmit(submit)} className="space-y-6" noValidate>
           {errors.root?.message && <p role="alert" className="rounded-xl bg-surface p-3 text-sm text-red-700">{errors.root.message}</p>}
           <ProductFields register={register} errors={errors} categories={categories} />
-          <Button type="submit" disabled={isSubmitting || mutation.isPending}>
-            {mode === 'create' ? t('adminProductForm.create') : t('admin.common.save')}
+          <Button type="submit" disabled={isSubmitting || mutation.isPending || uploadingPhotos}>
+            {uploadingPhotos ? t('adminProductForm.photos.uploading') : mode === 'create' ? t('adminProductForm.create') : t('admin.common.save')}
           </Button>
         </form>
       </section>
       {mode === 'edit' ? (
         <PhotosSection product={product} id={product.id} />
       ) : (
-        <p className="mt-6 text-sm text-muted">{t('adminProductForm.photos.needSave')}</p>
+        <PendingPhotosSection
+          productName={initialValues(product).name}
+          pendingFiles={pendingFiles}
+          setPendingFiles={setPendingFiles}
+        />
       )}
     </>
   );
@@ -261,7 +370,6 @@ function CreateProductPage({ categories }) {
 function EditProductPage({ id, categories }) {
   const { t } = useTranslation();
   const query = useAdminProduct(id);
-  const [saved, setSaved] = useState(false);
   usePageTitle(query.data ? t('adminProductForm.editTitle') : t('adminProducts.title'));
 
   if (query.error?.response?.status === 404) {
@@ -274,8 +382,12 @@ function EditProductPage({ id, categories }) {
     <QueryState query={query} skeleton={skeleton}>
       {(product) => (
         <>
-          <ProductForm product={product} categories={categories} mode="edit" onSaved={() => setSaved(true)} />
-          {saved && <p role="status" className="mt-6 text-sm text-muted">{t('adminProductForm.saved')}</p>}
+          <ProductForm
+            product={product}
+            categories={categories}
+            mode="edit"
+            onSaved={() => toast.success(t('adminProductForm.saved'))}
+          />
         </>
       )}
     </QueryState>

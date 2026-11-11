@@ -4,6 +4,8 @@ import Button from '../../components/Button.jsx';
 import EmptyState from '../../components/EmptyState.jsx';
 import QueryState from '../../components/QueryState.jsx';
 import Skeleton from '../../components/Skeleton.jsx';
+import Reveal from '../../components/motion/Reveal.jsx';
+import { Stagger, StaggerItem } from '../../components/motion/Stagger.jsx';
 import CategoryTile from '../catalog/CategoryTile.jsx';
 import { useCategories } from '../catalog/catalogApi.js';
 
@@ -15,12 +17,12 @@ export default function CategoriesSection() {
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-8">
         <div className="flex items-end justify-between gap-6">
-          <div>
+          <Reveal>
             <p className="text-sm font-bold tracking-[0.2em] text-ink">{t('catalog.eyebrow')}</p>
             <h2 className="mt-3 text-3xl font-bold text-ink md:text-4xl">
               {t('catalog.categoriesTitle')}
             </h2>
-          </div>
+          </Reveal>
           <Button as={Link} to="/products" variant="ghost">
             {t('catalog.seeAll')}
           </Button>
@@ -39,11 +41,13 @@ export default function CategoriesSection() {
             empty={<EmptyState title={t('catalog.noCategories')} />}
           >
             {(categories) => (
-              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+              <Stagger className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {categories.slice(0, 6).map((category, index) => (
-                  <CategoryTile key={category.id} category={category} index={index} />
+                  <StaggerItem key={category.id}>
+                    <CategoryTile category={category} index={index} />
+                  </StaggerItem>
                 ))}
-              </div>
+              </Stagger>
             )}
           </QueryState>
         </div>

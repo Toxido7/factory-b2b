@@ -178,7 +178,7 @@ export default function AdminDashboardPage() {
               <section className="rounded-3xl border border-line bg-white p-6">
                 <h2 className="font-display text-2xl font-bold text-ink">{t('adminDashboard.statusTitle')}</h2>
                 {data.totalRequests === 0 ? (
-                  {noActivity}
+                  noActivity
                 ) : (
                   <>
                     <div className="mt-6 flex h-5 overflow-hidden rounded-full bg-surface">

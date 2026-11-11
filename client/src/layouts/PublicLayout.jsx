@@ -1,14 +1,23 @@
-import { Link, NavLink, Outlet, useLocation } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Suspense } from 'react';
+import { Link, NavLink, Outlet, ScrollRestoration, useLocation } from 'react-router';
 import { motion } from 'motion/react';
+import { Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import logo from '../assets/logo.png';
+import logo256 from '../assets/logo-256.webp';
+import logo512 from '../assets/logo-512.webp';
+import logo1024 from '../assets/logo-1024.webp';
 import Button from '../components/Button.jsx';
+import AccountMenu from '../components/AccountMenu.jsx';
+import VerifyBanner from '../components/VerifyBanner.jsx';
 import RequestListDrawer from '../components/RequestListDrawer.jsx';
 import { company, isReal } from '../config/company.js';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { useRequestList } from '../features/requestList/RequestListContext.jsx';
 import { FLY_DURATION } from '../lib/flyToList.js';
 import { EASE, DURATION } from '../lib/motion.js';
+import PageFallback from '../components/PageFallback.jsx';
+import SearchDialog from '../components/SearchDialog.jsx';
 
 const links = [
   { to: "/categories", key: "nav.products" },
@@ -19,9 +28,21 @@ const links = [
 
 export default function PublicLayout() {
   const { t } = useTranslation();
-  const { user, status, logout } = useAuth();
+  const { user, status } = useAuth();
   const { count, pulse, openList } = useRequestList();
   const location = useLocation();
+  const [hasScrolled, setHasScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    function updateScrolledState() {
+      setHasScrolled(window.scrollY > 8);
+    }
+
+    updateScrolledState();
+    window.addEventListener('scroll', updateScrolledState, { passive: true });
+    return () => window.removeEventListener('scroll', updateScrolledState);
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -35,7 +56,14 @@ export default function PublicLayout() {
           )}
         </div>
       </div>
-      <header className="border-b border-white/10 bg-ink">
+      <VerifyBanner />
+      <header className="relative sticky top-0 z-30 min-h-20 border-b border-white/10 bg-ink">
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-x-0 bottom-0 h-2 shadow-lg transition-opacity motion-reduce:transition-none ${
+            hasScrolled ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
         <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-4">
           <Link to="/" className="font-display text-lg font-bold uppercase tracking-[0.25em] text-white">
             {t('brand.name')}
@@ -75,26 +103,19 @@ export default function PublicLayout() {
                 </motion.span>
               )}
             </button>
+            <button
+              type="button"
+              className="relative flex h-11 w-11 items-center justify-center rounded-full text-white hover:text-accent"
+              aria-label={t('search.open')}
+              onClick={() => setSearchOpen(true)}
+            >
+              <Search aria-hidden="true" className="h-6 w-6" />
+            </button>
             {status === 'loading' ? (
               <div className="h-12 w-24" />
             ) : user ? (
               <div className="flex items-center gap-4">
-              {user.role === 'ADMIN' && (
-                <Link to="/admin" className="font-medium text-white/80 hover:text-accent">
-                  {t('nav.admin')}
-                </Link>
-              )}
-              {user.role === 'USER' && (
-                <Link to="/account/requests" className="font-medium text-white/80 hover:text-accent">
-                  {t('myRequests.title')}
-                </Link>
-              )}
-              <Link to="/account" className="text-sm text-white/70 hover:text-accent">
-                {user.fullName}
-              </Link>
-              <Button variant="light" onClick={logout}>
-                {t('nav.logout')}
-              </Button>
+                <AccountMenu />
               </div>
             ) : (
               <Button as={Link} to="/login">
@@ -104,6 +125,7 @@ export default function PublicLayout() {
           </div>
         </div>
       </header>
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
       <main className="flex-1">
         <motion.div
           key={location.pathname}
@@ -111,13 +133,26 @@ export default function PublicLayout() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: DURATION, ease: EASE }}
         >
-          <Outlet />
+          <Suspense fallback={<PageFallback />}>
+            <Outlet />
+          </Suspense>
         </motion.div>
       </main>
+      <ScrollRestoration />
       <footer className="bg-ink px-8 py-14 text-white/70">
         <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-4">
           <div>
-            <img src={logo} className="h-24 w-auto" alt={t('brand.name')} />
+            <img
+              src={logo512}
+              srcSet={`${logo256} 256w, ${logo512} 512w, ${logo1024} 1024w`}
+              sizes="96px"
+              width={1254}
+              height={1254}
+              loading="lazy"
+              decoding="async"
+              className="h-24 w-auto"
+              alt={t('brand.name')}
+            />
             <p className="mt-4 max-w-xs leading-7">{t('footer.tagline')}</p>
           </div>
           <div>

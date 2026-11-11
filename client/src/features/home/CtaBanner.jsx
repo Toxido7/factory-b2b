@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button.jsx';
+import Reveal from '../../components/motion/Reveal.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
 
 export default function CtaBanner() {
@@ -9,7 +10,7 @@ export default function CtaBanner() {
 
   return (
     <section className="py-20">
-      <div className="relative mx-auto flex max-w-7xl flex-col gap-8 overflow-hidden rounded-3xl bg-ink px-8 py-12 md:flex-row md:items-center md:justify-between md:px-12">
+      <Reveal className="relative mx-auto flex max-w-7xl flex-col gap-8 overflow-hidden rounded-3xl bg-ink px-8 py-12 md:flex-row md:items-center md:justify-between md:px-12">
         <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/20 blur-3xl" aria-hidden="true" />
         <div className="max-w-2xl">
           <h2 className="text-3xl font-bold text-white md:text-4xl">{t('home.cta.title')}</h2>
@@ -25,7 +26,7 @@ export default function CtaBanner() {
             {t('home.cta.contact')}
           </Button>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

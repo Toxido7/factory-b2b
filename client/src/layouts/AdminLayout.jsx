@@ -1,9 +1,10 @@
-import { Link, NavLink, Outlet, useLocation } from 'react-router';
+import { Link, NavLink, Outlet, ScrollRestoration, useLocation } from 'react-router';
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Drawer from '../components/Drawer.jsx';
 import { EASE, DURATION } from '../lib/motion.js';
+import PageFallback from '../components/PageFallback.jsx';
 
 export default function AdminLayout() {
   const { t } = useTranslation();
@@ -78,9 +79,12 @@ export default function AdminLayout() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: DURATION, ease: EASE }}
           >
-            <Outlet />
+            <Suspense fallback={<PageFallback />}>
+              <Outlet />
+            </Suspense>
           </motion.div>
         </main>
+        <ScrollRestoration />
       </div>
       <Drawer open={menuOpen} onOpenChange={setMenuOpen} title={t('admin.title')}>
         {navigation(false)}

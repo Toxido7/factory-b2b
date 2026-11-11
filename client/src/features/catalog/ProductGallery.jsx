@@ -34,7 +34,11 @@ export default function ProductGallery({ images = [], name }) {
           <img
             src={activeImage}
             alt={name}
+            width={800}
+            height={800}
             loading={activeIndex === 0 ? 'eager' : 'lazy'}
+            fetchPriority={activeIndex === 0 ? 'high' : 'auto'}
+            decoding="async"
             className="h-full w-full object-contain"
           />
         ) : (
@@ -52,7 +56,7 @@ export default function ProductGallery({ images = [], name }) {
               aria-pressed={index === activeIndex}
               onClick={() => setActiveIndex(index)}
             >
-              <img src={image} alt="" className="h-full w-full object-cover" />
+              <img src={image} alt="" width={800} height={800} loading="lazy" decoding="async" className="h-full w-full object-cover" />
             </button>
           ))}
         </div>

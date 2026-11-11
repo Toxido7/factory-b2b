@@ -12,11 +12,31 @@
 }
 
 @layer base {
+  html {
+    scroll-padding-top: 5rem;
+  }
+
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
     letter-spacing: -0.01em;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  label[for],
+  select,
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="file"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
   }
 }
 
@@ -46,6 +66,58 @@
   }
 }
 
+@keyframes skeleton-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes account-menu-open {
+    from {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes account-menu-close {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.97);
+    }
+  }
+
+  .account-menu-content[data-state='open'][data-side='bottom'] {
+    transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+    animation: account-menu-open 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .account-menu-content[data-state='closed'][data-side='bottom'] {
+    transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+    animation: account-menu-close 120ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+.skeleton-shimmer::after {
+  position: absolute;
+  inset: 0;
+  width: 60%;
+  background: linear-gradient(110deg, transparent, color-mix(in srgb, var(--color-accent) 24%, transparent), transparent);
+  content: '';
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
@@ -53,5 +125,9 @@
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .skeleton-shimmer::after {
+    animation: none;
   }
 }

@@ -43,7 +43,10 @@ export default function ProductCard({ product, isNew = false }) {
             <img
               src={image}
               alt={product.name}
+              width={800}
+              height={600}
               loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover transition-transform duration-700 motion-reduce:transition-none group-hover:scale-105"
             />
           ) : (

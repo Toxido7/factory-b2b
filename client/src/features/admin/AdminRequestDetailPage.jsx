@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import Button from '../../components/Button.jsx';
 import ConfirmDialog from '../../components/ConfirmDialog.jsx';
 import EmptyState from '../../components/EmptyState.jsx';
@@ -48,7 +49,6 @@ export default function AdminRequestDetailPage() {
   const mutation = useChangeRequestStatus();
   const request = query.data;
   const [dialogStatus, setDialogStatus] = useState(null);
-  const [changed, setChanged] = useState(false);
   const [mutationError, setMutationError] = useState(null);
   const buttonRefs = useRef({});
   const backToList = `/admin/requests${location.search}`;
@@ -66,7 +66,6 @@ export default function AdminRequestDetailPage() {
 
   function changeStatus(status) {
     setMutationError(null);
-    setChanged(false);
     if (NEEDS_CONFIRM.includes(status)) {
       setDialogStatus(status);
       return;
@@ -81,7 +80,7 @@ export default function AdminRequestDetailPage() {
         onSuccess: () => {
           buttonRefs.current[status]?.focus();
           setDialogStatus(null);
-          setChanged(true);
+          toast.success(t('adminRequestDetail.changed'));
           setMutationError(null);
         },
         onError: (error) => {
@@ -260,11 +259,6 @@ export default function AdminRequestDetailPage() {
               {mutationError && (
                 <p role="alert" className="mt-5 rounded-xl bg-surface p-3 text-sm text-red-700">
                   {mutationError}
-                </p>
-              )}
-              {changed && (
-                <p role="status" className="mt-5 rounded-xl bg-surface p-3 text-sm text-muted">
-                  {t('adminRequestDetail.changed')}
                 </p>
               )}
               {NEXT_STATUSES[item.status].length > 0 ? (

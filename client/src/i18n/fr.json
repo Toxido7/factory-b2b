@@ -497,7 +497,9 @@
       "badType": "Format non accepté. Utilisez JPEG, PNG ou WebP.",
       "tooBig": "Photo trop lourde (5 Mo maximum).",
       "tooMany": "Maximum 5 photos par produit.",
-      "main": "Photo principale"
+      "main": "Photo principale",
+      "pendingHint": "Les photos seront envoyées dès que vous créez le produit.",
+      "partialFail": "Produit créé, mais {{count}} photo(s) n'ont pas pu être envoyées. Ajoutez-les ci-dessous."
     }
   },
   "adminRequests": {
@@ -652,6 +654,23 @@
     "noCompany": "Sans société",
     "emptyList": "Rien à afficher sur cette période."
   },
+  "accountMenu": {
+    "open": "Ouvrir le menu du compte",
+    "hello": "Bonjour {{name}}",
+    "helloNoName": "Bonjour",
+    "unverified": "Adresse e-mail non vérifiée",
+    "verified": "Adresse e-mail vérifiée",
+    "admin": "Espace administration"
+  },
+  "search": {
+    "open": "Rechercher",
+    "title": "Rechercher un produit",
+    "placeholder": "Sac, veste, ceinture...",
+    "submit": "Rechercher",
+    "close": "Fermer la recherche",
+    "hint": "Appuyez sur Entrée pour lancer la recherche"
+  },
+
   "states": {
     "empty": {
       "title": "Rien à afficher pour le moment"

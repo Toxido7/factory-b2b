@@ -1,7 +1,7 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import PublicLayout from "../layouts/PublicLayout.jsx";
 import AuthLayout from "../layouts/AuthLayout.jsx";
-import AdminLayout from "../layouts/AdminLayout.jsx";
 import Home from "../features/static/Home.jsx";
 import StyleGuide from "../features/static/StyleGuide.jsx";
 import NotFound from "../features/static/NotFound.jsx";
@@ -14,24 +14,27 @@ import QualityPage from "../features/static/QualityPage.jsx";
 import ContactPage from "../features/static/ContactPage.jsx";
 import PrivacyPage from "../features/static/PrivacyPage.jsx";
 import TermsPage from "../features/static/TermsPage.jsx";
-import RequestListPage from "../features/requestList/RequestListPage.jsx";
-import RequestSentPage from "../features/requestList/RequestSentPage.jsx";
-import MyRequestsPage from "../features/requestList/MyRequestsPage.jsx";
-import MyRequestDetailPage from "../features/requestList/MyRequestDetailPage.jsx";
-import AccountPage from "../features/auth/AccountPage.jsx";
 import LoginPage from "../features/auth/LoginPage.jsx";
 import RegisterPage from "../features/auth/RegisterPage.jsx";
 import ForgotPasswordPage from "../features/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "../features/auth/ResetPasswordPage.jsx";
 import VerifyEmailPage from "../features/auth/VerifyEmailPage.jsx";
-import AdminCategoriesPage from "../features/admin/AdminCategoriesPage.jsx";
-import AdminProductsPage from "../features/admin/AdminProductsPage.jsx";
-import AdminProductFormPage from "../features/admin/AdminProductFormPage.jsx";
-import AdminRequestsPage from "../features/admin/AdminRequestsPage.jsx";
-import AdminRequestDetailPage from "../features/admin/AdminRequestDetailPage.jsx";
-import AdminUsersPage from "../features/admin/AdminUsersPage.jsx";
-import AdminDashboardPage from "../features/admin/AdminDashboardPage.jsx";
+import PageFallback from "../components/PageFallback.jsx";
 import { GuestOnly, RequireAuth } from "./guards.jsx";
+
+const AdminLayout = lazy(() => import("../layouts/AdminLayout.jsx"));
+const AccountPage = lazy(() => import("../features/auth/AccountPage.jsx"));
+const RequestListPage = lazy(() => import("../features/requestList/RequestListPage.jsx"));
+const RequestSentPage = lazy(() => import("../features/requestList/RequestSentPage.jsx"));
+const MyRequestsPage = lazy(() => import("../features/requestList/MyRequestsPage.jsx"));
+const MyRequestDetailPage = lazy(() => import("../features/requestList/MyRequestDetailPage.jsx"));
+const AdminCategoriesPage = lazy(() => import("../features/admin/AdminCategoriesPage.jsx"));
+const AdminProductsPage = lazy(() => import("../features/admin/AdminProductsPage.jsx"));
+const AdminProductFormPage = lazy(() => import("../features/admin/AdminProductFormPage.jsx"));
+const AdminRequestsPage = lazy(() => import("../features/admin/AdminRequestsPage.jsx"));
+const AdminRequestDetailPage = lazy(() => import("../features/admin/AdminRequestDetailPage.jsx"));
+const AdminUsersPage = lazy(() => import("../features/admin/AdminUsersPage.jsx"));
+const AdminDashboardPage = lazy(() => import("../features/admin/AdminDashboardPage.jsx"));
 
 export const router = createBrowserRouter([
   {
@@ -62,25 +65,25 @@ export const router = createBrowserRouter([
         element: <RequireAuth />,
         children: [{ path: "account", element: <AccountPage /> }],
       },
-      { path: "styleguide", element: <StyleGuide /> },
-      { path: "*", element: <NotFound /> },
-    ],
-  },
-  {
-    element: <AuthLayout />,
-    children: [
-      // Open to everyone (a logged-in user may click these email links)
-      { path: "verify-email", element: <VerifyEmailPage /> },
-      { path: "reset-password", element: <ResetPasswordPage /> },
-      // Guests only
       {
-        element: <GuestOnly />,
+        element: <AuthLayout />,
         children: [
-          { path: "login", element: <LoginPage /> },
-          { path: "register", element: <RegisterPage /> },
-          { path: "forgot-password", element: <ForgotPasswordPage /> },
+          // Open to everyone (a logged-in user may click these email links)
+          { path: "verify-email", element: <VerifyEmailPage /> },
+          { path: "reset-password", element: <ResetPasswordPage /> },
+          // Guests only
+          {
+            element: <GuestOnly />,
+            children: [
+              { path: "login", element: <LoginPage /> },
+              { path: "register", element: <RegisterPage /> },
+              { path: "forgot-password", element: <ForgotPasswordPage /> },
+            ],
+          },
         ],
       },
+      { path: "styleguide", element: <StyleGuide /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
   {
@@ -88,7 +91,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "admin",
-        element: <AdminLayout />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <AdminLayout />
+          </Suspense>
+        ),
         children: [
           { index: true, element: <AdminDashboardPage /> },
           { path: "categories", element: <AdminCategoriesPage /> },

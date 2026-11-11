@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import Button from '../../components/Button.jsx';
 import ConfirmDialog from '../../components/ConfirmDialog.jsx';
 import Drawer from '../../components/Drawer.jsx';
@@ -133,7 +134,6 @@ export default function AdminCategoriesPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [hideCategory, setHideCategory] = useState(null);
-  const [saved, setSaved] = useState(false);
   const newButtonRef = useRef(null);
   const editButtonRefs = useRef(new Map());
 
@@ -146,13 +146,11 @@ export default function AdminCategoriesPage() {
   );
 
   function openCreate() {
-    setSaved(false);
     setSelectedCategory(null);
     setDrawerOpen(true);
   }
 
   function openEdit(category) {
-    setSaved(false);
     setSelectedCategory(category);
     setDrawerOpen(true);
   }
@@ -230,7 +228,6 @@ export default function AdminCategoriesPage() {
       <main className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
-            {saved && <p role="status" className="text-sm text-muted">{t('adminCategories.saved')}</p>}
           </div>
           <Button ref={newButtonRef} onClick={openCreate}>{t('adminCategories.new')}</Button>
         </div>
@@ -290,7 +287,7 @@ export default function AdminCategoriesPage() {
           mutation={selectedCategory ? updateCategory : createCategory}
           onSaved={() => {
             closeDrawer(false);
-            setSaved(true);
+            toast.success(t('adminCategories.saved'));
           }}
         />
       </Drawer>

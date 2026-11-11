@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import CountUp from '../../components/motion/CountUp.jsx';
+import { Stagger, StaggerItem } from '../../components/motion/Stagger.jsx';
 
 const stats = [
   ['home.stats.yearsValue', 'home.stats.years'],
@@ -13,12 +15,22 @@ export default function StatsBand() {
   return (
     <section className="bg-ink py-12">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-8 md:grid-cols-4">
-        {stats.map(([value, label]) => (
-          <div key={value} className="text-center">
-            <p className="font-display text-4xl font-bold text-accent">{t(value)}</p>
-            <p className="mt-2 text-sm text-white/70">{t(label)}</p>
-          </div>
-        ))}
+        <Stagger className="col-span-2 grid grid-cols-2 gap-8 md:col-span-4 md:grid-cols-4">
+          {stats.map(([value, label]) => {
+            const translatedValue = t(value);
+            const match = translatedValue.match(/^(\d+)([+k]?)$/);
+            return (
+              <StaggerItem key={value} className="text-center">
+                <p className="font-display text-4xl font-bold text-accent">
+                  {match
+                    ? <CountUp value={Number(match[1])} suffix={match[2]} />
+                    : translatedValue}
+                </p>
+                <p className="mt-2 text-sm text-white/70">{t(label)}</p>
+              </StaggerItem>
+            );
+          })}
+        </Stagger>
       </div>
     </section>
   );

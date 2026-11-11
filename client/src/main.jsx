@@ -6,6 +6,7 @@ import { RouterProvider } from "react-router/dom";
 import { router } from "./app/router.jsx";
 import { AuthProvider } from "./features/auth/AuthContext.jsx";
 import { RequestListProvider } from "./features/requestList/RequestListContext.jsx";
+import AppToaster from "./components/AppToaster.jsx";
 import { queryClient } from "./lib/queryClient.js";
 import "./i18n/index.js";
 import "./index.css";
@@ -20,6 +21,7 @@ createRoot(document.getElementById("root")).render(
           </RequestListProvider>
         </AuthProvider>
       </QueryClientProvider>
+      <AppToaster />
     </MotionConfig>
   </StrictMode>,
 );

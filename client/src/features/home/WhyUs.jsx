@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import Reveal from '../../components/motion/Reveal.jsx';
+import { Stagger, StaggerItem } from '../../components/motion/Stagger.jsx';
 
 const reasons = [
   ['home.why.w1Title', 'home.why.w1Text', 'M4 6h16M4 12h16M4 18h16'],
@@ -13,21 +15,25 @@ export default function WhyUs() {
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-8">
-        <p className="text-sm font-bold tracking-[0.2em] text-ink">{t('home.why.eyebrow')}</p>
-        <h2 className="mt-3 text-3xl font-bold text-ink md:text-4xl">{t('home.why.title')}</h2>
-        <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <Reveal>
+          <p className="text-sm font-bold tracking-[0.2em] text-ink">{t('home.why.eyebrow')}</p>
+          <h2 className="mt-3 text-3xl font-bold text-ink md:text-4xl">{t('home.why.title')}</h2>
+        </Reveal>
+        <Stagger className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {reasons.map(([title, text, path]) => (
-            <article key={title}>
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-ink text-accent">
-                <svg aria-hidden="true" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.7">
-                  <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-                </svg>
-              </span>
-              <h3 className="mt-5 text-lg font-bold text-ink">{t(title)}</h3>
-              <p className="mt-2 leading-7 text-muted">{t(text)}</p>
-            </article>
+            <StaggerItem key={title}>
+              <article>
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-ink text-accent">
+                  <svg aria-hidden="true" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.7">
+                    <path strokeLinecap="round" strokeLinejoin="round" d={path} />
+                  </svg>
+                </span>
+                <h3 className="mt-5 text-lg font-bold text-ink">{t(title)}</h3>
+                <p className="mt-2 leading-7 text-muted">{t(text)}</p>
+              </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router';
@@ -29,7 +30,6 @@ export default function AccountPage() {
   const { t } = useTranslation();
   const { user, reloadUser, logout } = useAuth();
   const navigate = useNavigate();
-  const [profileSaved, setProfileSaved] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const updateProfile = useUpdateProfile();
   const changePassword = useChangePassword();
@@ -57,11 +57,10 @@ export default function AccountPage() {
   usePageTitle(t('account.title'));
 
   async function saveProfile(values) {
-    setProfileSaved(false);
     try {
       await updateProfile.mutateAsync(values);
       await reloadUser();
-      setProfileSaved(true);
+      toast.success(t('account.profile.saved'));
     } catch (error) {
       showServerError(error, setProfileError);
     }
@@ -146,11 +145,6 @@ export default function AccountPage() {
             {profileErrors.root && (
               <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700" role="alert">
                 {profileErrors.root.message}
-              </p>
-            )}
-            {profileSaved && (
-              <p className="rounded-xl bg-surface p-3 text-sm text-muted" role="status">
-                {t('account.profile.saved')}
               </p>
             )}
             <Button type="submit" disabled={profileSubmitting || updateProfile.isPending}>
