@@ -670,6 +670,19 @@
     "close": "Fermer la recherche",
     "hint": "Appuyez sur Entrée pour lancer la recherche"
   },
+  "verifyAlert": {
+    "title": "Vérifiez votre e-mail pour envoyer la demande",
+    "body": "Nous avons envoyé un e-mail de confirmation à {{email}}. Pensez à regarder dans vos courriers indésirables.",
+    "steps": {
+      "one": "Ouvrez votre boîte e-mail.",
+      "two": "Cliquez sur le lien dans le message reçu.",
+      "three": "Revenez ici et envoyez votre demande."
+    },
+    "resend": "Renvoyer l'e-mail",
+    "resent": "E-mail renvoyé. Vérifiez votre boîte de réception.",
+    "verified": "Votre e-mail est vérifié. Vous pouvez envoyer votre demande.",
+    "close": "J'ai compris"
+  },
 
   "states": {
     "empty": {

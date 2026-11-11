@@ -29,6 +29,30 @@ export default function VerifyEmailPage() {
       });
   }, [token, user, reloadUser]);
 
+  useEffect(() => {
+    if (!user || user.emailVerified !== false) return;
+    let lastReload = 0;
+
+    async function reloadOnReturn() {
+      if (document.visibilityState !== 'visible') return;
+      const now = Date.now();
+      if (now - lastReload < 10000) return;
+      lastReload = now;
+      try {
+        await reloadUser();
+      } catch (error) {
+        console.error('Failed to reload the authenticated user', error);
+      }
+    }
+
+    window.addEventListener('focus', reloadOnReturn);
+    document.addEventListener('visibilitychange', reloadOnReturn);
+    return () => {
+      window.removeEventListener('focus', reloadOnReturn);
+      document.removeEventListener('visibilitychange', reloadOnReturn);
+    };
+  }, [user, reloadUser]);
+
   return (
     <div className="space-y-4 text-center">
       {state === "loading" && <p>{t("auth.verify.loading")}</p>}

@@ -1,9 +1,12 @@
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import Button from '../../components/Button.jsx';
 import EmptyState from '../../components/EmptyState.jsx';
 import PageHeader from '../../components/PageHeader.jsx';
 import QuantityInput from '../../components/QuantityInput.jsx';
+import VerifyDialog from '../../components/VerifyDialog.jsx';
 import { formatMoney } from '../../lib/format.js';
 import { translateServerMessage } from '../../lib/formErrors.js';
 import usePageTitle from '../../lib/usePageTitle.js';
@@ -25,6 +28,8 @@ export default function RequestListPage() {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const sendButtonRef = useRef(null);
+  const [verifyDialogOpen, setVerifyDialogOpen] = useState(false);
   const createRequest = useCreateRequest();
   const {
     items,
@@ -42,6 +47,12 @@ export default function RequestListPage() {
     : null;
 
   usePageTitle(t('requestPage.title'));
+
+  useEffect(() => {
+    if (!verifyDialogOpen || !user || user.emailVerified === false) return;
+    setVerifyDialogOpen(false);
+    toast.success(t('verifyAlert.verified'));
+  }, [t, user, verifyDialogOpen]);
 
   if (items.length === 0) {
     return (
@@ -66,7 +77,12 @@ export default function RequestListPage() {
       return;
     }
 
-    if (needsVerification || createRequest.isPending) return;
+    if (needsVerification) {
+      setVerifyDialogOpen(true);
+      return;
+    }
+
+    if (createRequest.isPending) return;
 
     createRequest.mutate(
       { items, notes },
@@ -162,11 +178,6 @@ export default function RequestListPage() {
               <span>{formatMoney(estimatedTotal)}</span>
             </p>
             <p className="mt-5 text-sm leading-6 text-muted">{t('requestList.estimateNote')}</p>
-            {needsVerification && (
-              <p className="mt-6 text-sm text-muted" role="status">
-                {t('requestPage.verifyNeeded')}
-              </p>
-            )}
             {createRequest.isError && (
               <div className="mt-6 space-y-2 text-sm text-muted" role="alert">
                 <p>{t('requestPage.sendError')}</p>
@@ -177,13 +188,17 @@ export default function RequestListPage() {
               </div>
             )}
             <Button
+              ref={sendButtonRef}
               type="button"
               className="mt-6 w-full"
               onClick={sendRequest}
-              disabled={needsVerification || createRequest.isPending}
+              disabled={createRequest.isPending}
             >
               {createRequest.isPending ? t('requestPage.sending') : t('requestPage.send')}
             </Button>
+            {needsVerification && (
+              <p className="mt-3 text-sm text-muted">{t('requestPage.verifyNeeded')}</p>
+            )}
             {!user && <p className="mt-3 text-sm text-muted">{t('requestPage.loginHint')}</p>}
             <Button type="button" variant="ghost" className="mt-3 w-full" onClick={clear}>
               {t('requestPage.clear')}
@@ -191,6 +206,14 @@ export default function RequestListPage() {
           </aside>
         </div>
       </main>
+      <VerifyDialog
+        open={verifyDialogOpen}
+        onOpenChange={(open) => {
+          setVerifyDialogOpen(open);
+          if (!open) requestAnimationFrame(() => sendButtonRef.current?.focus());
+        }}
+        email={user?.email}
+      />
     </div>
   );
 }
