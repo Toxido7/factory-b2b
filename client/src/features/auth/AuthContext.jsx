@@ -54,6 +54,32 @@ export function AuthProvider({ children }) {
     const res = await api.get("/auth/me");
     setUser(res.data.data.user);
   }, []);
+  // If she verified her e-mail in another tab, reload her data
+  // when she comes back to this tab (at most once every 10 seconds)
+  const unverified = Boolean(user) && user.emailVerified === false;
+  useEffect(() => {
+    if (!unverified) return;
+    let lastReload = 0;
+
+    async function reloadOnReturn() {
+      if (document.visibilityState !== "visible") return;
+      const now = Date.now();
+      if (now - lastReload < 10000) return;
+      lastReload = now;
+      try {
+        await reloadUser();
+      } catch {
+        // ignore: the next focus will try again
+      }
+    }
+
+    window.addEventListener("focus", reloadOnReturn);
+    document.addEventListener("visibilitychange", reloadOnReturn);
+    return () => {
+      window.removeEventListener("focus", reloadOnReturn);
+      document.removeEventListener("visibilitychange", reloadOnReturn);
+    };
+  }, [unverified, reloadUser]);
 
   return (
     <AuthContext.Provider value={{ user, status, login, logout, reloadUser }}>

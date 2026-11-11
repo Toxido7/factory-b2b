@@ -8,17 +8,26 @@ export default function VerifyEmailPage() {
   const { t } = useTranslation();
   const [params] = useSearchParams();
   const token = params.get("token");
-  const { user, reloadUser } = useAuth();
+  const { user, status, reloadUser } = useAuth();
   const [state, setState] = useState(token ? "loading" : "error");
-  const [message, setMessage] = useState(token ? "" : t("auth.verify.missingToken"));
+  const [message, setMessage] = useState(
+    token ? "" : t("auth.verify.missingToken"),
+  );
   const started = useRef(false); // the token is single-use: call only once
 
   useEffect(() => {
-    if (!token || started.current) return;
+    // wait until we know if the visitor is logged in
+    if (!token || status === "loading" || started.current) return;
     started.current = true;
     verifyEmail(token)
       .then(async () => {
-        if (user) await reloadUser();
+        if (status === "authed") {
+          try {
+            await reloadUser();
+          } catch {
+            // the page still says "verified"
+          }
+        }
         setState("ok");
       })
       .catch((err) => {
@@ -27,31 +36,7 @@ export default function VerifyEmailPage() {
         );
         setState("error");
       });
-  }, [token, user, reloadUser]);
-
-  useEffect(() => {
-    if (!user || user.emailVerified !== false) return;
-    let lastReload = 0;
-
-    async function reloadOnReturn() {
-      if (document.visibilityState !== 'visible') return;
-      const now = Date.now();
-      if (now - lastReload < 10000) return;
-      lastReload = now;
-      try {
-        await reloadUser();
-      } catch (error) {
-        console.error('Failed to reload the authenticated user', error);
-      }
-    }
-
-    window.addEventListener('focus', reloadOnReturn);
-    document.addEventListener('visibilitychange', reloadOnReturn);
-    return () => {
-      window.removeEventListener('focus', reloadOnReturn);
-      document.removeEventListener('visibilitychange', reloadOnReturn);
-    };
-  }, [user, reloadUser]);
+  }, [token, status, reloadUser]);
 
   return (
     <div className="space-y-4 text-center">
@@ -67,7 +52,9 @@ export default function VerifyEmailPage() {
       )}
       {state === "error" && (
         <>
-          <h1 className="text-2xl font-bold">{t("auth.verify.invalidTitle")}</h1>
+          <h1 className="text-2xl font-bold">
+            {t("auth.verify.invalidTitle")}
+          </h1>
           <p className="text-muted">{message}</p>
           <Link to="/" className="underline">
             {t("common.backToSite")}
